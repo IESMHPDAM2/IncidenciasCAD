@@ -1,0 +1,73 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package incidenciascad;
+
+public class Equipo {
+
+    private int equipoId;
+    private String numeroEtiquetaConsejeria;
+    private String numeroPuestoAula;
+    private TipoEquipo tipoEquipo;
+    private Incidencia incidencia;
+
+    public Equipo() {
+
+    }
+
+    public Equipo(int equipoId, String numeroEtiquetaConsejeria, String numeroPuestoAula, TipoEquipo tipoEquipo, Incidencia incidencia) {
+        this.equipoId = equipoId;
+        this.numeroEtiquetaConsejeria = numeroEtiquetaConsejeria;
+        this.numeroPuestoAula = numeroPuestoAula;
+        this.tipoEquipo = tipoEquipo;
+        this.incidencia = incidencia;
+    }
+
+    public int getEquipoId() {
+        return equipoId;
+    }
+
+    public void setEquipoId(int equipoId) {
+        this.equipoId = equipoId;
+    }
+
+    public String getNumeroEtiquetaConsejeria() {
+        return numeroEtiquetaConsejeria;
+    }
+
+    public void setNumeroEtiquetaConsejeria(String numeroEtiquetaConsejeria) {
+        this.numeroEtiquetaConsejeria = numeroEtiquetaConsejeria;
+    }
+
+    public String getNumeroPuestoAula() {
+        return numeroPuestoAula;
+    }
+
+    public void setNumeroPuestoAula(String numeroPuestoAula) {
+        this.numeroPuestoAula = numeroPuestoAula;
+    }
+
+    public TipoEquipo getTipoEquipo() {
+        return tipoEquipo;
+    }
+
+    public void setTipoEquipo(TipoEquipo tipoEquipo) {
+        this.tipoEquipo = tipoEquipo;
+    }
+
+    public Incidencia getIncidencia() {
+        return incidencia;
+    }
+
+    public void setIncidencia(Incidencia incidencia) {
+        this.incidencia = incidencia;
+    }
+
+    @Override
+    public String toString() {
+        return "Equipo{" + "equipoId=" + equipoId + ", numeroEtiquetaConsejeria=" + numeroEtiquetaConsejeria + ", numeroPuestoAula=" + numeroPuestoAula + ", tipoEquipo=" + tipoEquipo + ", incidencia=" + incidencia + '}';
+    }
+
+}
