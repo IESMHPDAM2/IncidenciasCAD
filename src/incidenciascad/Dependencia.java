@@ -9,24 +9,24 @@ package incidenciascad;
  *
  * @author ifontecha
  */
-public class Departamento {
-    private int departamentoId;
+public class Dependencia {
+    private int dependenciaId;
     private String nombre;
 
-    public Departamento() {
+    public Dependencia() {
     }
 
-    public Departamento(int departamentoId, String nombre) {
-        this.departamentoId = departamentoId;
+    public Dependencia(int dependenciaId, String nombre) {
+        this.dependenciaId = dependenciaId;
         this.nombre = nombre;
     }
 
-    public int getDepartamentoId() {
-        return departamentoId;
+    public int getDependenciaId() {
+        return dependenciaId;
     }
 
-    public void setDepartamentoId(int departamentoId) {
-        this.departamentoId = departamentoId;
+    public void setDependenciaId(int dependenciaId) {
+        this.dependenciaId = dependenciaId;
     }
 
     public String getNombre() {
