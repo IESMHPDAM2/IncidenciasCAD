@@ -11,18 +11,16 @@ public class Equipo {
     private String numeroEtiquetaConsejeria;
     private String numeroPuestoAula;
     private TipoEquipo tipoEquipo;
-    private Incidencia incidencia;
 
     public Equipo() {
 
     }
 
-    public Equipo(int equipoId, String numeroEtiquetaConsejeria, String numeroPuestoAula, TipoEquipo tipoEquipo, Incidencia incidencia) {
+    public Equipo(int equipoId, String numeroEtiquetaConsejeria, String numeroPuestoAula, TipoEquipo tipoEquipo) {
         this.equipoId = equipoId;
         this.numeroEtiquetaConsejeria = numeroEtiquetaConsejeria;
         this.numeroPuestoAula = numeroPuestoAula;
         this.tipoEquipo = tipoEquipo;
-        this.incidencia = incidencia;
     }
 
     public int getEquipoId() {
@@ -57,17 +55,9 @@ public class Equipo {
         this.tipoEquipo = tipoEquipo;
     }
 
-    public Incidencia getIncidencia() {
-        return incidencia;
-    }
-
-    public void setIncidencia(Incidencia incidencia) {
-        this.incidencia = incidencia;
-    }
-
     @Override
     public String toString() {
-        return "Equipo{" + "equipoId=" + equipoId + ", numeroEtiquetaConsejeria=" + numeroEtiquetaConsejeria + ", numeroPuestoAula=" + numeroPuestoAula + ", tipoEquipo=" + tipoEquipo + ", incidencia=" + incidencia + '}';
+        return "Equipo{" + "equipoId=" + equipoId + ", numeroEtiquetaConsejeria=" + numeroEtiquetaConsejeria + ", numeroPuestoAula=" + numeroPuestoAula + ", tipoEquipo=" + tipoEquipo + '}';
     }
 
 }

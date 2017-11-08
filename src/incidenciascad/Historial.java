@@ -59,4 +59,9 @@ public class Historial
     public void setEstado(Estado estado) {
         this.estado = estado;
     }
+
+    @Override
+    public String toString() {
+        return "Historial{" + "historialId=" + historialId + ", fecha=" + fecha + ", incidencia=" + incidencia + ", estado=" + estado + '}';
+    }
 }

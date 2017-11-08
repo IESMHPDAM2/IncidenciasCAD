@@ -11,19 +11,19 @@ package incidenciascad;
  */
 public class Usuario {
     private int usuarioId;
+    private String cuenta;
     private String nombre;
-    private String apellido1;
-    private String apellido2;
-    private Departamento departamento;
+    private String apellido;
+    private String departamento;
 
     public Usuario() {
     }
 
-    public Usuario(int usuarioId, String nombre, String apellido1, String apellido2, Departamento departamento) {
+    public Usuario(int usuarioId, String cuenta, String nombre, String apellido, String departamento) {
         this.usuarioId = usuarioId;
+        this.cuenta = cuenta;
         this.nombre = nombre;
-        this.apellido1 = apellido1;
-        this.apellido2 = apellido2;
+        this.apellido = apellido;
         this.departamento = departamento;
     }
 
@@ -35,6 +35,14 @@ public class Usuario {
         this.usuarioId = usuarioId;
     }
 
+    public String getCuenta() {
+        return cuenta;
+    }
+
+    public void setCuenta(String cuenta) {
+        this.cuenta = cuenta;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -43,29 +51,25 @@ public class Usuario {
         this.nombre = nombre;
     }
 
-    public String getApellido1() {
-        return apellido1;
+    public String getApellido() {
+        return apellido;
     }
 
-    public void setApellido1(String apellido1) {
-        this.apellido1 = apellido1;
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
-    public String getApellido2() {
-        return apellido2;
-    }
-
-    public void setApellido2(String apellido2) {
-        this.apellido2 = apellido2;
-    }
-
-    public Departamento getDepartamento() {
+    public String getDepartamento() {
         return departamento;
     }
 
-    public void setDepartamento(Departamento departamento) {
+    public void setDepartamento(String departamento) {
         this.departamento = departamento;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "Usuario{" + "usuarioId=" + usuarioId + ", cuenta=" + cuenta + ", nombre=" + nombre + ", apellido=" + apellido + ", departamento=" + departamento + '}';
+    }
+
 }

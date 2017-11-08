@@ -11,13 +11,15 @@ package incidenciascad;
  */
 public class Dependencia {
     private int dependenciaId;
+    private String codigo;
     private String nombre;
 
     public Dependencia() {
     }
 
-    public Dependencia(int dependenciaId, String nombre) {
+    public Dependencia(int dependenciaId, String codigo, String nombre) {
         this.dependenciaId = dependenciaId;
+        this.codigo = codigo;
         this.nombre = nombre;
     }
 
@@ -29,6 +31,14 @@ public class Dependencia {
         this.dependenciaId = dependenciaId;
     }
 
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -36,6 +46,10 @@ public class Dependencia {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "Dependencia{" + "dependenciaId=" + dependenciaId + ", codigo=" + codigo + ", nombre=" + nombre + '}';
+    }
+
 }

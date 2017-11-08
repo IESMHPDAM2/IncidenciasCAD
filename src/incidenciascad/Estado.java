@@ -11,7 +11,7 @@ package incidenciascad;
  */
 public class Estado {
     
-    private int estadoID;
+    private int estadoId;
     private String codigo;
     private String nombre;
     private int orden;
@@ -19,19 +19,19 @@ public class Estado {
     public Estado() {
     }
 
-    public Estado(int estadoID, String codigo, String nombre, int orden) {
-        this.estadoID = estadoID;
+    public Estado(int estadoId, String codigo, String nombre, int orden) {
+        this.estadoId = estadoId;
         this.codigo = codigo;
         this.nombre = nombre;
         this.orden = orden;
     }
 
-    public int getEstadoID() {
-        return estadoID;
+    public int getEstadoId() {
+        return estadoId;
     }
 
-    public void setEstadoID(int estadoID) {
-        this.estadoID = estadoID;
+    public void setEstadoId(int estadoId) {
+        this.estadoId = estadoId;
     }
 
     public String getCodigo() {
@@ -57,6 +57,10 @@ public class Estado {
     public void setOrden(int orden) {
         this.orden = orden;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Estado{" + "estadoId=" + estadoId + ", codigo=" + codigo + ", nombre=" + nombre + ", orden=" + orden + '}';
+    }
     
 }
