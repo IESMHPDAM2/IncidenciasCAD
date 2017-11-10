@@ -11,6 +11,7 @@ package incidenciascad;
  */
 public class Incidencia {
     private int incidenciaId;
+    private String posicionEquipoDependencia;
     private String descripcion;
     private Usuario usuario;
     private Equipo equipo;
@@ -19,8 +20,9 @@ public class Incidencia {
     public Incidencia() {
     }
 
-    public Incidencia(int incidenciaId, String descripcion, Usuario usuario, Equipo equipo, Dependencia dependencia) {
+    public Incidencia(int incidenciaId, String posicionEquipoDependencia, String descripcion, Usuario usuario, Equipo equipo, Dependencia dependencia) {
         this.incidenciaId = incidenciaId;
+        this.posicionEquipoDependencia = posicionEquipoDependencia;
         this.descripcion = descripcion;
         this.usuario = usuario;
         this.equipo = equipo;
@@ -33,6 +35,14 @@ public class Incidencia {
 
     public void setIncidenciaId(int incidenciaId) {
         this.incidenciaId = incidenciaId;
+    }
+
+    public String getPosicionEquipoDependencia() {
+        return posicionEquipoDependencia;
+    }
+
+    public void setPosicionEquipoDependencia(String posicionEquipoDependencia) {
+        this.posicionEquipoDependencia = posicionEquipoDependencia;
     }
 
     public String getDescripcion() {
@@ -69,8 +79,6 @@ public class Incidencia {
 
     @Override
     public String toString() {
-        return "Incidencia{" + "incidenciaId=" + incidenciaId + ", descripcion=" + descripcion + ", usuario=" + usuario + ", equipo=" + equipo + ", dependencia=" + dependencia + '}';
+        return "Incidencia{" + "incidenciaId=" + incidenciaId + ", posicionEquipoDependencia=" + posicionEquipoDependencia + ", descripcion=" + descripcion + ", usuario=" + usuario + ", equipo=" + equipo + ", dependencia=" + dependencia + '}';
     }
-
-
 }

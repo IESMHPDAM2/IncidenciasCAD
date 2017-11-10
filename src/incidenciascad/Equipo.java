@@ -9,17 +9,15 @@ public class Equipo {
 
     private int equipoId;
     private String numeroEtiquetaConsejeria;
-    private String numeroPuestoAula;
     private TipoEquipo tipoEquipo;
 
     public Equipo() {
 
     }
 
-    public Equipo(int equipoId, String numeroEtiquetaConsejeria, String numeroPuestoAula, TipoEquipo tipoEquipo) {
+    public Equipo(int equipoId, String numeroEtiquetaConsejeria, TipoEquipo tipoEquipo) {
         this.equipoId = equipoId;
         this.numeroEtiquetaConsejeria = numeroEtiquetaConsejeria;
-        this.numeroPuestoAula = numeroPuestoAula;
         this.tipoEquipo = tipoEquipo;
     }
 
@@ -39,14 +37,6 @@ public class Equipo {
         this.numeroEtiquetaConsejeria = numeroEtiquetaConsejeria;
     }
 
-    public String getNumeroPuestoAula() {
-        return numeroPuestoAula;
-    }
-
-    public void setNumeroPuestoAula(String numeroPuestoAula) {
-        this.numeroPuestoAula = numeroPuestoAula;
-    }
-
     public TipoEquipo getTipoEquipo() {
         return tipoEquipo;
     }
@@ -57,7 +47,7 @@ public class Equipo {
 
     @Override
     public String toString() {
-        return "Equipo{" + "equipoId=" + equipoId + ", numeroEtiquetaConsejeria=" + numeroEtiquetaConsejeria + ", numeroPuestoAula=" + numeroPuestoAula + ", tipoEquipo=" + tipoEquipo + '}';
+        return "Equipo{" + "equipoId=" + equipoId + ", numeroEtiquetaConsejeria=" + numeroEtiquetaConsejeria + ", tipoEquipo=" + tipoEquipo + '}';
     }
 
 }
