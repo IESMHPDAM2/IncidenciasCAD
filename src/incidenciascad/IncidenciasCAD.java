@@ -18,6 +18,21 @@ import java.util.logging.Logger;
  * @author ifontecha
  */
 public class IncidenciasCAD {
+    private Connection conexion;
+    
+    public IncidenciasCAD() throws ExcepcionIncidenciasCAD {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conexion = DriverManager.getConnection("jdbc:mysql://localhost/incidencias?user=root&password=root");
+        } catch (ClassNotFoundException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(-1,ex.getMessage(),"Error general del sistema. Consulte con el administrador",null);
+            throw e;
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(ex.getErrorCode(),ex.getMessage(),"Error general del sistema. Consulte con el administrador",null);
+            cerrarConexion(conexion, null);
+            throw e;
+        }
+    }
 
     private void cerrarConexion(Connection conexion, PreparedStatement sentenciaPreparada) {
         try {
@@ -26,34 +41,23 @@ public class IncidenciasCAD {
         } catch (SQLException | NullPointerException ex) {}
        
     }
-    public int insertarDepartamento(Departamento departamento) throws ExcepcionIncidenciasCAD {
-        String dml = "";
-        Connection conexion = null;
+    public int insertarDependencia(Dependencia dependencia) throws ExcepcionIncidenciasCAD {
+        String dml = "insert into dependencia(codigo,nombre) values (?,?)";
         PreparedStatement sentenciaPreparada = null;
-        if (departamento.getNombre().equals("")) departamento.setNombre(null);
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            conexion = DriverManager.getConnection("jdbc:mysql://localhost/incidencias?user=root&password=root");
-            dml = "insert into departamento set nombre=?";
             sentenciaPreparada = conexion.prepareStatement(dml);
-
-            sentenciaPreparada.setString(1, departamento.getNombre());
+            sentenciaPreparada.setString(1, dependencia.getCodigo());
+            sentenciaPreparada.setString(2, dependencia.getNombre());
             int registrosAfectados = sentenciaPreparada.executeUpdate();
-
             sentenciaPreparada.close();
             conexion.close();
- 
             return registrosAfectados;            
-            
-        } catch (ClassNotFoundException ex) {
-            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(-1,ex.getMessage(),"Error general del sistema. Consulte con el administrador",null);
-            throw e;
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(ex.getErrorCode(),ex.getMessage(),null,dml);
             switch (ex. getErrorCode()) {
-                case 1048:  e.setMensajeErrorUsuario("El nombre de departamento es obligatorio");
+                case 1048:  e.setMensajeErrorUsuario("El código y nombre de dependencia son obligatorios");
                             break;
-                case 1062:  e.setMensajeErrorUsuario("El nombre de departamento ya existe");
+                case 1062:  e.setMensajeErrorUsuario("El código y/o el nombre de dependencia ya existen y no se pueden repetir");
                             break;
                 default:    e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                             break;
@@ -63,8 +67,27 @@ public class IncidenciasCAD {
         }
     }
     
-    public int eliminarDepartamento(int departamentoId) {
-        return 0;
+    public int eliminarDependencia(int dependenciaId) throws ExcepcionIncidenciasCAD {
+        String dml = "delete from dependencia where dependencia_id=?";
+        PreparedStatement sentenciaPreparada = null;
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dml);
+            sentenciaPreparada.setInt(1, dependenciaId);
+            int registrosAfectados = sentenciaPreparada.executeUpdate();
+            sentenciaPreparada.close();
+            conexion.close();
+            return registrosAfectados;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(ex.getErrorCode(),ex.getMessage(),null,dml);
+            switch (ex. getErrorCode()) {
+                case 1451:  e.setMensajeErrorUsuario("No se puede eliminar la dependencia ya que tiene incidencias asociadas");
+                            break;
+                default:    e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
+                            break;
+            }
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
     }
     
     public int modificarDepartamento(int departamentoId, Departamento departamento) {

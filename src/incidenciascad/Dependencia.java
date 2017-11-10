@@ -32,6 +32,9 @@ public class Dependencia {
     }
 
     public String getCodigo() {
+        if (codigo != null) {
+            if (codigo.equals("")) return null;
+        }
         return codigo;
     }
 
@@ -40,6 +43,9 @@ public class Dependencia {
     }
 
     public String getNombre() {
+        if (nombre != null) {
+            if (nombre.equals("")) return null;
+        }
         return nombre;
     }
 
