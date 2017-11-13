@@ -10,9 +10,10 @@ package incidenciascad;
  * @author usuario
  */
 public class Incidencia {
-    private int incidenciaId;
+    private Integer incidenciaId;
     private String posicionEquipoDependencia;
     private String descripcion;
+    private String comentarioAdministrador;
     private Usuario usuario;
     private Equipo equipo;
     private Dependencia dependencia;
@@ -20,20 +21,21 @@ public class Incidencia {
     public Incidencia() {
     }
 
-    public Incidencia(int incidenciaId, String posicionEquipoDependencia, String descripcion, Usuario usuario, Equipo equipo, Dependencia dependencia) {
+    public Incidencia(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Usuario usuario, Equipo equipo, Dependencia dependencia) {
         this.incidenciaId = incidenciaId;
         this.posicionEquipoDependencia = posicionEquipoDependencia;
         this.descripcion = descripcion;
+        this.comentarioAdministrador = comentarioAdministrador;
         this.usuario = usuario;
         this.equipo = equipo;
         this.dependencia = dependencia;
     }
 
-    public int getIncidenciaId() {
+    public Integer getIncidenciaId() {
         return incidenciaId;
     }
 
-    public void setIncidenciaId(int incidenciaId) {
+    public void setIncidenciaId(Integer incidenciaId) {
         this.incidenciaId = incidenciaId;
     }
 
@@ -51,6 +53,14 @@ public class Incidencia {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getComentarioAdministrador() {
+        return comentarioAdministrador;
+    }
+
+    public void setComentarioAdministrador(String comentarioAdministrador) {
+        this.comentarioAdministrador = comentarioAdministrador;
     }
 
     public Usuario getUsuario() {
@@ -79,6 +89,7 @@ public class Incidencia {
 
     @Override
     public String toString() {
-        return "Incidencia{" + "incidenciaId=" + incidenciaId + ", posicionEquipoDependencia=" + posicionEquipoDependencia + ", descripcion=" + descripcion + ", usuario=" + usuario + ", equipo=" + equipo + ", dependencia=" + dependencia + '}';
+        return "Incidencia{" + "incidenciaId=" + incidenciaId + ", posicionEquipoDependencia=" + posicionEquipoDependencia + ", descripcion=" + descripcion + ", comentarioAdministrador=" + comentarioAdministrador + ", usuario=" + usuario + ", equipo=" + equipo + ", dependencia=" + dependencia + '}';
     }
+
 }

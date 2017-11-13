@@ -10,7 +10,7 @@ package incidenciascad;
  * @author ifontecha
  */
 public class Usuario {
-    private int usuarioId;
+    private Integer usuarioId;
     private String cuenta;
     private String nombre;
     private String apellido;
@@ -19,7 +19,7 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(int usuarioId, String cuenta, String nombre, String apellido, String departamento) {
+    public Usuario(Integer usuarioId, String cuenta, String nombre, String apellido, String departamento) {
         this.usuarioId = usuarioId;
         this.cuenta = cuenta;
         this.nombre = nombre;
@@ -27,11 +27,11 @@ public class Usuario {
         this.departamento = departamento;
     }
 
-    public int getUsuarioId() {
+    public Integer getUsuarioId() {
         return usuarioId;
     }
 
-    public void setUsuarioId(int usuarioId) {
+    public void setUsuarioId(Integer usuarioId) {
         this.usuarioId = usuarioId;
     }
 

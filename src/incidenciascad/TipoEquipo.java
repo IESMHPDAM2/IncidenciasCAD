@@ -10,24 +10,24 @@ package incidenciascad;
  * @author ifontecha
  */
 public class TipoEquipo {
-    private int tipòEquipoId;
+    private Integer tipòEquipoId;
     private String codigo;
     private String nombre;
 
     public TipoEquipo() {
     }
 
-    public TipoEquipo(int tipòEquipoId, String codigo, String nombre) {
+    public TipoEquipo(Integer tipòEquipoId, String codigo, String nombre) {
         this.tipòEquipoId = tipòEquipoId;
         this.codigo = codigo;
         this.nombre = nombre;
     }
 
-    public int getTipòEquipoId() {
+    public Integer getTipòEquipoId() {
         return tipòEquipoId;
     }
 
-    public void setTipòEquipoId(int tipòEquipoId) {
+    public void setTipòEquipoId(Integer tipòEquipoId) {
         this.tipòEquipoId = tipòEquipoId;
     }
 

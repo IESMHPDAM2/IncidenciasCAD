@@ -10,7 +10,7 @@ package incidenciascad;
  * @author ifontecha
  */
 public class ExcepcionIncidenciasCAD extends Exception {
-    private int codigoErrorSistema;
+    private Integer codigoErrorSistema;
     private String mensajeErrorSistema;
     private String mensajeErrorUsuario;
     private String sentenciaSQL;
@@ -18,18 +18,18 @@ public class ExcepcionIncidenciasCAD extends Exception {
     public ExcepcionIncidenciasCAD() {
     }
 
-    public ExcepcionIncidenciasCAD(int codigoErrorSistema, String mensajeErrorSistema, String mensajeErrorUsuario, String sentenciaSQL) {
+    public ExcepcionIncidenciasCAD(Integer codigoErrorSistema, String mensajeErrorSistema, String mensajeErrorUsuario, String sentenciaSQL) {
         this.codigoErrorSistema = codigoErrorSistema;
         this.mensajeErrorSistema = mensajeErrorSistema;
         this.mensajeErrorUsuario = mensajeErrorUsuario;
         this.sentenciaSQL = sentenciaSQL;
     }
 
-    public int getCodigoErrorSistema() {
+    public Integer getCodigoErrorSistema() {
         return codigoErrorSistema;
     }
 
-    public void setCodigoErrorSistema(int codigoErrorSistema) {
+    public void setCodigoErrorSistema(Integer codigoErrorSistema) {
         this.codigoErrorSistema = codigoErrorSistema;
     }
 

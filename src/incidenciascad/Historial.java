@@ -13,7 +13,7 @@ import java.util.Date;
  */
 public class Historial 
 {
-    private int historialId;
+    private Integer historialId;
     private Date fecha;
     private Incidencia incidencia;
     private Estado estado;
@@ -21,18 +21,18 @@ public class Historial
     public Historial() {
     }
 
-    public Historial(int historialId, Date fecha, Incidencia incidencia, Estado estado) {
+    public Historial(Integer historialId, Date fecha, Incidencia incidencia, Estado estado) {
         this.historialId = historialId;
         this.fecha = fecha;
         this.incidencia = incidencia;
         this.estado = estado;
     }
 
-    public int getHistorialId() {
+    public Integer getHistorialId() {
         return historialId;
     }
 
-    public void setHistorialId(int historialId) {
+    public void setHistorialId(Integer historialId) {
         this.historialId = historialId;
     }
 

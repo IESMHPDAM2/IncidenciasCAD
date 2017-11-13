@@ -7,7 +7,7 @@ package incidenciascad;
 
 public class Equipo {
 
-    private int equipoId;
+    private Integer equipoId;
     private String numeroEtiquetaConsejeria;
     private TipoEquipo tipoEquipo;
 
@@ -15,17 +15,17 @@ public class Equipo {
 
     }
 
-    public Equipo(int equipoId, String numeroEtiquetaConsejeria, TipoEquipo tipoEquipo) {
+    public Equipo(Integer equipoId, String numeroEtiquetaConsejeria, TipoEquipo tipoEquipo) {
         this.equipoId = equipoId;
         this.numeroEtiquetaConsejeria = numeroEtiquetaConsejeria;
         this.tipoEquipo = tipoEquipo;
     }
 
-    public int getEquipoId() {
+    public Integer getEquipoId() {
         return equipoId;
     }
 
-    public void setEquipoId(int equipoId) {
+    public void setEquipoId(Integer equipoId) {
         this.equipoId = equipoId;
     }
 

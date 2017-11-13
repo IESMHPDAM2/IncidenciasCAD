@@ -41,7 +41,7 @@ public class IncidenciasCAD {
         } catch (SQLException | NullPointerException ex) {}
        
     }
-    public int insertarDependencia(Dependencia dependencia) throws ExcepcionIncidenciasCAD {
+    public Integer insertarDependencia(Dependencia dependencia) throws ExcepcionIncidenciasCAD {
         String dml = "insert into dependencia(codigo,nombre) values (?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
@@ -67,7 +67,7 @@ public class IncidenciasCAD {
         }
     }
     
-    public int eliminarDependencia(int dependenciaId) throws ExcepcionIncidenciasCAD {
+    public int eliminarDependencia(Integer dependenciaId) throws ExcepcionIncidenciasCAD {
         String dml = "delete from dependencia where dependencia_id=?";
         PreparedStatement sentenciaPreparada = null;
         try {
@@ -90,11 +90,11 @@ public class IncidenciasCAD {
         }
     }
     
-    public int modificarDepartamento(int departamentoId, Departamento departamento) {
+    public int modificarDepartamento(Integer departamentoId, Departamento departamento) {
         return 0;
     }
     
-    public Departamento leerDepartamento(int departamentoId) {
+    public Departamento leerDepartamento(Integer departamentoId) {
         return null;
     }
     
