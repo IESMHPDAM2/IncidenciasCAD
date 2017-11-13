@@ -5,7 +5,6 @@
  */
 package prueba;
 
-import incidenciascad.Departamento;
 import incidenciascad.Dependencia;
 import incidenciascad.ExcepcionIncidenciasCAD;
 import incidenciascad.IncidenciasCAD;

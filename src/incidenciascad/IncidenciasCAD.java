@@ -37,6 +37,8 @@ public class IncidenciasCAD {
     private void cerrarConexion(Connection conexion, PreparedStatement sentenciaPreparada) {
         try {
            sentenciaPreparada.close();
+        } catch (SQLException | NullPointerException ex) {}
+        try {
            conexion.close();
         } catch (SQLException | NullPointerException ex) {}
        
