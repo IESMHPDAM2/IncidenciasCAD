@@ -19,14 +19,31 @@ public class Prueba {
      */
     public static void main(String[] args) {
         System.out.println("Hola");
-        Dependencia d = new Dependencia(0,"kkj","Aula 4034 de Informática");
+        Dependencia d = new Dependencia(null,"pp","ppito");
         try {
             IncidenciasCAD i = new IncidenciasCAD();
-            int r = i.insertarDependencia(d);
+            int r = i.modificarDependencia(8,d);
             System.out.println(r + "registros");
         } catch (ExcepcionIncidenciasCAD ex) {
             System.out.println(ex);
         }
+
+        try {
+            IncidenciasCAD i = new IncidenciasCAD();
+            System.out.println(i.leerEquipos());
+        } catch (ExcepcionIncidenciasCAD ex) {
+            System.out.println(ex);
+        }
+        
+//        System.out.println("Hola");
+//        Dependencia d = new Dependencia(0,"kkj","Aula 4034 de Informática");
+//        try {
+//            IncidenciasCAD i = new IncidenciasCAD();
+//            int r = i.insertarDependencia(d);
+//            System.out.println(r + "registros");
+//        } catch (ExcepcionIncidenciasCAD ex) {
+//            System.out.println(ex);
+//        }
         
         
 //        try {
