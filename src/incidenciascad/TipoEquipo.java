@@ -27,7 +27,7 @@ public class TipoEquipo {
         return tipòEquipoId;
     }
 
-    public void setTipòEquipoId(Integer tipòEquipoId) {
+    public void setTipoEquipoId(Integer tipòEquipoId) {
         this.tipòEquipoId = tipòEquipoId;
     }
 

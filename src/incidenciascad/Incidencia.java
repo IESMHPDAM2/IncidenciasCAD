@@ -5,6 +5,8 @@
  */
 package incidenciascad;
 
+import java.util.Date;
+
 /**
  *
  * @author usuario
@@ -14,6 +16,7 @@ public class Incidencia {
     private String posicionEquipoDependencia;
     private String descripcion;
     private String comentarioAdministrador;
+    private Date fechaEstadoActual;
     private Usuario usuario;
     private Equipo equipo;
     private Dependencia dependencia;
@@ -21,11 +24,12 @@ public class Incidencia {
     public Incidencia() {
     }
 
-    public Incidencia(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Usuario usuario, Equipo equipo, Dependencia dependencia) {
+    public Incidencia(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaEstadoActual, Usuario usuario, Equipo equipo, Dependencia dependencia) {
         this.incidenciaId = incidenciaId;
         this.posicionEquipoDependencia = posicionEquipoDependencia;
         this.descripcion = descripcion;
         this.comentarioAdministrador = comentarioAdministrador;
+        this.fechaEstadoActual = fechaEstadoActual;
         this.usuario = usuario;
         this.equipo = equipo;
         this.dependencia = dependencia;
@@ -63,6 +67,14 @@ public class Incidencia {
         this.comentarioAdministrador = comentarioAdministrador;
     }
 
+    public Date getFechaEstadoActual() {
+        return fechaEstadoActual;
+    }
+
+    public void setFechaEstadoActual(Date fechaEstadoActual) {
+        this.fechaEstadoActual = fechaEstadoActual;
+    }
+
     public Usuario getUsuario() {
         return usuario;
     }
@@ -89,7 +101,6 @@ public class Incidencia {
 
     @Override
     public String toString() {
-        return "Incidencia{" + "incidenciaId=" + incidenciaId + ", posicionEquipoDependencia=" + posicionEquipoDependencia + ", descripcion=" + descripcion + ", comentarioAdministrador=" + comentarioAdministrador + ", usuario=" + usuario + ", equipo=" + equipo + ", dependencia=" + dependencia + '}';
+        return "Incidencia{" + "incidenciaId=" + incidenciaId + ", posicionEquipoDependencia=" + posicionEquipoDependencia + ", descripcion=" + descripcion + ", comentarioAdministrador=" + comentarioAdministrador + ", fechaEstadoActual=" + fechaEstadoActual + ", usuario=" + usuario + ", equipo=" + equipo + ", dependencia=" + dependencia + '}';
     }
-
 }

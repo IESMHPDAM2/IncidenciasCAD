@@ -202,8 +202,41 @@ public class IncidenciasCAD {
      * @return Equipo a leer de la base de datos
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public Departamento leerEquipo(Integer equipoId) {
-        return null;
+    public Equipo leerEquipo(Integer equipoId) throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from tipo_equipo te, equipo e "
+                + "where te.tipo_equipo_id = e.tipo_equipo_id "
+                + "  and equipo_id = ?";
+        PreparedStatement sentenciaPreparada = null;
+        Equipo equipo = null;
+        TipoEquipo tipoEquipo = null;
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            sentenciaPreparada.setInt(1, equipoId);
+            ResultSet resultado = sentenciaPreparada.executeQuery();
+            while (resultado.next()) {
+                equipo = new Equipo();
+                equipo.setEquipoId(resultado.getInt("equipo_id"));
+                equipo.setNumeroEtiquetaConsejeria(resultado.getString("numero_etiqueta_consejeria"));
+                tipoEquipo = new TipoEquipo();
+                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
+                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
+                tipoEquipo.setNombre(resultado.getString("te.nombre"));
+                equipo.setTipoEquipo(tipoEquipo);
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            conexion.close();
+            return equipo;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    sentenciaPreparada.toString());
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
     }
 
     /**
@@ -228,7 +261,7 @@ public class IncidenciasCAD {
                 equipo.setEquipoId(resultado.getInt("equipo_id"));
                 equipo.setNumeroEtiquetaConsejeria(resultado.getString("numero_etiqueta_consejeria"));
                 tipoEquipo = new TipoEquipo();
-                tipoEquipo.setTipòEquipoId(resultado.getInt("te.tipo_equipo_id"));
+                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
                 tipoEquipo.setCodigo(resultado.getString("te.codigo"));
                 tipoEquipo.setNombre(resultado.getString("te.nombre"));
                 equipo.setTipoEquipo(tipoEquipo);
