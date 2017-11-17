@@ -30,7 +30,8 @@ public class Prueba {
 
         try {
             IncidenciasCAD i = new IncidenciasCAD();
-            System.out.println(i.leerEquipo(1));
+            System.out.println(i.leerEquipos("4",null,IncidenciasCAD.TIPO_EQUIPO,IncidenciasCAD.DESCENDENTE));
+//            System.out.println(i.leerEquipos("kk",null,null));
         } catch (ExcepcionIncidenciasCAD ex) {
             System.out.println(ex);
         }

@@ -20,11 +20,12 @@ public class Incidencia {
     private Usuario usuario;
     private Equipo equipo;
     private Dependencia dependencia;
+    private Estado estado;
 
     public Incidencia() {
     }
 
-    public Incidencia(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaEstadoActual, Usuario usuario, Equipo equipo, Dependencia dependencia) {
+    public Incidencia(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaEstadoActual, Usuario usuario, Equipo equipo, Dependencia dependencia, Estado estado) {
         this.incidenciaId = incidenciaId;
         this.posicionEquipoDependencia = posicionEquipoDependencia;
         this.descripcion = descripcion;
@@ -33,6 +34,7 @@ public class Incidencia {
         this.usuario = usuario;
         this.equipo = equipo;
         this.dependencia = dependencia;
+        this.estado = estado;
     }
 
     public Integer getIncidenciaId() {
@@ -99,8 +101,17 @@ public class Incidencia {
         this.dependencia = dependencia;
     }
 
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
+
     @Override
     public String toString() {
-        return "Incidencia{" + "incidenciaId=" + incidenciaId + ", posicionEquipoDependencia=" + posicionEquipoDependencia + ", descripcion=" + descripcion + ", comentarioAdministrador=" + comentarioAdministrador + ", fechaEstadoActual=" + fechaEstadoActual + ", usuario=" + usuario + ", equipo=" + equipo + ", dependencia=" + dependencia + '}';
+        return "Incidencia{" + "incidenciaId=" + incidenciaId + ", posicionEquipoDependencia=" + posicionEquipoDependencia + ", descripcion=" + descripcion + ", comentarioAdministrador=" + comentarioAdministrador + ", fechaEstadoActual=" + fechaEstadoActual + ", usuario=" + usuario + ", equipo=" + equipo + ", dependencia=" + dependencia + ", estado=" + estado + '}';
     }
+
 }

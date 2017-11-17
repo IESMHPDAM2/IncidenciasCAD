@@ -10,25 +10,25 @@ package incidenciascad;
  * @author ifontecha
  */
 public class TipoEquipo {
-    private Integer tipòEquipoId;
+    private Integer tipoEquipoId;
     private String codigo;
     private String nombre;
 
     public TipoEquipo() {
     }
 
-    public TipoEquipo(Integer tipòEquipoId, String codigo, String nombre) {
-        this.tipòEquipoId = tipòEquipoId;
+    public TipoEquipo(Integer tipoEquipoId, String codigo, String nombre) {
+        this.tipoEquipoId = tipoEquipoId;
         this.codigo = codigo;
         this.nombre = nombre;
     }
 
-    public Integer getTipòEquipoId() {
-        return tipòEquipoId;
+    public Integer getTipoEquipoId() {
+        return tipoEquipoId;
     }
 
-    public void setTipoEquipoId(Integer tipòEquipoId) {
-        this.tipòEquipoId = tipòEquipoId;
+    public void setTipoEquipoId(Integer tipoEquipoId) {
+        this.tipoEquipoId = tipoEquipoId;
     }
 
     public String getCodigo() {
@@ -49,7 +49,7 @@ public class TipoEquipo {
 
     @Override
     public String toString() {
-        return "TipoEquipo{" + "tip\u00f2EquipoId=" + tipòEquipoId + ", codigo=" + codigo + ", nombre=" + nombre + '}';
+        return "TipoEquipo{" + "tip\u00f2EquipoId=" + tipoEquipoId + ", codigo=" + codigo + ", nombre=" + nombre + '}';
     }
 
 }
