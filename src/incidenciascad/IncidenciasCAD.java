@@ -41,7 +41,7 @@ public class IncidenciasCAD {
     public IncidenciasCAD() throws ExcepcionIncidenciasCAD {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conexion = DriverManager.getConnection("jdbc:mysql://localhost/incidencias?user=root&password=root");
+            conexion = DriverManager.getConnection("jdbc:mysql://localhost/incidencias?user=incidencias&password=incidencias");
         } catch (ClassNotFoundException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
                     -1,
@@ -1450,39 +1450,59 @@ public class IncidenciasCAD {
         }
     }
     
-    /**
-     * Muestra el contenido completo de la tabla incidencias
+/**
+     * Lee las incidencias filtradas de la base de datos
      * @author Víctor Bolado Obregón
      * @return Una lista de incidencias
      * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<Incidencia> leerIncidencias() throws ExcepcionIncidenciasCAD {
-        String dql = "select * from incidencia";
+    public ArrayList<Incidencia> leerIncidencias(String dql) throws ExcepcionIncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         ArrayList<Incidencia> listaIncidencias = new ArrayList();
         Incidencia incidencia = null;
         Equipo equipo = new Equipo();
+        TipoEquipo tipoEquipo = new TipoEquipo();
         Usuario usuario = new Usuario();
         Dependencia dependencia = new Dependencia();
         Estado estado = new Estado();
         try {
             sentenciaPreparada = conexion.prepareStatement(dql);
-            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
+            ResultSet resultado = sentenciaPreparada.executeQuery();
             while (resultado.next()) {
+                //INCIDENCIA
                 incidencia = new Incidencia();
-                incidencia.setIncidenciaId(resultado.getInt("incidencia_id"));
-                incidencia.setPosicionEquipoDependencia(resultado.getString("posicion_equipo_dependencia"));
-                incidencia.setDescripcion(resultado.getString("descripcion"));
-                incidencia.setComentarioAdministrador(resultado.getString("comentario_administrador"));
-                incidencia.setFechaEstadoActual(resultado.getDate("fecha_estado_actual"));
-                usuario.setUsuarioId(resultado.getInt("usuario_id"));
+                incidencia.setIncidenciaId(resultado.getInt("i.incidencia_id"));
+                incidencia.setPosicionEquipoDependencia(resultado.getString("i.posicion_equipo_dependencia"));
+                incidencia.setDescripcion(resultado.getString("i.descripcion"));
+                incidencia.setComentarioAdministrador(resultado.getString("i.comentario_administrador"));
+                incidencia.setFechaEstadoActual(resultado.getDate("i.fecha_estado_actual"));
+                //USUARIO
+                usuario.setUsuarioId(resultado.getInt("u.usuario_id"));
+                usuario.setCuenta(resultado.getString("u.cuenta"));
+                usuario.setNombre(resultado.getString("u.nombre"));
+                usuario.setApellido(resultado.getString("u.apellido"));
+                usuario.setDepartamento(resultado.getString("u.departamento"));
                 incidencia.setUsuario(usuario);
-                equipo.setEquipoId(resultado.getInt("equipo_id"));
+                //TIPO EQUIPO
+                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
+                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
+                tipoEquipo.setNombre(resultado.getString("te.nombre"));
+                //EQUIPO
+                equipo.setEquipoId(resultado.getInt("e.equipo_id"));
+                equipo.setNumeroEtiquetaConsejeria(resultado.getString("e.numero_etiqueta_consejeria"));
+                equipo.setTipoEquipo(tipoEquipo);
                 incidencia.setEquipo(equipo);
-                dependencia.setDependenciaId(resultado.getInt("dependencia_id"));
+                //DEPENDENCIA
+                dependencia.setDependenciaId(resultado.getInt("d.dependencia_id"));
+                dependencia.setCodigo(resultado.getString("d.codigo"));
+                dependencia.setNombre(resultado.getString("d.nombre"));
                 incidencia.setDependencia(dependencia);
-                estado.setEstadoId(resultado.getInt("estado_id"));
+                //ESTADO
+                estado.setEstadoId(resultado.getInt("es.estado_id"));
+                estado.setCodigo(resultado.getString("es.codigo"));
+                estado.setNombre(resultado.getString("es.nombre"));
                 incidencia.setEstado(estado);
+                
                 listaIncidencias.add(incidencia);
             }
             resultado.close();
@@ -1499,45 +1519,87 @@ public class IncidenciasCAD {
             throw e;
         }
     }
-    
+
     /**
-     * Muestra una incidencia de la tabla incidencias
+     * Lee las incidencias de la base de datos
      * @author Víctor Bolado Obregón
      * @return Una lista de incidencias
-     * @param incidenciaId identificador de la incidencia a mostrar
+     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+     */
+    public ArrayList<Incidencia> leerIncidencias() throws ExcepcionIncidenciasCAD {
+        String dql = "select * from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
+            "where i.USUARIO_ID=u.USUARIO_ID " +
+            "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
+            "and e.TIPO_EQUIPO_ID=te.TIPO_EQUIPO_ID " +
+            "and i.EQUIPO_ID=e.EQUIPO_ID " +
+            "and i.ESTADO_ID=es.ESTADO_ID";
+        return leerIncidencias(dql);
+    }
+    
+    /**
+     * Lee una incidencia de la base de datos
+     * @author Víctor Bolado Obregón
+     * @param incidenciaId Identificardor de la incidencia
+     * @return Una lista de incidencias
      * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
      */
     public Incidencia leerIncidencia(int incidenciaId) throws ExcepcionIncidenciasCAD {
-        String dql = "select * from incidencia where incidencia_id=" + incidenciaId;
+        String dql = "select * from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
+            "where i.USUARIO_ID=u.USUARIO_ID " +
+            "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
+            "and e.TIPO_EQUIPO_ID=te.TIPO_EQUIPO_ID " +
+            "and i.EQUIPO_ID=e.EQUIPO_ID " +
+            "and i.ESTADO_ID=es.ESTADO_ID "
+                + "and i.incidencia_id = " + incidenciaId;
         PreparedStatement sentenciaPreparada = null;
         Incidencia incidencia = null;
         Equipo equipo = new Equipo();
+        TipoEquipo tipoEquipo = new TipoEquipo();
         Usuario usuario = new Usuario();
         Dependencia dependencia = new Dependencia();
         Estado estado = new Estado();
         try {
             sentenciaPreparada = conexion.prepareStatement(dql);
-            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
+            ResultSet resultado = sentenciaPreparada.executeQuery();
             while (resultado.next()) {
+                //INCIDENCIA
                 incidencia = new Incidencia();
-                incidencia.setIncidenciaId(resultado.getInt("incidencia_id"));
-                incidencia.setPosicionEquipoDependencia(resultado.getString("posicion_equipo_dependencia"));
-                incidencia.setDescripcion(resultado.getString("descripcion"));
-                incidencia.setComentarioAdministrador(resultado.getString("comentario_administrador"));
-                incidencia.setFechaEstadoActual(resultado.getDate("fecha_estado_actual"));
-                usuario.setUsuarioId(resultado.getInt("usuario_id"));
+                incidencia.setIncidenciaId(resultado.getInt("i.incidencia_id"));
+                incidencia.setPosicionEquipoDependencia(resultado.getString("i.posicion_equipo_dependencia"));
+                incidencia.setDescripcion(resultado.getString("i.descripcion"));
+                incidencia.setComentarioAdministrador(resultado.getString("i.comentario_administrador"));
+                incidencia.setFechaEstadoActual(resultado.getDate("i.fecha_estado_actual"));
+                //USUARIO
+                usuario.setUsuarioId(resultado.getInt("u.usuario_id"));
+                usuario.setCuenta(resultado.getString("u.cuenta"));
+                usuario.setNombre(resultado.getString("u.nombre"));
+                usuario.setApellido(resultado.getString("u.apellido"));
+                usuario.setDepartamento(resultado.getString("u.departamento"));
                 incidencia.setUsuario(usuario);
-                equipo.setEquipoId(resultado.getInt("equipo_id"));
+                //TIPO EQUIPO
+                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
+                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
+                tipoEquipo.setNombre(resultado.getString("te.nombre"));
+                //EQUIPO
+                equipo.setEquipoId(resultado.getInt("e.equipo_id"));
+                equipo.setNumeroEtiquetaConsejeria(resultado.getString("e.numero_etiqueta_consejeria"));
+                equipo.setTipoEquipo(tipoEquipo);
                 incidencia.setEquipo(equipo);
-                dependencia.setDependenciaId(resultado.getInt("dependencia_id"));
+                //DEPENDENCIA
+                dependencia.setDependenciaId(resultado.getInt("d.dependencia_id"));
+                dependencia.setCodigo(resultado.getString("d.codigo"));
+                dependencia.setNombre(resultado.getString("d.nombre"));
                 incidencia.setDependencia(dependencia);
-                estado.setEstadoId(resultado.getInt("estado_id"));
+                //ESTADO
+                estado.setEstadoId(resultado.getInt("es.estado_id"));
+                estado.setCodigo(resultado.getString("es.codigo"));
+                estado.setNombre(resultado.getString("es.nombre"));
                 incidencia.setEstado(estado);
             }
             resultado.close();
             sentenciaPreparada.close();
             conexion.close();
-            return incidencia;       
+            return incidencia;         
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
                     ex.getErrorCode(),
@@ -1548,6 +1610,102 @@ public class IncidenciasCAD {
             throw e;
         }
     }
+    
+//    /**
+//     * Lee las incidencias filtradas de la base de datos
+//     * @author Víctor Bolado Obregón
+//     * @return Una lista de incidencias
+//     * @param posicionEquipoDependencia posicion del equipo en la dependencia
+//     * @param descripcion descripción de la incidencia
+//     * @param comentarioAdministrador comentario del administrador para la incidencia
+//     * @param fechaEstadoActual fecha del estado de la incidencia
+//     * @param usuarioID identificador del usuario
+//     * @param equipoID identificador del equipo
+//     * @param dependenciaID identificador de la dependencia
+//     * @param estadoID identificador del estado
+//     * @param criterioOrden numero para indicar el orden en que se va a mostrar
+//     * @param orden numero que indica si el orden es ascendente o descendente
+//     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+//     */
+//    public ArrayList<Incidencia> leerIncidencias(String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaEstadoActual, Integer usuarioID, Integer equipoID, Integer dependenciaID, Integer estadoID, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+//        String dql = "select i.*,u.*,te.*,e.*,d.*,es.* from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
+//            "where i.USUARIO_ID=u.USUARIO_ID " +
+//            "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
+//            "and e.TIPO_EQUIPO_ID=te.TIPO_EQUIPO_ID " +
+//            "and i.EQUIPO_ID=e.EQUIPO_ID " +
+//            "and i.ESTADO_ID=es.ESTADO_ID";
+//        
+//        if (posicionEquipoDependencia != null) dql = dql + " and posicion_equipo_dependencia like '%" + posicionEquipoDependencia + "%'";
+//        if (descripcion != null) dql = dql + " and descripcion like '%" + descripcion + "%'";
+//        if (comentarioAdministrador != null) dql = dql + " and comentario_administrador like '%" + comentarioAdministrador + "%'";
+//        if (fechaEstadoActual != null)
+//        {
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//            dql = dql + " and date_format(i.FECHA_ESTADO_ACTUAL, \"%Y-%m-%d\") like '%" + sdf.format(fechaEstadoActual) + "%'";
+//        }
+//        if (usuarioID != null) dql = dql + " and usuario_id like '%" + usuarioID + "%'";
+//        if (equipoID != null) dql = dql + " and equipo_id like '%" + equipoID + "%'";
+//        if (dependenciaID !=null) dql = dql + " and dependencia_id like '%" + dependenciaID + "%'";
+//        if (estadoID != null) dql = dql + " and estado_id like '%" + estadoID + "%'";
+//        
+//        if (criterioOrden == POSICION_EQUIPO_DEPENDENCIA) 
+//        {
+//            dql = dql + " order by posicion_equipo_dependencia";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == DESCRIPCION) 
+//        {
+//            dql = dql + " order by descripcion";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == COMENTARIO_ADMINISTRADOR) 
+//        {
+//            dql = dql + " order by comentario_administrador";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == FECHA_ESTADO_ACTUAL) 
+//        {
+//            dql = dql + " order by fecha_estado_actual";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == USUARIO_ID) 
+//        {
+//            dql = dql + " order by usuario_id";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == EQUIPO_ID) 
+//        {
+//            dql = dql + " order by equipo_id";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == DEPENDENCIA_ID) 
+//        {
+//            dql = dql + " order by dependencia_id";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == ESTADO_ID) 
+//        {
+//            dql = dql + " order by estado_id";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        return leerIncidencias(dql);
+//    }
+    
     /**
      * Inserta un dato historico en la base de datos
      * @author Diego Fernández Díaz
