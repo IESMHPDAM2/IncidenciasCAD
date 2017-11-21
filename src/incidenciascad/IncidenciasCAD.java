@@ -6,7 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Clase prinjcipal del componenete de acceso a datos especializado en acceder
@@ -20,9 +22,17 @@ public class IncidenciasCAD {
     public static Integer ASCENDENTE = 1;
     public static Integer DESCENDENTE = 2;
     public static Integer NUMERO_ETIQUETA_CONSEJERIA = 3;
-    public static Integer TIPO_EQUIPO = 4;
-    
-    
+    public static Integer CUENTA = 5;
+    public static Integer NOMBRE = 6;
+    public static Integer APELLIDO = 7;
+    public static Integer DEPARTAMENTO = 8;
+    public static Integer CODIGO_TIPO_EQUIPO = 9;
+    public static Integer NOMBRE_TIPO_EQUIPO = 10;
+    public static Integer NOMBRE_ESTADO = 12;
+    public static Integer CODIGO_ESTADO = 13;
+    public static Integer FECHA = 15;
+    public static Integer INCIDENCIA_ID = 16;
+    public static Integer ESTADO_HISTORIAL_ID = 17;
     /**
      * Constructor vacío
      * @author Ignacio Fontecha Hernández
@@ -185,16 +195,79 @@ public class IncidenciasCAD {
         }
     }
     
-    public Departamento leerDependencia(Integer dependenciaId) {
-        return null;
+    /**
+     * Lee una dependencia de la base de datos
+     * @author Marcos González Fernández
+     * @param dependenciaId Identificador de la dependencia a leer
+     * @return La dependencia a leer
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public Dependencia leerDependencia(Integer dependenciaId)throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from dependencias d "
+                + "where dependencia_id = ?";                
+        PreparedStatement sentenciaPreparada = null;       
+        Dependencia dependencia = null;
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            sentenciaPreparada.setInt(1,dependenciaId);
+            ResultSet resultado = sentenciaPreparada.executeQuery();
+            while (resultado.next()) {
+                dependencia = new Dependencia();
+                dependencia.setDependenciaId(resultado.getInt("dependencia_id"));
+                dependencia.setCodigo(resultado.getString("codigo"));
+                dependencia.setNombre(resultado.getString("nombre"));
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            conexion.close();
+            return dependencia;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    sentenciaPreparada.toString());
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
     }
     
-    public ArrayList<Dependencia> leerDependencias() {
-        return null;
-    }
-    
-    public ArrayList<Departamento> leerDependencias(String filtroCodigo, String filtroNombre, String orden) {
-        return null;
+    /**
+     * Lee todas las dependencias de la base de datos
+     * @author Marcos González Fernández
+     * @return Lista de todas las dependencias
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public ArrayList<Dependencia> leerDependencias() throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from dependencias d ";                
+        PreparedStatement sentenciaPreparada = null;
+        ArrayList<Dependencia> listaDependencia = new ArrayList();
+        Dependencia dependencia = null;
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            ResultSet resultado = sentenciaPreparada.executeQuery();
+            while (resultado.next()) {
+                dependencia = new Dependencia();
+                dependencia.setDependenciaId(resultado.getInt("dependencia_id"));
+                dependencia.setCodigo(resultado.getString("codigo"));
+                dependencia.setNombre(resultado.getString("nombre"));
+                listaDependencia.add(dependencia);
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            conexion.close();
+            return listaDependencia;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    dql);
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
     }
 
     /**
@@ -398,7 +471,77 @@ public class IncidenciasCAD {
         }
     }
 
-/**
+    /**
+     * Lee todos los usuarios de la base de datos
+     * @author Óscar Barahona Ortega
+     * @param cuenta
+     * @param nombre
+     * @param apellido
+     * @param departamento
+     * @param criterioOrden
+     * @param orden
+     * @return Lista con todos los usuarios de la base de datos
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public ArrayList<Usuario> leerUsuarios(String cuenta, String nombre, String apellido, String departamento, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from usuario "
+                + "where 1=1";
+        if (cuenta != null) dql = dql + " and cuenta like '%" + cuenta + "%'";
+        if (nombre != null) dql = dql + " and nombre like '%" + nombre + "%'";
+        if (apellido != null) dql = dql + " and apellido like '%" + apellido + "%'";
+        if (departamento != null) dql = dql + " and departamento like '%" + departamento + "%'";
+        if (criterioOrden == CUENTA) {
+            dql = dql + " order by CUENTA";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        if (criterioOrden == NOMBRE) {
+            dql = dql + " order by nombre";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        if (criterioOrden == APELLIDO) {
+            dql = dql + " order by apellido";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        if (criterioOrden == DEPARTAMENTO) {
+            dql = dql + " order by departamento";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        PreparedStatement sentenciaPreparada = null;
+        ArrayList<Usuario> listaUsuarios = new ArrayList();
+        Usuario usuario = null;
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
+            while (resultado.next()) {
+                usuario = new Usuario();
+                usuario.setUsuarioId(resultado.getInt("usuario_id"));
+                usuario.setCuenta(resultado.getString("cuenta"));
+                usuario.setNombre(resultado.getString("nombre"));
+                usuario.setApellido(resultado.getString("apellido"));
+                usuario.setDepartamento(resultado.getString("departamento"));
+                listaUsuarios.add(usuario);
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            conexion.close();
+            return listaUsuarios;          
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    dql);
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
+    }
+    
+    /**
      * Inserta un tipo de equipo en la base de datos
      * @author Ramon Tezanos San Emeterio
      * @param tipoEquipo Datos de la dependencia a insertar
@@ -589,6 +732,58 @@ public class IncidenciasCAD {
         }
     }
     
+    /**
+     * @author Ramon Tezanos San Emeterio
+     * @param codigo Recibe el codigo del tipo de equipo o null en caso de no querer filtrar por ese criterio
+     * @param nombre Recibe el nombre del tipo de equipo o null en caso de no querer filtrar por ese criterio
+     * @param criterioOrden Recibe el criterio por el cual se quiere ordenar la selección obtenida
+     * @param orden Recibe la forma en la que se quiere ordenar, ascendentemenete o descendentemente
+     * @return Devuelve la lista con todos los equipos de la base de datos una vez filtrado
+     * @throws ExcepcionIncidenciasCAD 
+     */
+     public ArrayList<TipoEquipo> leerTipoEquipo(String codigo, String nombre, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from tipo_equipo te";
+        if(codigo != null || nombre != null)
+        if (codigo != null) dql = dql + " and codigo like '%" + codigo + "%'";
+        if (nombre != null) dql = dql + " and nombre like '%" + nombre + "%'";
+        if (criterioOrden == NOMBRE_TIPO_EQUIPO) {
+            dql = dql + " order by te.nombre";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        if (criterioOrden == CODIGO_TIPO_EQUIPO) {
+            dql = dql + " order by te.codigo";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }PreparedStatement sentenciaPreparada = null;
+        ArrayList<TipoEquipo> listaTipoEquipos = new ArrayList(); 
+        TipoEquipo tipoEquipo = null;
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
+            while (resultado.next()) {
+                tipoEquipo = new TipoEquipo();
+                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
+                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
+                tipoEquipo.setNombre(resultado.getString("te.nombre"));                
+                listaTipoEquipos.add(tipoEquipo);
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            conexion.close();
+            return listaTipoEquipos;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    dql);
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
+    }
+     
     /**
      * Inserta un equipo en la base de datos
      * @author Óscar Barahona Ortega
@@ -821,7 +1016,7 @@ public class IncidenciasCAD {
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
-        if (criterioOrden == TIPO_EQUIPO) {
+        if (criterioOrden == CODIGO_TIPO_EQUIPO) {
             dql = dql + " order by te.codigo";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
@@ -859,7 +1054,254 @@ public class IncidenciasCAD {
         }
     }
     
- /**
+    /**
+     * Inserta un estado en la base de datos
+     * @author Marcos González Fernández
+     * @param estado Datos de estado a insertar
+     * @return Cantidad de registros insertados
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public Integer insertarEstado(Estado estado) throws ExcepcionIncidenciasCAD {
+        String dml = "insert into estado(codigo,nombre) values (?,?)";
+        PreparedStatement sentenciaPreparada = null;
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dml);
+            sentenciaPreparada.setString(1, estado.getCodigo());
+            sentenciaPreparada.setString(2, estado.getNombre());            
+            int registrosAfectados = sentenciaPreparada.executeUpdate();
+            sentenciaPreparada.close();
+            conexion.close();
+            return registrosAfectados;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    null,
+                    sentenciaPreparada.toString());
+            switch (ex. getErrorCode()) {
+                case 1048:  
+                    e.setMensajeErrorUsuario("El código y nombre del estado son obligatorios");
+                    break;
+                case 1062:  
+                    e.setMensajeErrorUsuario("El código y/o nombre del estado ya existen y no se pueden repetir");
+                    break;
+                default:    
+                    e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
+                    break;
+            }
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
+    }
+    
+    /**
+     * Elimina un estado de la base de datos
+     * @author Marcos González Fernández
+     * @param estadoId Identificador del estado a eliminar
+     * @return Cantidad de registros eliminados
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public int eliminarEstado(Integer estadoId) throws ExcepcionIncidenciasCAD {
+        String dml = "delete from estado where estado_id = ?";
+        PreparedStatement sentenciaPreparada = null;
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dml);
+            sentenciaPreparada.setInt(1, estadoId);
+            int registrosAfectados = sentenciaPreparada.executeUpdate();
+            sentenciaPreparada.close();
+            conexion.close();
+            return registrosAfectados;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    null,
+                    sentenciaPreparada.toString());
+            switch (ex. getErrorCode()) {
+                case 1451:  
+                    e.setMensajeErrorUsuario("No se puede eliminar el estado ya que tiene historiales asociados");
+                    break;
+                default:    
+                    e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
+                    break;
+            }
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
+    }
+    
+    /**
+     * Modifica un estado de la base de datos
+     * @author Marcos González Fernández
+     * @param estadoId Identificador del estado a modificar
+     * @param estado Nuevos datos del estado a modificar
+     * @return Cantidad de registros modificados
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public int modificarEstado(Integer estadoId, Estado estado) throws ExcepcionIncidenciasCAD {
+        String dml = "update estado set codigo = ?, nombre = ? where estado_id = ?";
+        PreparedStatement sentenciaPreparada = null;
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dml);
+            sentenciaPreparada.setString(1, estado.getCodigo());
+            sentenciaPreparada.setString(2, estado.getNombre());
+            sentenciaPreparada.setInt(3, estadoId);
+            int registrosAfectados = sentenciaPreparada.executeUpdate();
+            sentenciaPreparada.close();
+            conexion.close();
+            return registrosAfectados;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    null,
+                    sentenciaPreparada.toString());
+            switch (ex. getErrorCode()) {
+                case 1048:  
+                    e.setMensajeErrorUsuario("El código y nombre  del estado son obligatorios");
+                    break;
+                case 1062:  
+                    e.setMensajeErrorUsuario("El código y/o nombre del estado ya existen y no se pueden repetir");
+                    break;
+                default:    
+                    e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
+                    break;
+            }
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
+    }
+
+    /**
+     * Lee un estado de la base de datos
+     * @author Marcos González Fernández
+     * @param estadoId Identificador del estado a leer
+     * @return Estado a leer
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public Estado leerEstado(Integer estadoId) throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from estado e "
+                +"where estado_id = ?";                
+        PreparedStatement sentenciaPreparada = null;       
+        Estado estado = null;
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            sentenciaPreparada.setInt(1,estadoId);
+            ResultSet resultado = sentenciaPreparada.executeQuery();
+            while (resultado.next()) {
+                estado = new Estado();
+                estado.setEstadoId(resultado.getInt("estado_id"));
+                estado.setCodigo(resultado.getString("codigo"));
+                estado.setNombre(resultado.getString("nombre"));
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            conexion.close();
+            return estado;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    sentenciaPreparada.toString());
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
+    }   
+    
+    /**
+     * Lee todos los estados de la base de datos
+     * @author Marcos González Fernández
+     * @return Lista de todos los estados
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public ArrayList<Estado> leerEstados() throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from estado e ";                
+        PreparedStatement sentenciaPreparada = null;
+        ArrayList<Estado> listaEstados = new ArrayList();
+        Estado estado = null;
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
+            while (resultado.next()) {
+                estado = new Estado();
+                estado.setEstadoId(resultado.getInt("estado_id"));
+                estado.setCodigo(resultado.getString("codigo"));
+                estado.setNombre(resultado.getString("nombre"));
+                listaEstados.add(estado);
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            conexion.close();
+            return listaEstados;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    dql);
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
+    }    
+    
+    /**
+     * @author Marcos Gonzalez Fernandez
+     * @param codigo Recibe el codigo de estado o null en caso de no querer filtrar por ese criterio
+     * @param nombre Recibe el nombre de estado o null en caso de no querer filtrar por ese criterio
+     * @param criterioOrden Recibe el criterio por el cual se quiere ordenar la selección obtenida
+     * @param orden Recibe la forma en la que se quiere ordenar, ascendentemenete o descendentemente
+     * @return Devuelve la lista con todos los estados de la base de datos una vez filtrado
+     * @throws ExcepcionIncidenciasCAD 
+     */
+    public ArrayList<Estado> leerEstados(String codigo, String nombre, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from estado e ";   
+        if (codigo !=null || nombre !=null)
+        if (codigo !=null) dql = dql + " and codigo like '%" + codigo + "%'";
+        if (nombre !=null) dql = dql + " and nombre like '%" + nombre + "%'";
+        if (criterioOrden == NOMBRE_ESTADO){
+            dql = dql + " order by e.nombre";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        if (criterioOrden == CODIGO_ESTADO){
+            dql = dql + " order by e.codigo";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        } PreparedStatement sentenciaPreparada = null;
+        ArrayList<Estado> listaEstados = new ArrayList();
+        Estado estado = null;   
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
+            while (resultado.next()) {
+                estado = new Estado();
+                estado.setEstadoId(resultado.getInt("e.estado_id"));
+                estado.setCodigo(resultado.getString("e.codigo"));
+                estado.setNombre(resultado.getString("e.nombre"));
+                listaEstados.add(estado);
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            conexion.close();
+            return listaEstados;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    dql);
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
+        
+        
+    }
+    
+    /**
      * Inserta una incidencia en la base de datos
      * @author Víctor Bolado Obregón
      * @param incidencia Datos de la incidencia a insertar
@@ -1222,15 +1664,86 @@ public class IncidenciasCAD {
         }
     }
     
-    /**
+/**
      * Lee un dato historico de la base de datos
      * @author Diego Fernandez Diaz
      * @param historialId Identificador del dato historico a leer
-     * @return dato historico a leer de la base de datos
+     * @return Lista un dato historico a leer de la base de datos
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public Historial leerHistorial(Integer historialId) {
-        return null;
+    public Historial leerHistorial(Integer historialId) throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from historial hi,incidencia inc,estado es,estado ies, "
+                + "usuario us,equipo eq,dependencia de,tipo_equipo teq "
+                + "where hi.incidencia_id=inc.incidencia_id "
+                + "and hi.estado_id=es.estado_id "
+                + "and inc.usuario_id=us.usuario_id "
+                + "and inc.equipo_id=eq.equipo_id "
+                + "and inc.dependencia_id=de.dependencia_id "
+                + "and inc.estado_id=ies.estado_id "
+                + "and eq.tipo_equipo_id=teq.tipo_equipo_id "
+                + "and hi.historial_id="+historialId;
+        PreparedStatement sentenciaPreparada = null;
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
+            Historial historial =null;
+            while (resultado.next()) {
+                TipoEquipo tipoEquipo = new TipoEquipo();
+                tipoEquipo.setTipoEquipoId(resultado.getInt("teq.tipo_equipo_id"));
+                tipoEquipo.setCodigo(resultado.getString("teq.codigo"));
+                tipoEquipo.setNombre(resultado.getString("teq.nombre"));
+                Dependencia dependencia = new Dependencia();
+                dependencia.setDependenciaId(resultado.getInt("de.dependencia_id"));
+                dependencia.setCodigo(resultado.getString("de.codigo"));
+                dependencia.setNombre(resultado.getString("de.nombre"));
+                Usuario usuario = new Usuario();
+                usuario.setUsuarioId(resultado.getInt("us.usuario_id"));
+                usuario.setCuenta(resultado.getString("us.cuenta"));
+                usuario.setNombre(resultado.getString("us.nombre"));
+                usuario.setApellido(resultado.getString("us.apellido"));
+                usuario.setDepartamento(resultado.getString("us.departamento"));
+                Equipo equipo = new Equipo();
+                equipo.setEquipoId(resultado.getInt("eq.equipo_id"));
+                equipo.setNumeroEtiquetaConsejeria(resultado.getString("eq.numero_etiqueta_consejeria"));
+                equipo.setTipoEquipo(tipoEquipo);
+                Estado estadoIncidencia = new Estado();
+                estadoIncidencia.setEstadoId(resultado.getInt("ies.estado_id"));
+                estadoIncidencia.setCodigo(resultado.getString("ies.codigo"));
+                estadoIncidencia.setNombre(resultado.getString("ies.nombre"));
+                Incidencia incidencia = new Incidencia();
+                incidencia.setIncidenciaId(resultado.getInt("inc.incidencia_id"));
+                incidencia.setPosicionEquipoDependencia(resultado.getString("inc.posicion_equipo_dependencia"));
+                incidencia.setDescripcion(resultado.getString("inc.descripcion"));
+                incidencia.setComentarioAdministrador(resultado.getString("inc.comentario_administrador"));
+                incidencia.setFechaEstadoActual(resultado.getDate("inc.fecha_estado_actual"));
+                incidencia.setUsuario(usuario);
+                incidencia.setEquipo(equipo);
+                incidencia.setDependencia(dependencia);
+                incidencia.setEstado(estadoIncidencia);
+                Estado estadoHistorial = new Estado();
+                estadoHistorial.setEstadoId(resultado.getInt("es.estado_id"));
+                estadoHistorial.setCodigo(resultado.getString("es.codigo"));
+                estadoHistorial.setNombre(resultado.getString("es.nombre"));
+                historial = new Historial();
+                historial.setHistorialId(resultado.getInt("hi.historial_id"));
+                historial.setFecha(resultado.getDate("hi.fecha"));
+                historial.setIncidencia(incidencia);
+                historial.setEstado(estadoHistorial);
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            conexion.close();
+            return historial;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    dql);
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
     }
 
     /**
@@ -1241,25 +1754,62 @@ public class IncidenciasCAD {
      */
     public ArrayList<Historial> leerHistorial() throws ExcepcionIncidenciasCAD {
         String dql = "select * "
-                + "from historial";
+                + "from historial hi,incidencia inc,estado es,estado ies, "
+                + "usuario us,equipo eq,dependencia de,tipo_equipo teq "
+                + "where hi.incidencia_id=inc.incidencia_id "
+                + "and hi.estado_id=es.estado_id "
+                + "and inc.usuario_id=us.usuario_id "
+                + "and inc.equipo_id=eq.equipo_id "
+                + "and inc.dependencia_id=de.dependencia_id "
+                + "and inc.estado_id=ies.estado_id "
+                + "and eq.tipo_equipo_id=teq.tipo_equipo_id";
         PreparedStatement sentenciaPreparada = null;
         ArrayList<Historial> listaHistorial = new ArrayList();
-        Historial historial = null;
-        Incidencia incidencia = null;
-        Estado estado = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dql);
             ResultSet resultado = sentenciaPreparada.executeQuery(dql);
             while (resultado.next()) {
-                historial = new Historial();
-                historial.setHistorialId(resultado.getInt("historial_id"));
-                historial.setFecha(resultado.getDate("fecha"));
-                incidencia = new Incidencia();
-                estado = new Estado();
-                incidencia.setIncidenciaId(resultado.getInt("incidencia_id"));
-                estado.setEstadoId(resultado.getInt("estado_id"));
+                TipoEquipo tipoEquipo = new TipoEquipo();
+                tipoEquipo.setTipoEquipoId(resultado.getInt("teq.tipo_equipo_id"));
+                tipoEquipo.setCodigo(resultado.getString("teq.codigo"));
+                tipoEquipo.setNombre(resultado.getString("teq.nombre"));
+                Dependencia dependencia = new Dependencia();
+                dependencia.setDependenciaId(resultado.getInt("de.dependencia_id"));
+                dependencia.setCodigo(resultado.getString("de.codigo"));
+                dependencia.setNombre(resultado.getString("de.nombre"));
+                Usuario usuario = new Usuario();
+                usuario.setUsuarioId(resultado.getInt("us.usuario_id"));
+                usuario.setCuenta(resultado.getString("us.cuenta"));
+                usuario.setNombre(resultado.getString("us.nombre"));
+                usuario.setApellido(resultado.getString("us.apellido"));
+                usuario.setDepartamento(resultado.getString("us.departamento"));
+                Equipo equipo = new Equipo();
+                equipo.setEquipoId(resultado.getInt("eq.equipo_id"));
+                equipo.setNumeroEtiquetaConsejeria(resultado.getString("eq.numero_etiqueta_consejeria"));
+                equipo.setTipoEquipo(tipoEquipo);
+                Estado estadoIncidencia = new Estado();
+                estadoIncidencia.setEstadoId(resultado.getInt("ies.estado_id"));
+                estadoIncidencia.setCodigo(resultado.getString("ies.codigo"));
+                estadoIncidencia.setNombre(resultado.getString("ies.nombre"));
+                Incidencia incidencia = new Incidencia();
+                incidencia.setIncidenciaId(resultado.getInt("inc.incidencia_id"));
+                incidencia.setPosicionEquipoDependencia(resultado.getString("inc.posicion_equipo_dependencia"));
+                incidencia.setDescripcion(resultado.getString("inc.descripcion"));
+                incidencia.setComentarioAdministrador(resultado.getString("inc.comentario_administrador"));
+                incidencia.setFechaEstadoActual(resultado.getDate("inc.fecha_estado_actual"));
+                incidencia.setUsuario(usuario);
+                incidencia.setEquipo(equipo);
+                incidencia.setDependencia(dependencia);
+                incidencia.setEstado(estadoIncidencia);
+                Estado estadoHistorial = new Estado();
+                estadoHistorial.setEstadoId(resultado.getInt("es.estado_id"));
+                estadoHistorial.setCodigo(resultado.getString("es.codigo"));
+                estadoHistorial.setNombre(resultado.getString("es.nombre"));
+                Historial historial = new Historial();
+                historial.setHistorialId(resultado.getInt("hi.historial_id"));
+                historial.setFecha(resultado.getDate("hi.fecha"));
                 historial.setIncidencia(incidencia);
-                historial.setEstado(estado);
+                historial.setEstado(estadoHistorial);
                 listaHistorial.add(historial);
             }
             resultado.close();
@@ -1275,5 +1825,114 @@ public class IncidenciasCAD {
             cerrarConexion(conexion, sentenciaPreparada);
             throw e;
         }
-    }    
+    }  
+    /**
+     * Lee todos los datos historicos de la base de datos
+     * @author Diego Fernández Díaz
+     * @param fecha
+     * @param incidenciaId
+     * @param orden
+     * @param estadoId 
+     * @return Lista con todos los equipos de la base de datos
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public ArrayList<Historial> leerHistorial(Date fecha, Integer incidenciaId,Integer estadoId, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from historial hi,incidencia inc,estado es,estado ies, "
+                + "usuario us,equipo eq,dependencia de,tipo_equipo teq "
+                + "where hi.incidencia_id=inc.incidencia_id "
+                + "and hi.estado_id=es.estado_id "
+                + "and inc.usuario_id=us.usuario_id "
+                + "and inc.equipo_id=eq.equipo_id "
+                + "and inc.dependencia_id=de.dependencia_id "
+                + "and inc.estado_id=ies.estado_id "
+                + "and eq.tipo_equipo_id=teq.tipo_equipo_id";
+        if (fecha != null) dql = dql + " and date_format(hi.fecha,'%Y-%m-%d') = '"+ formatearFecha(fecha)+"'";
+        if (incidenciaId !=null) dql = dql + " and hi.incidencia_id = " + incidenciaId;
+        if (estadoId !=null) dql = dql + " and hi.estado_id = " + estadoId;
+        if (criterioOrden == FECHA) {
+            dql = dql + " order by hi.fecha";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        if (criterioOrden == INCIDENCIA_ID) {
+            dql = dql + " order by hi.incidencia_id";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        if (criterioOrden == ESTADO_HISTORIAL_ID) {
+            dql = dql + " order by hi.estado_id";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        PreparedStatement sentenciaPreparada = null;
+        ArrayList<Historial> listaHistorial = new ArrayList();
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
+            while (resultado.next()) {
+                TipoEquipo tipoEquipo = new TipoEquipo();
+                tipoEquipo.setTipoEquipoId(resultado.getInt("teq.tipo_equipo_id"));
+                tipoEquipo.setCodigo(resultado.getString("teq.codigo"));
+                tipoEquipo.setNombre(resultado.getString("teq.nombre"));
+                Dependencia dependencia = new Dependencia();
+                dependencia.setDependenciaId(resultado.getInt("de.dependencia_id"));
+                dependencia.setCodigo(resultado.getString("de.codigo"));
+                dependencia.setNombre(resultado.getString("de.nombre"));
+                Usuario usuario = new Usuario();
+                usuario.setUsuarioId(resultado.getInt("us.usuario_id"));
+                usuario.setCuenta(resultado.getString("us.cuenta"));
+                usuario.setNombre(resultado.getString("us.nombre"));
+                usuario.setApellido(resultado.getString("us.apellido"));
+                usuario.setDepartamento(resultado.getString("us.departamento"));
+                Equipo equipo = new Equipo();
+                equipo.setEquipoId(resultado.getInt("eq.equipo_id"));
+                equipo.setNumeroEtiquetaConsejeria(resultado.getString("eq.numero_etiqueta_consejeria"));
+                equipo.setTipoEquipo(tipoEquipo);
+                Estado estadoIncidencia = new Estado();
+                estadoIncidencia.setEstadoId(resultado.getInt("ies.estado_id"));
+                estadoIncidencia.setCodigo(resultado.getString("ies.codigo"));
+                estadoIncidencia.setNombre(resultado.getString("ies.nombre"));
+                Incidencia incidencia = new Incidencia();
+                incidencia.setIncidenciaId(resultado.getInt("incidencia_id"));
+                incidencia.setPosicionEquipoDependencia(resultado.getString("posicion_equipo_dependencia"));
+                incidencia.setDescripcion(resultado.getString("descripcion"));
+                incidencia.setComentarioAdministrador(resultado.getString("comentario_administrador"));
+                incidencia.setFechaEstadoActual(resultado.getDate("fecha_estado_actual"));
+                incidencia.setUsuario(usuario);
+                incidencia.setEquipo(equipo);
+                incidencia.setDependencia(dependencia);
+                incidencia.setEstado(estadoIncidencia);
+                Estado estadoHistorial = new Estado();
+                estadoHistorial.setEstadoId(resultado.getInt("es.estado_id"));
+                estadoHistorial.setCodigo(resultado.getString("es.codigo"));
+                estadoHistorial.setNombre(resultado.getString("es.nombre"));
+                Historial historial = new Historial();
+                historial.setHistorialId(resultado.getInt("hi.historial_id"));
+                historial.setFecha(resultado.getDate("hi.fecha"));
+                historial.setIncidencia(incidencia);
+                historial.setEstado(estadoHistorial);
+                listaHistorial.add(historial);
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            conexion.close();
+            return listaHistorial;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    dql);
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
+    }
+    
+    public String formatearFecha(Date fecha)
+    {
+        GregorianCalendar gc = new GregorianCalendar();
+        gc.setTime(fecha);
+        return gc.get(Calendar.YEAR)+ "-"+(gc.get(Calendar.MONTH)+1)+"-"+gc.get(Calendar.DAY_OF_MONTH);
+    }
 }
