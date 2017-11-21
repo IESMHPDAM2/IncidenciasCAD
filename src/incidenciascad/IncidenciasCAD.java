@@ -658,27 +658,28 @@ public class IncidenciasCAD {
             throw e;
         }
     }
-    /**
-     * 
-     * @param nombre Recibe el nombre del tipo de equipo buscado
+    
+/**
+     * Lee un tipo de equipo de la base de datos
+     * @param tipoEquipoID Recibe el id del tipo de equipo buscado
      * @return Devuelve un tipo de equipo
      * @throws ExcepcionIncidenciasCAD 
      */
-    public TipoEquipo leerTipoEquipo(String nombre) throws ExcepcionIncidenciasCAD {
-        String dql = "select * from tipo_equipo where nombre = ?";
+    public TipoEquipo leerTipoEquipo(Integer tipoEquipoID) throws ExcepcionIncidenciasCAD {
+        String dql = "select * from tipo_equipo where tipo_equipo_id = ?";
         PreparedStatement sentenciaPreparada = null;
         
         TipoEquipo tipoEquipo = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dql);
             ResultSet resultado = sentenciaPreparada.executeQuery(dql);
-            sentenciaPreparada.setString(1, nombre);
+            sentenciaPreparada.setInt(1, tipoEquipoID);
             while (resultado.next()) {
                 
                 tipoEquipo = new TipoEquipo();
-                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
-                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
-                tipoEquipo.setNombre(resultado.getString("te.nombre"));
+                tipoEquipo.setTipoEquipoId(resultado.getInt("tipo_equipo_id"));
+                tipoEquipo.setCodigo(resultado.getString("codigo"));
+                tipoEquipo.setNombre(resultado.getString("nombre"));
                 
                 
             }
@@ -696,13 +697,15 @@ public class IncidenciasCAD {
             throw e;
         }
     }
+    
+    
     /**
-     * Lee todos los tipos de equipo de la base de datos
+     * Lee todos los equipos de la base de datos
      * @author Ramon Tezanos San Emeterio
      * @return Lista con todos los equipos de la base de datos
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<TipoEquipo> leerTipoEquipo() throws ExcepcionIncidenciasCAD {
+    public ArrayList<TipoEquipo> leerTiposEquipo() throws ExcepcionIncidenciasCAD {
         String dql = "select * from tipo_equipo";
         PreparedStatement sentenciaPreparada = null;
         ArrayList<TipoEquipo> listaTipoEquipos = new ArrayList(); 
@@ -712,9 +715,9 @@ public class IncidenciasCAD {
             ResultSet resultado = sentenciaPreparada.executeQuery(dql);
             while (resultado.next()) {
                 tipoEquipo = new TipoEquipo();
-                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
-                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
-                tipoEquipo.setNombre(resultado.getString("te.nombre"));                
+                tipoEquipo.setTipoEquipoId(resultado.getInt("tipo_equipo_id"));
+                tipoEquipo.setCodigo(resultado.getString("codigo"));
+                tipoEquipo.setNombre(resultado.getString("nombre"));                
                 listaTipoEquipos.add(tipoEquipo);
             }
             resultado.close();
@@ -731,8 +734,9 @@ public class IncidenciasCAD {
             throw e;
         }
     }
-    
-    /**
+
+     /**
+     * Lee los equipos de la base de datos que coincidan con los filtros pasados
      * @author Ramon Tezanos San Emeterio
      * @param codigo Recibe el codigo del tipo de equipo o null en caso de no querer filtrar por ese criterio
      * @param nombre Recibe el nombre del tipo de equipo o null en caso de no querer filtrar por ese criterio
@@ -741,19 +745,19 @@ public class IncidenciasCAD {
      * @return Devuelve la lista con todos los equipos de la base de datos una vez filtrado
      * @throws ExcepcionIncidenciasCAD 
      */
-     public ArrayList<TipoEquipo> leerTipoEquipo(String codigo, String nombre, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+     public ArrayList<TipoEquipo> leerTiposEquipo(String codigo, String nombre, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
         String dql = "select * "
-                + "from tipo_equipo te";
+                + "from tipo_equipo where 1 = 1";
         if(codigo != null || nombre != null)
         if (codigo != null) dql = dql + " and codigo like '%" + codigo + "%'";
         if (nombre != null) dql = dql + " and nombre like '%" + nombre + "%'";
         if (criterioOrden == NOMBRE_TIPO_EQUIPO) {
-            dql = dql + " order by te.nombre";
+            dql = dql + " order by nombre";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
         if (criterioOrden == CODIGO_TIPO_EQUIPO) {
-            dql = dql + " order by te.codigo";
+            dql = dql + " order by codigo";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }PreparedStatement sentenciaPreparada = null;
@@ -764,9 +768,9 @@ public class IncidenciasCAD {
             ResultSet resultado = sentenciaPreparada.executeQuery(dql);
             while (resultado.next()) {
                 tipoEquipo = new TipoEquipo();
-                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
-                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
-                tipoEquipo.setNombre(resultado.getString("te.nombre"));                
+                tipoEquipo.setTipoEquipoId(resultado.getInt("tipo_equipo_id"));
+                tipoEquipo.setCodigo(resultado.getString("codigo"));
+                tipoEquipo.setNombre(resultado.getString("nombre"));                
                 listaTipoEquipos.add(tipoEquipo);
             }
             resultado.close();
@@ -783,7 +787,7 @@ public class IncidenciasCAD {
             throw e;
         }
     }
-     
+
     /**
      * Inserta un equipo en la base de datos
      * @author Óscar Barahona Ortega
