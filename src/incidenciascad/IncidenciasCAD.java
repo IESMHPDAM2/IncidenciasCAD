@@ -41,7 +41,7 @@ public class IncidenciasCAD {
     public IncidenciasCAD() throws ExcepcionIncidenciasCAD {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conexion = DriverManager.getConnection("jdbc:mysql://localhost/incidencias?user=incidencias&password=incidencias");
+            conexion = DriverManager.getConnection("jdbc:mysql://10.0.22.96/incidencias?user=incidencias&password=incidencias");
         } catch (ClassNotFoundException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
                     -1,
