@@ -241,7 +241,7 @@ public class IncidenciasCAD {
      */
     public ArrayList<Dependencia> leerDependencias() throws ExcepcionIncidenciasCAD {
         String dql = "select * "
-                + "from dependencias d ";                
+                + "from dependencia d ";                
         PreparedStatement sentenciaPreparada = null;
         ArrayList<Dependencia> listaDependencia = new ArrayList();
         Dependencia dependencia = null;
@@ -2090,6 +2090,62 @@ public class IncidenciasCAD {
             throw e;
         }
     }
+    
+    /**
+     * Lee todas las configuraciones 
+     * @author Marcos Gonzalez Fernandez
+     * @return Lista con todas las configuraciones
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public ArrayList<Configuracion> leerConfiguraciones() throws ExcepcionIncidenciasCAD {
+        String dql = "select * from estado e, configuracion co where e.estado_id = co.estado_inicial_incidencia";                
+        PreparedStatement sentenciaPreparada = null;
+        ArrayList<Configuracion> listaConfiguracion = new ArrayList();
+        Configuracion configuracion = null;
+        Estado estado = null;
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
+            while (resultado.next()) {
+                configuracion = new Configuracion();
+                configuracion.setEmpresaConsejeriaNombre(resultado.getString("empresa_consejeria_nombre"));
+                configuracion.setEmpresaConsejeriaTelefono(resultado.getString("empresa_consejeria_telefono"));
+                configuracion.setEmpresaConsejeriaEmail(resultado.getString("empresa_consejeria_email"));
+                configuracion.setIesNombre(resultado.getString("ies_nombre"));
+                configuracion.setIesCif(resultado.getString("ies_cif"));
+                configuracion.setIesCodigoCentro(resultado.getString("ies_codigo_centro"));
+                configuracion.setIesPersonaContactoNombre(resultado.getString("ies_persona_contacto_nombre"));
+                configuracion.setIesPersonaContactoApellido1(resultado.getString("ies_persona_contacto_apellido1"));
+                configuracion.setIesPersonaContactoApellido2(resultado.getString("ies_persona_contacto_apellido2"));
+                configuracion.setIesEmail(resultado.getString("ies_email"));
+                configuracion.setLdapUrl(resultado.getString("ldap_url"));
+                configuracion.setLdapDominio(resultado.getString("ldap_dominio"));
+                configuracion.setLdapDn(resultado.getString("ldap_dn"));
+                configuracion.setLdapAtributoCuenta(resultado.getString("ldap_atributo_cuenta"));
+                configuracion.setLdapAtributoNombre(resultado.getString("ldap_atributo_nombre"));
+                configuracion.setLdapAtributoApellido(resultado.getString("ldap_atributo_apellido"));
+                configuracion.setLdapAtributoDepartamento(resultado.getString("ldap_atributo_departamento"));
+                configuracion.setLdapAtributoPerfil(resultado.getString("ldap_atributo_perfil"));
+                estado = new Estado();
+                estado.setEstadoId(resultado.getInt("e.estado_id"));
+                estado.setCodigo(resultado.getString("e.codigo"));
+                estado.setNombre(resultado.getString("e.nombre"));
+                listaConfiguracion.add(configuracion);
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            conexion.close();
+            return listaConfiguracion;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    dql);
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
+    } 
     
     public String formatearFecha(Date fecha)
     {
