@@ -56,7 +56,7 @@ public class EliminarEquipoJUnitTest {
         try {
             IncidenciasCAD instance = new IncidenciasCAD();
             instance.eliminarEquipo(2);
-            fail("No se ha lanzado una ExccepcionHR");
+            fail("No se ha lanzado una ExcepcionIncidenciasCAD");
         } catch (ExcepcionIncidenciasCAD ex) {
             assertEquals((int) ex.getCodigoErrorSistema(),1451);
         }

@@ -89,11 +89,11 @@ public class Prueba {
 //        }
         
         System.out.println("Equipo");
-        Equipo e = null;
-        ArrayList<TipoEquipo> l = null;
+        Equipo e = new Equipo(null,"1122321",new TipoEquipo(2,null,null));
+        ArrayList<Equipo> l = null;
         try {
             IncidenciasCAD i = new IncidenciasCAD();
-            int r = i.modificarEquipo(37,e);
+            int r = i.modificarEquipo(34,e);
             System.out.println(r + "registros");
 //            te = i.leerTipoEquipo(7);
 //            System.out.println(te);

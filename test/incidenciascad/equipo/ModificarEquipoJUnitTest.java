@@ -42,7 +42,7 @@ public class ModificarEquipoJUnitTest {
      */
     @Test
     public void testModificarEquipoOK() throws ExcepcionIncidenciasCAD {
-        System.out.println("ModificarCountry - Caso de éxito");
+        System.out.println("modificarEquipo - Caso de éxito");
         TipoEquipo tipoEquipo=new TipoEquipo();
         tipoEquipo.setTipoEquipoId(1);
         Equipo equipo = new Equipo(0, "12123445", tipoEquipo);
@@ -64,7 +64,7 @@ public class ModificarEquipoJUnitTest {
         try {
             IncidenciasCAD instance = new IncidenciasCAD();
             instance.modificarEquipo(3, equipo);
-            fail("No se ha lanzado una ExccepcionHR");
+            fail("No se ha lanzado una ExcepcionIncidenciasCAD");
         } catch (ExcepcionIncidenciasCAD ex) {
             assertEquals((int) ex.getCodigoErrorSistema(),1048);
         }
@@ -82,7 +82,7 @@ public class ModificarEquipoJUnitTest {
         try {
             IncidenciasCAD instance = new IncidenciasCAD();
             instance.modificarEquipo(3, equipo);
-            fail("No se ha lanzado una ExccepcionHR");
+            fail("No se ha lanzado una ExcepcionIncidenciasCAD");
         } catch (ExcepcionIncidenciasCAD ex) {
             assertEquals((int) ex.getCodigoErrorSistema(),1062);
         }
@@ -100,7 +100,7 @@ public class ModificarEquipoJUnitTest {
         try {
             IncidenciasCAD instance = new IncidenciasCAD();
             instance.modificarEquipo(3, equipo);
-            fail("No se ha lanzado una ExccepcionHR");
+            fail("No se ha lanzado una ExcepcionIncidenciasCAD");
         } catch (ExcepcionIncidenciasCAD ex) {
             assertEquals((int) ex.getCodigoErrorSistema(),1452);
         }

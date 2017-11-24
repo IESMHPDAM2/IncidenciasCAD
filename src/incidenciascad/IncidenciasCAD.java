@@ -1269,7 +1269,7 @@ public class IncidenciasCAD {
      */
     public ArrayList<Estado> leerEstados(String codigo, String nombre, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
         String dql = "select * "
-                + "from estado e ";   
+                + "from Estado e where 1 = 1 ";   
         if (codigo !=null || nombre !=null)
         if (codigo !=null) dql = dql + " and codigo like '%" + codigo + "%'";
         if (nombre !=null) dql = dql + " and nombre like '%" + nombre + "%'";
@@ -1308,8 +1308,6 @@ public class IncidenciasCAD {
             cerrarConexion(conexion, sentenciaPreparada);
             throw e;
         }
-        
-        
     }
     
     /**

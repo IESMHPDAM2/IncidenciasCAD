@@ -64,7 +64,7 @@ public class InsertarEquipoJUnitTest {
         try {
             IncidenciasCAD instance = new IncidenciasCAD();
             instance.insertarEquipo(equipo);
-            fail("No se ha lanzado una ExccepcionHR");
+            fail("No se ha lanzado una ExcepcionIncidenciasCAD");
         } catch (ExcepcionIncidenciasCAD ex) {
             assertEquals((int) ex.getCodigoErrorSistema(),1048);
         }
@@ -82,7 +82,7 @@ public class InsertarEquipoJUnitTest {
         try {
             IncidenciasCAD instance = new IncidenciasCAD();
             instance.insertarEquipo(equipo);
-            fail("No se ha lanzado una ExccepcionHR");
+            fail("No se ha lanzado una ExcepcionIncidenciasCAD");
         } catch (ExcepcionIncidenciasCAD ex) {
             assertEquals((int) ex.getCodigoErrorSistema(),1048);
         }
@@ -92,7 +92,7 @@ public class InsertarEquipoJUnitTest {
      * Prueba la violación de la FK por el método
      */
     @Test
-    public void testInsertarCountryViolacionFK() {
+    public void testInsertarEquipoViolacionFK() {
         System.out.println("insertarEquipo - Caso de violación de FK");
         TipoEquipo tipoEquipo = new TipoEquipo();
         tipoEquipo.setTipoEquipoId(68);
@@ -100,7 +100,7 @@ public class InsertarEquipoJUnitTest {
         try {
             IncidenciasCAD instance = new IncidenciasCAD();
             instance.insertarEquipo(equipo);
-            fail("No se ha lanzado una ExccepcionHR");
+            fail("No se ha lanzado una ExcepcionIncidenciasCAD");
         } catch (ExcepcionIncidenciasCAD ex) {
             assertEquals((int) ex.getCodigoErrorSistema(),1452);
         }
