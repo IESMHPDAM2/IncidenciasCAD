@@ -814,10 +814,10 @@ public class IncidenciasCAD {
                     sentenciaPreparada.toString());
             switch (ex. getErrorCode()) {
                 case 1048:  
-                    e.setMensajeErrorUsuario("El número de etiqueta de consejería y el tipo de equipo son obligatorios");
+                    e.setMensajeErrorUsuario("El número de etiqueta de Consejería y el tipo de equipo son obligatorios");
                     break;
                 case 1062:  
-                    e.setMensajeErrorUsuario("El número de etiqueta de consejería ya existe y no se puede repetir");
+                    e.setMensajeErrorUsuario("El número de etiqueta de Consejería ya existe y no se puede repetir");
                     break;
                 case 1452:
                     e.setMensajeErrorUsuario("El tipo de equipo seleccionado no existe");
@@ -876,6 +876,10 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarEquipo(Integer equipoId, Equipo equipo) throws ExcepcionIncidenciasCAD {
+        if (equipoId == null) return 0;
+        if (equipo == null) equipo = new Equipo(null,null,new TipoEquipo());
+        else if (equipo.getTipoEquipo() == null) equipo.setTipoEquipo(new TipoEquipo());
+        
         String dml = "update equipo set numero_etiqueta_consejeria = ?, tipo_equipo_id = ? where equipo_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
@@ -895,13 +899,13 @@ public class IncidenciasCAD {
                     sentenciaPreparada.toString());
             switch (ex. getErrorCode()) {
                 case 1048:  
-                    e.setMensajeErrorUsuario("El número de etiqueta de consejería y el tipo de equipo son obligatorios");
+                    e.setMensajeErrorUsuario("El número de etiqueta de Consejería y el tipo de equipo son obligatorios");
                     break;
                 case 1452:
                     e.setMensajeErrorUsuario("El tipo de equipo seleccionado no existe");
                     break;
                 case 1062:  
-                    e.setMensajeErrorUsuario("El ID de equipo y/o el número de etiqueta de consejería ya existen y no se pueden repetir");
+                    e.setMensajeErrorUsuario("El número de etiqueta de Consejería ya existen y no se puede repetir");
                     break;
                 default:    
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
@@ -909,6 +913,9 @@ public class IncidenciasCAD {
             }
             cerrarConexion(conexion, sentenciaPreparada);
             throw e;
+////        } catch (NullPointerException ex) {
+////            cerrarConexion(conexion, sentenciaPreparada);
+////            return 0;
         }
     }
 
@@ -2092,12 +2099,138 @@ public class IncidenciasCAD {
     }
     
     /**
+     * Establece una configuración en la base de datos
+     * @author Óscar Barahona Ortega
+     * @param configuracion Datos de la configuración a insertar/modificar
+     * @return Cantidad de registros insertados
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public Integer establecerConfiguracion(Configuracion configuracion) throws ExcepcionIncidenciasCAD {
+        String dql = "select count(*) total from configuracion";
+        PreparedStatement sentenciaPreparada = null;
+        int numeroConfiguraciones = 0;
+        int registrosAfectados = 0;
+
+        try {
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            ResultSet resultado = sentenciaPreparada.executeQuery();
+            while (resultado.next()) {                
+                numeroConfiguraciones = resultado.getInt("total");
+            }
+            resultado.close();         
+            if (numeroConfiguraciones < 1) {
+                String dml = "insert into configuracion(empresa_consejeria_nombre,empresa_consejeria_telefono,empresa_consejeria_email,ies_nombre,ies_cif,ies_codigo_centro,ies_persona_contacto_nombre,"
+                        + "ies_persona_contacto_apellido1,ies_persona_contacto_apellido2,ies_email,estado_inicial_incidencia,estado_final_incidencia,ldap_url,ldap_dominio,ldap_dn,ldap_atributo_cuenta,"
+                        + "ldap_atributo_nombre,ldap_atributo_apellido,ldap_atributo_departamento,ldap_atributo_perfil) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                sentenciaPreparada = conexion.prepareStatement(dml);
+                sentenciaPreparada.setString(1, configuracion.getEmpresaConsejeriaNombre());
+                sentenciaPreparada.setString(2, configuracion.getEmpresaConsejeriaTelefono());
+                sentenciaPreparada.setString(3, configuracion.getEmpresaConsejeriaEmail());
+                sentenciaPreparada.setString(4, configuracion.getIesNombre());
+                sentenciaPreparada.setString(5, configuracion.getIesCif());
+                sentenciaPreparada.setString(6, configuracion.getIesCodigoCentro());
+                sentenciaPreparada.setString(7, configuracion.getIesPersonaContactoNombre());
+                sentenciaPreparada.setString(8, configuracion.getIesPersonaContactoApellido1());
+                sentenciaPreparada.setString(9, configuracion.getIesPersonaContactoApellido2());
+                sentenciaPreparada.setString(10, configuracion.getIesEmail());
+                sentenciaPreparada.setInt(11, configuracion.getEstadoInicial().getEstadoId());
+                sentenciaPreparada.setInt(12, configuracion.getEstadoFinal().getEstadoId());
+                sentenciaPreparada.setString(13, configuracion.getLdapUrl());
+                sentenciaPreparada.setString(14, configuracion.getLdapDominio());
+                sentenciaPreparada.setString(15, configuracion.getLdapDn());
+                sentenciaPreparada.setString(16, configuracion.getLdapAtributoCuenta());
+                sentenciaPreparada.setString(17, configuracion.getLdapAtributoNombre());
+                sentenciaPreparada.setString(18, configuracion.getLdapAtributoApellido());
+                sentenciaPreparada.setString(19, configuracion.getLdapAtributoDepartamento());
+                sentenciaPreparada.setString(20, configuracion.getLdapAtributoPerfil());
+                registrosAfectados = sentenciaPreparada.executeUpdate();
+                sentenciaPreparada.close();
+                conexion.close();
+            } else if (numeroConfiguraciones == 1) {
+                String dml = "update configuracion set empresa_consejeria_nombre = ?, empresa_consejeria_telefono = ?, empresa_consejeria_email = ?, ies_nombre = ?, ies_cif = ?, ies_codigo_centro = ?, "
+                        + "ies_persona_contacto_nombre = ?, ies_persona_contacto_apellido1 = ?, ies_persona_contacto_apellido2 = ?, ies_email = ?, estado_inicial_incidencia = ?, estado_final_incidencia = ?,"
+                        + "ldap_url = ?, ldap_dominio = ?, ldap_dn = ?, ldap_atributo_cuenta = ?, ldap_atributo_nombre = ?, ldap_atributo_apellido = ?, ldap_atributo_departamento = ?, ldap_atributo_perfil = ?";
+                sentenciaPreparada = conexion.prepareStatement(dml);
+                sentenciaPreparada.setString(1, configuracion.getEmpresaConsejeriaNombre());
+                sentenciaPreparada.setString(2, configuracion.getEmpresaConsejeriaTelefono());
+                sentenciaPreparada.setString(3, configuracion.getEmpresaConsejeriaEmail());
+                sentenciaPreparada.setString(4, configuracion.getIesNombre());
+                sentenciaPreparada.setString(5, configuracion.getIesCif());
+                sentenciaPreparada.setString(6, configuracion.getIesCodigoCentro());
+                sentenciaPreparada.setString(7, configuracion.getIesPersonaContactoNombre());
+                sentenciaPreparada.setString(8, configuracion.getIesPersonaContactoApellido1());
+                sentenciaPreparada.setString(9, configuracion.getIesPersonaContactoApellido2());
+                sentenciaPreparada.setString(10, configuracion.getIesEmail());
+                sentenciaPreparada.setInt(11, configuracion.getEstadoInicial().getEstadoId());
+                sentenciaPreparada.setInt(12, configuracion.getEstadoFinal().getEstadoId());
+                sentenciaPreparada.setString(13, configuracion.getLdapUrl());
+                sentenciaPreparada.setString(14, configuracion.getLdapDominio());
+                sentenciaPreparada.setString(15, configuracion.getLdapDn());
+                sentenciaPreparada.setString(16, configuracion.getLdapAtributoCuenta());
+                sentenciaPreparada.setString(17, configuracion.getLdapAtributoNombre());
+                sentenciaPreparada.setString(18, configuracion.getLdapAtributoApellido());
+                sentenciaPreparada.setString(19, configuracion.getLdapAtributoDepartamento());
+                sentenciaPreparada.setString(20, configuracion.getLdapAtributoPerfil());
+                registrosAfectados = sentenciaPreparada.executeUpdate();
+                sentenciaPreparada.close();
+                conexion.close();
+            } else {
+                String dml = "delete from configuracion where 1=1";
+                sentenciaPreparada = conexion.prepareStatement(dml);
+                registrosAfectados = sentenciaPreparada.executeUpdate();
+                dml = "insert into configuracion(empresa_consejeria_nombre,empresa_consejeria_telefono,empresa_consejeria_email,ies_nombre,ies_cif,ies_codigo_centro,ies_persona_contacto_nombre,"
+                        + "ies_persona_contacto_apellido1,ies_persona_contacto_apellido2,ies_email,estado_inicial_incidencia,estado_final_incidencia,ldap_url,ldap_dominio,ldap_dn,ldap_atributo_cuenta,"
+                        + "ldap_atributo_nombre,ldap_atributo_apellido,ldap_atributo_departamento,ldap_atributo_perfil) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                sentenciaPreparada = conexion.prepareStatement(dml);
+                sentenciaPreparada.setString(1, configuracion.getEmpresaConsejeriaNombre());
+                sentenciaPreparada.setString(2, configuracion.getEmpresaConsejeriaTelefono());
+                sentenciaPreparada.setString(3, configuracion.getEmpresaConsejeriaEmail());
+                sentenciaPreparada.setString(4, configuracion.getIesNombre());
+                sentenciaPreparada.setString(5, configuracion.getIesCif());
+                sentenciaPreparada.setString(6, configuracion.getIesCodigoCentro());
+                sentenciaPreparada.setString(7, configuracion.getIesPersonaContactoNombre());
+                sentenciaPreparada.setString(8, configuracion.getIesPersonaContactoApellido1());
+                sentenciaPreparada.setString(9, configuracion.getIesPersonaContactoApellido2());
+                sentenciaPreparada.setString(10, configuracion.getIesEmail());
+                sentenciaPreparada.setInt(11, configuracion.getEstadoInicial().getEstadoId());
+                sentenciaPreparada.setInt(12, configuracion.getEstadoFinal().getEstadoId());
+                sentenciaPreparada.setString(13, configuracion.getLdapUrl());
+                sentenciaPreparada.setString(14, configuracion.getLdapDominio());
+                sentenciaPreparada.setString(15, configuracion.getLdapDn());
+                sentenciaPreparada.setString(16, configuracion.getLdapAtributoCuenta());
+                sentenciaPreparada.setString(17, configuracion.getLdapAtributoNombre());
+                sentenciaPreparada.setString(18, configuracion.getLdapAtributoApellido());
+                sentenciaPreparada.setString(19, configuracion.getLdapAtributoDepartamento());
+                sentenciaPreparada.setString(20, configuracion.getLdapAtributoPerfil());
+                registrosAfectados = sentenciaPreparada.executeUpdate();
+            }    
+            return registrosAfectados;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    null,
+                    sentenciaPreparada.toString());
+            switch (ex.getErrorCode()) {
+                case 1048:  
+                    e.setMensajeErrorUsuario("Todos los campos son obligatorios");
+                    break;
+                default:    
+                    e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
+                    break;
+            }
+            cerrarConexion(conexion, sentenciaPreparada);
+            throw e;
+        }
+    }
+
+    /**
      * Lee todas las configuraciones 
      * @author Marcos Gonzalez Fernandez
      * @return Lista con todas las configuraciones
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<Configuracion> leerConfiguraciones() throws ExcepcionIncidenciasCAD {
+    public ArrayList<Configuracion> leerConfiguracion() throws ExcepcionIncidenciasCAD {
         String dql = "select * from estado e, configuracion co where e.estado_id = co.estado_inicial_incidencia";                
         PreparedStatement sentenciaPreparada = null;
         ArrayList<Configuracion> listaConfiguracion = new ArrayList();

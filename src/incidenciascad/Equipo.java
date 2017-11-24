@@ -30,6 +30,9 @@ public class Equipo {
     }
 
     public String getNumeroEtiquetaConsejeria() {
+        if (numeroEtiquetaConsejeria != null) {
+            if (numeroEtiquetaConsejeria.equals("")) return null;
+        }
         return numeroEtiquetaConsejeria;
     }
 

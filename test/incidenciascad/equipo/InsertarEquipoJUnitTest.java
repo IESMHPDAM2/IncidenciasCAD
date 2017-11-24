@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package incidenciascad.equipo;
 
 import incidenciascad.Equipo;
@@ -66,6 +61,24 @@ public class InsertarEquipoJUnitTest {
         TipoEquipo tipoEquipo = new TipoEquipo();
         tipoEquipo.setTipoEquipoId(1);
         Equipo equipo = new Equipo(null,null,tipoEquipo);
+        try {
+            IncidenciasCAD instance = new IncidenciasCAD();
+            instance.insertarEquipo(equipo);
+            fail("No se ha lanzado una ExccepcionHR");
+        } catch (ExcepcionIncidenciasCAD ex) {
+            assertEquals((int) ex.getCodigoErrorSistema(),1048);
+        }
+    }
+    
+    /**
+     * Prueba la violación de UK por el método
+     */
+    @Test
+    public void testInsertarEquipoViolacionUK() {
+        System.out.println("insertarEquipo - Caso de violación de UK");
+        TipoEquipo tipoEquipo = new TipoEquipo();
+        tipoEquipo.setTipoEquipoId(1);
+        Equipo equipo = new Equipo(null,"189981",tipoEquipo);
         try {
             IncidenciasCAD instance = new IncidenciasCAD();
             instance.insertarEquipo(equipo);
