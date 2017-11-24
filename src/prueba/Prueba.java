@@ -6,8 +6,12 @@
 package prueba;
 
 import incidenciascad.Dependencia;
+import incidenciascad.Estado;
 import incidenciascad.ExcepcionIncidenciasCAD;
 import incidenciascad.IncidenciasCAD;
+import incidenciascad.TipoEquipo;
+import incidenciascad.Usuario;
+import java.util.ArrayList;
 
 /**
  *
@@ -18,40 +22,67 @@ public class Prueba {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("Hola");
-//        Dependencia d = new Dependencia(null,"pp","ppito");
-//        try {
-//            IncidenciasCAD i = new IncidenciasCAD();
-//            int r = i.modificarDependencia(8,d);
-//            System.out.println(r + "registros");
-//        } catch (ExcepcionIncidenciasCAD ex) {
-//            System.out.println(ex);
-//        }
-
-        try {
-            IncidenciasCAD i = new IncidenciasCAD();
-//            System.out.println(i.leerEquipos("4",null,IncidenciasCAD.CODIGO_TIPO_EQUIPO,IncidenciasCAD.DESCENDENTE));
-//            System.out.println(i.leerEquipos("kk",null,null));
-            System.out.println(i.leerDependencias());
-        } catch (ExcepcionIncidenciasCAD ex) {
-            System.out.println(ex);
-        }
-        
-//        System.out.println("Hola");
-//        Dependencia d = new Dependencia(0,"kkj","Aula 4034 de Informática");
+//        System.out.println("Dependencia");
+//        Dependencia d = new Dependencia(0,"kk","Aula 14034 de Informática");
 //        try {
 //            IncidenciasCAD i = new IncidenciasCAD();
 //            int r = i.insertarDependencia(d);
 //            System.out.println(r + "registros");
+////            d = i.leerDependencia(7);
+////            System.out.println(d);
+////            ArrayList<Dependencia> l = i.leerDependencias();
+////            System.out.println(l);
 //        } catch (ExcepcionIncidenciasCAD ex) {
 //            System.out.println(ex);
 //        }
         
-        
+//        System.out.println("Estado");
+//        Estado e = new Estado(0,"R","Pend d");
+//        ArrayList<Estado> l = null;
 //        try {
 //            IncidenciasCAD i = new IncidenciasCAD();
-//            int r = i.eliminarDependencia(5);
+//            int r = i.eliminarEstado(1);
 //            System.out.println(r + "registros");
+////            d = i.leerDependencia(7);
+////            System.out.println(d);
+////            l = i.leerEstados();
+////            System.out.println(l);
+////            l = i.leerEstados("kk",null,null,null);
+////            System.out.println(l);
+//        } catch (ExcepcionIncidenciasCAD ex) {
+//            System.out.println(ex);
+//        }
+        
+        System.out.println("Usuario");
+        Usuario u = new Usuario(0,null,"","apes","compras");
+        ArrayList<Usuario> l = null;
+        try {
+            IncidenciasCAD i = new IncidenciasCAD();
+//            int r = i.insertarUsuario(u);
+//            System.out.println(r + "registros");
+//            u = i.leerUsuario(1);
+//            System.out.println(u);
+//            l = i.leerUsuarios();
+//            System.out.println(l);
+            l = i.leerUsuarios(null,null,"h",null,IncidenciasCAD.APELLIDO,IncidenciasCAD.DESCENDENTE);
+            System.out.println(l);
+        } catch (ExcepcionIncidenciasCAD ex) {
+            System.out.println(ex);
+        }
+        
+//        System.out.println("Tipo de Equipo");
+//        TipoEquipo te = new TipoEquipo(0,"R","xxxPendf d");
+//        ArrayList<TipoEquipo> l = null;
+//        try {
+//            IncidenciasCAD i = new IncidenciasCAD();
+////            int r = i.modificarTipoEquipo(7,te);
+////            System.out.println(r + "registros");
+////            te = i.leerTipoEquipo(7);
+////            System.out.println(te);
+////            l = i.leerTiposEquipo();
+////            System.out.println(l);
+//            l = i.leerTiposEquipo(null,null,IncidenciasCAD.CODIGO_TIPO_EQUIPO,IncidenciasCAD.DESCENDENTE);
+//            System.out.println(l);
 //        } catch (ExcepcionIncidenciasCAD ex) {
 //            System.out.println(ex);
 //        }

@@ -33,6 +33,9 @@ public class Estado {
     }
 
     public String getCodigo() {
+        if (codigo != null) {
+            if (codigo.equals("")) return null;
+        }
         return codigo;
     }
 
@@ -41,6 +44,9 @@ public class Estado {
     }
 
     public String getNombre() {
+        if (nombre != null) {
+            if (nombre.equals("")) return null;
+        }
         return nombre;
     }
 

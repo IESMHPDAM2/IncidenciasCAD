@@ -36,6 +36,9 @@ public class Usuario {
     }
 
     public String getCuenta() {
+        if (cuenta != null) {
+            if (cuenta.equals("")) return null;
+        }
         return cuenta;
     }
 
@@ -44,6 +47,9 @@ public class Usuario {
     }
 
     public String getNombre() {
+        if (nombre != null) {
+            if (nombre.equals("")) return null;
+        }
         return nombre;
     }
 
@@ -52,6 +58,9 @@ public class Usuario {
     }
 
     public String getApellido() {
+        if (apellido != null) {
+            if (apellido.equals("")) return null;
+        }
         return apellido;
     }
 
@@ -60,6 +69,9 @@ public class Usuario {
     }
 
     public String getDepartamento() {
+        if (departamento != null) {
+            if (departamento.equals("")) return null;
+        }
         return departamento;
     }
 

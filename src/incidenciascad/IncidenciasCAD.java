@@ -204,7 +204,7 @@ public class IncidenciasCAD {
      */
     public Dependencia leerDependencia(Integer dependenciaId)throws ExcepcionIncidenciasCAD {
         String dql = "select * "
-                + "from dependencias d "
+                + "from dependencia d "
                 + "where dependencia_id = ?";                
         PreparedStatement sentenciaPreparada = null;       
         Dependencia dependencia = null;
@@ -672,8 +672,8 @@ public class IncidenciasCAD {
         TipoEquipo tipoEquipo = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dql);
-            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
             sentenciaPreparada.setInt(1, tipoEquipoID);
+            ResultSet resultado = sentenciaPreparada.executeQuery();
             while (resultado.next()) {
                 
                 tipoEquipo = new TipoEquipo();
@@ -1123,7 +1123,7 @@ public class IncidenciasCAD {
                     sentenciaPreparada.toString());
             switch (ex. getErrorCode()) {
                 case 1451:  
-                    e.setMensajeErrorUsuario("No se puede eliminar el estado ya que tiene historiales asociados");
+                    e.setMensajeErrorUsuario("No se puede eliminar el estado ya que tiene incidencias y/o datos históricos asociados");
                     break;
                 default:    
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
