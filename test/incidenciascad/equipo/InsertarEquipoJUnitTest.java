@@ -42,7 +42,7 @@ public class InsertarEquipoJUnitTest {
      */
     @Test
     public void testInsertarEquipoOK() throws ExcepcionIncidenciasCAD {
-        System.out.println("insertarEstado - Caso de éxito");
+        System.out.println("insertarEquipo - Caso de éxito");
         TipoEquipo tipoEquipo = new TipoEquipo();
         tipoEquipo.setTipoEquipoId(1);
         Equipo equipo = new Equipo(null,"189981",tipoEquipo);

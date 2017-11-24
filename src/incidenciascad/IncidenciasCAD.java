@@ -233,17 +233,27 @@ public class IncidenciasCAD {
         }
     }
     
-    /**
-     * Lee todas las dependencias de la base de datos
-     * @author Marcos González Fernández
-     * @return Lista de todas las dependencias
-     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+/**
+     * Lee las dependencias filtradas de la base de datos
+     * @author Óscar Barahona Ortega
+     * @return Una lista de dependencias
+     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Dependencia> leerDependencias() throws ExcepcionIncidenciasCAD {
-        String dql = "select * "
-                + "from dependencia d ";                
+        String dql = "select * from dependencia";
+        return leerDependencias(dql);
+    }
+    
+    /**
+     * Lee las dependencias filtradas de la base de datos
+     * @author Óscar Barahona Ortega
+     * @param dql Sentencia DQL que determinará la lista de dependencias a leer
+     * @return Una lista de incidencias
+     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+     */
+    public ArrayList<Dependencia> leerDependencias(String dql) throws ExcepcionIncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
-        ArrayList<Dependencia> listaDependencia = new ArrayList();
+        ArrayList<Dependencia> listaDependencias = new ArrayList();
         Dependencia dependencia = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dql);
@@ -253,12 +263,13 @@ public class IncidenciasCAD {
                 dependencia.setDependenciaId(resultado.getInt("dependencia_id"));
                 dependencia.setCodigo(resultado.getString("codigo"));
                 dependencia.setNombre(resultado.getString("nombre"));
-                listaDependencia.add(dependencia);
+                
+                listaDependencias.add(dependencia);
             }
             resultado.close();
             sentenciaPreparada.close();
             conexion.close();
-            return listaDependencia;            
+            return listaDependencias;         
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
                     ex.getErrorCode(),
@@ -269,7 +280,36 @@ public class IncidenciasCAD {
             throw e;
         }
     }
-
+    
+    /**
+     * Lee todas las dependencias de la base de datos
+     * @author Óscar Barahona Ortega
+     * @param codigo
+     * @param nombre
+     * @param criterioOrden
+     * @param orden
+     * @return Lista con todas las dependencias de la base de datos
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+//    public ArrayList<Dependencia> leerDependencias(String codigo, String nombre, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+//        String dql = "select * "
+//                + "from dependencia "
+//                + "where 1=1";
+//        if (codigo != null) dql = dql + " and codigo like '%" + codigo + "%'";
+//        if (nombre != null) dql = dql + " and nombre like '%" + nombre + "%'";
+//        if (criterioOrden == CODIGO_DEPENDENCIA) {
+//            dql = dql + " order by codigo";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        if (criterioOrden == NOMBRE_DEPENDENCIA) {
+//            dql = dql + " order by codigo";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        return leerDependencias(dql);
+//    }
+    
     /**
      * Inserta un usuario en la base de datos
      * @author Óscar Barahona Ortega
@@ -2278,10 +2318,19 @@ public class IncidenciasCAD {
         }
     } 
     
-    public String formatearFecha(Date fecha)
+    private String formatearFecha(Date fecha)
     {
         GregorianCalendar gc = new GregorianCalendar();
         gc.setTime(fecha);
         return gc.get(Calendar.YEAR)+ "-"+(gc.get(Calendar.MONTH)+1)+"-"+gc.get(Calendar.DAY_OF_MONTH);
+    }
+    
+    private void validarEquipoComoFK (Equipo equipo) {
+//            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+//                    -1,
+//                    "El método no se admite ",
+//                    "Error general del sistema. Consulte con el administrador",
+//                    dql);
+//            throw e;
     }
 }
