@@ -23,19 +23,19 @@ public class Prueba {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-//        System.out.println("Dependencia");
-//        Dependencia d = new Dependencia(0,"kk","Aula 14034 de Informática");
-//        try {
-//            IncidenciasCAD i = new IncidenciasCAD();
-//            int r = i.insertarDependencia(d);
-//            System.out.println(r + "registros");
-////            d = i.leerDependencia(7);
-////            System.out.println(d);
-////            ArrayList<Dependencia> l = i.leerDependencias();
-////            System.out.println(l);
-//        } catch (ExcepcionIncidenciasCAD ex) {
-//            System.out.println(ex);
-//        }
+        System.out.println("Dependencia");
+        Dependencia d = new Dependencia(0,"kkg"," 14034 de Informática");
+        try {
+            IncidenciasCAD i = new IncidenciasCAD();
+            int r = i.eliminarDependencia(null);
+            System.out.println(r + "registros");
+//            d = i.leerDependencia(7);
+//            System.out.println(d);
+//            ArrayList<Dependencia> l = i.leerDependencias();
+//            System.out.println(l);
+        } catch (ExcepcionIncidenciasCAD ex) {
+            System.out.println(ex);
+        }
         
 //        System.out.println("Estado");
 //        Estado e = new Estado(0,"R","Pend d");

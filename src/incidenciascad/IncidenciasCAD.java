@@ -86,6 +86,7 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarDependencia(Dependencia dependencia) throws ExcepcionIncidenciasCAD {
+        if (dependencia == null) dependencia = new Dependencia();
         String dml = "insert into dependencia(codigo,nombre) values (?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
@@ -130,7 +131,7 @@ public class IncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
-            sentenciaPreparada.setInt(1, dependenciaId);
+            sentenciaPreparada.setObject(1, dependenciaId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -163,13 +164,14 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarDependencia(Integer dependenciaId, Dependencia dependencia) throws ExcepcionIncidenciasCAD {
+        if (dependencia == null) dependencia = new Dependencia();
         String dml = "update dependencia set codigo = ?, nombre = ? where dependencia_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, dependencia.getCodigo());
             sentenciaPreparada.setString(2, dependencia.getNombre());
-            sentenciaPreparada.setInt(3, dependenciaId);
+            sentenciaPreparada.setObject(3, dependenciaId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -319,6 +321,7 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarUsuario(Usuario usuario) throws ExcepcionIncidenciasCAD {
+        if (usuario == null) usuario = new Usuario();
         String dml = "insert into usuario(cuenta,nombre,apellido,departamento) values (?,?,?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
@@ -365,7 +368,7 @@ public class IncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
-            sentenciaPreparada.setInt(1, usuarioId);
+            sentenciaPreparada.setObject(5, usuarioId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -398,6 +401,7 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarUsuario(Integer usuarioId, Usuario usuario) throws ExcepcionIncidenciasCAD {
+        if (usuario == null) usuario = new Usuario();
         String dml = "update usuario set cuenta = ?, nombre = ?, apellido = ?, departamento = ? where usuario_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
@@ -406,7 +410,7 @@ public class IncidenciasCAD {
             sentenciaPreparada.setString(2, usuario.getNombre());
             sentenciaPreparada.setString(3, usuario.getApellido());
             sentenciaPreparada.setString(4, usuario.getDepartamento());
-            sentenciaPreparada.setInt(5, usuarioId);
+            sentenciaPreparada.setObject(5, usuarioId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -590,6 +594,7 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarTipoEquipo(TipoEquipo tipoEquipo) throws ExcepcionIncidenciasCAD {
+        if (tipoEquipo == null) tipoEquipo = new TipoEquipo();
         String dml = "insert into tipo_equipo(codigo,nombre) values (?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
@@ -634,7 +639,7 @@ public class IncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
-            sentenciaPreparada.setInt(1, tipoEquipoID);
+            sentenciaPreparada.setObject(1, tipoEquipoID, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -667,13 +672,14 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarTipoEquipo(Integer tipoEquipoId, TipoEquipo tipoEquipo) throws ExcepcionIncidenciasCAD {
+        if (tipoEquipo == null) tipoEquipo = new TipoEquipo();
         String dml = "update tipo_equipo set codigo = ?, nombre = ? where tipo_equipo_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, tipoEquipo.getCodigo());
             sentenciaPreparada.setString(2, tipoEquipo.getNombre());
-            sentenciaPreparada.setInt(3, tipoEquipoId);
+            sentenciaPreparada.setObject(3, tipoEquipoId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -837,12 +843,14 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarEquipo(Equipo equipo) throws ExcepcionIncidenciasCAD {
+        if (equipo == null) equipo = new Equipo();
+        if (equipo.getTipoEquipo() == null) equipo.setTipoEquipo(new TipoEquipo());
         String dml = "insert into equipo(numero_etiqueta_consejeria,tipo_equipo_id) values (?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, equipo.getNumeroEtiquetaConsejeria());
-            sentenciaPreparada.setInt(2, equipo.getTipoEquipo().getTipoEquipoId());
+            sentenciaPreparada.setObject(2, equipo.getTipoEquipo().getTipoEquipoId(), Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -884,7 +892,7 @@ public class IncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
-            sentenciaPreparada.setInt(1, equipoId);
+            sentenciaPreparada.setObject(1, equipoId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -925,8 +933,6 @@ public class IncidenciasCAD {
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, equipo.getNumeroEtiquetaConsejeria());
-//            sentenciaPreparada.setInt(2, equipo.getTipoEquipo().getTipoEquipoId());
-//            sentenciaPreparada.setInt(3, equipoId);
             sentenciaPreparada.setObject(2, equipo.getTipoEquipo().getTipoEquipoId(), Types.INTEGER);
             sentenciaPreparada.setObject(3, equipoId, Types.INTEGER);
             System.out.println(sentenciaPreparada);
@@ -1116,6 +1122,7 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarEstado(Estado estado) throws ExcepcionIncidenciasCAD {
+        if (estado == null) estado = new Estado();
         String dml = "insert into estado(codigo,nombre) values (?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
@@ -1160,7 +1167,7 @@ public class IncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
-            sentenciaPreparada.setInt(1, estadoId);
+            sentenciaPreparada.setObject(1, estadoId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -1193,13 +1200,14 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarEstado(Integer estadoId, Estado estado) throws ExcepcionIncidenciasCAD {
+        if (estado == null) estado = new Estado();
         String dml = "update estado set codigo = ?, nombre = ? where estado_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, estado.getCodigo());
             sentenciaPreparada.setString(2, estado.getNombre());
-            sentenciaPreparada.setInt(3, estadoId);
+            sentenciaPreparada.setObject(3, estadoId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -1361,6 +1369,11 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarIncidencia(Incidencia incidencia) throws ExcepcionIncidenciasCAD {
+        if (incidencia == null) incidencia = new Incidencia();
+        if (incidencia.getDependencia() == null) incidencia.setDependencia(new Dependencia());
+        if (incidencia.getEquipo() == null) incidencia.setEquipo(new Equipo());
+        if (incidencia.getEstado() == null) incidencia.setEstado(new Estado());
+        if (incidencia.getUsuario() == null) incidencia.setUsuario(new Usuario());
         String dml = "insert into incidencia(posicion_equipo_dependencia, descripcion, "
                 + "comentario_administrador, fecha_estado_actual, usuario_id, equipo_id, dependencia_id, estado_id) "
                 + "values (?,?,?,?,?,?,?,?)";
@@ -1373,10 +1386,10 @@ public class IncidenciasCAD {
             //Se crea una java.sql.date para formatear la fecha de la incidencia.
             java.sql.Date fecha = new java.sql.Date(incidencia.getFechaEstadoActual().getTime());
             sentenciaPreparada.setDate(4, fecha);
-            sentenciaPreparada.setInt(5, incidencia.getUsuario().getUsuarioId());
-            sentenciaPreparada.setInt(6, incidencia.getEquipo().getEquipoId());
-            sentenciaPreparada.setInt(7, incidencia.getDependencia().getDependenciaId());
-            sentenciaPreparada.setInt(8, incidencia.getEstado().getEstadoId());
+            sentenciaPreparada.setObject(5, incidencia.getUsuario().getUsuarioId(), Types.INTEGER);
+            sentenciaPreparada.setObject(6, incidencia.getEquipo().getEquipoId(), Types.INTEGER);
+            sentenciaPreparada.setObject(7, incidencia.getDependencia().getDependenciaId(), Types.INTEGER);
+            sentenciaPreparada.setObject(8, incidencia.getEstado().getEstadoId(), Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -1416,7 +1429,7 @@ public class IncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
-            sentenciaPreparada.setInt(1, incidenciaId);
+            sentenciaPreparada.setObject(1, incidenciaId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -1449,6 +1462,11 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarIncidencia(Integer incidenciaId, Incidencia incidencia) throws ExcepcionIncidenciasCAD {
+        if (incidencia == null) incidencia = new Incidencia();
+        if (incidencia.getDependencia() == null) incidencia.setDependencia(new Dependencia());
+        if (incidencia.getEquipo() == null) incidencia.setEquipo(new Equipo());
+        if (incidencia.getEstado() == null) incidencia.setEstado(new Estado());
+        if (incidencia.getUsuario() == null) incidencia.setUsuario(new Usuario());
         String dml = "update incidencia set posicion_equipo_dependencia=?, "
                 + "descripcion=?, "
                 + "comentario_administrador=?, "
@@ -1457,7 +1475,7 @@ public class IncidenciasCAD {
                 + "equipo_id=?, "
                 + "dependencia_id=?, "
                 + "estado_id=? "
-                + "where incidencia_id=" + incidenciaId;
+                + "where incidencia_id=?" + incidenciaId;
         PreparedStatement sentenciaPreparada = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
@@ -1467,10 +1485,11 @@ public class IncidenciasCAD {
             //Se crea una java.sql.date para formatear la fecha de la incidencia.
             java.sql.Date fecha = new java.sql.Date(incidencia.getFechaEstadoActual().getTime());
             sentenciaPreparada.setDate(4, fecha);
-            sentenciaPreparada.setInt(5, incidencia.getUsuario().getUsuarioId());
-            sentenciaPreparada.setInt(6, incidencia.getEquipo().getEquipoId());
-            sentenciaPreparada.setInt(7, incidencia.getDependencia().getDependenciaId());
-            sentenciaPreparada.setInt(8, incidencia.getEstado().getEstadoId());
+            sentenciaPreparada.setObject(5, incidencia.getUsuario().getUsuarioId(), Types.INTEGER);
+            sentenciaPreparada.setObject(6, incidencia.getEquipo().getEquipoId(), Types.INTEGER);
+            sentenciaPreparada.setObject(7, incidencia.getDependencia().getDependenciaId(), Types.INTEGER);
+            sentenciaPreparada.setObject(8, incidencia.getEstado().getEstadoId(), Types.INTEGER);
+            sentenciaPreparada.setObject(9, incidenciaId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -1762,6 +1781,9 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarHistorial(Historial historial) throws ExcepcionIncidenciasCAD {
+        if (historial == null) historial = new Historial();
+        if (historial.getEstado() == null) historial.setEstado(new Estado());
+        if (historial.getIncidencia() == null) historial.setIncidencia(new Incidencia());
         String dml = "insert into historial"
                 + "(fecha,incidencia_id,estado_id) values (?,?,?)";
         PreparedStatement sentenciaPreparada = null;
@@ -1810,7 +1832,7 @@ public class IncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
-            sentenciaPreparada.setInt(1, historialId);
+            sentenciaPreparada.setObject(1, historialId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
@@ -1835,6 +1857,9 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarHistorial(Integer historialId, Historial historial) throws ExcepcionIncidenciasCAD {
+        if (historial == null) historial = new Historial();
+        if (historial.getEstado() == null) historial.setEstado(new Estado());
+        if (historial.getIncidencia() == null) historial.setIncidencia(new Incidencia());
         String dml = "update historial set fecha = ?, incidencia_id = ?, estado_id = ? where historial_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
@@ -1842,9 +1867,9 @@ public class IncidenciasCAD {
             Date fechaUtil = historial.getFecha();
             java.sql.Date fechaSql = new java.sql.Date(fechaUtil.getTime());
             sentenciaPreparada.setDate(1, fechaSql);
-            sentenciaPreparada.setInt(2, historial.getIncidencia().getIncidenciaId());
-            sentenciaPreparada.setInt(3, historial.getEstado().getEstadoId());
-            sentenciaPreparada.setInt(4, historialId);
+            sentenciaPreparada.setObject(2, historial.getIncidencia().getIncidenciaId(), Types.INTEGER);
+            sentenciaPreparada.setObject(3, historial.getEstado().getEstadoId(), Types.INTEGER);
+            sentenciaPreparada.setObject(4, historialId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
