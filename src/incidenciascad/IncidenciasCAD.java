@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -916,17 +917,19 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarEquipo(Integer equipoId, Equipo equipo) throws ExcepcionIncidenciasCAD {
-        if (equipoId == null) return 0;
-        if (equipo == null) equipo = new Equipo(null,null,new TipoEquipo());
-        else if (equipo.getTipoEquipo() == null) equipo.setTipoEquipo(new TipoEquipo());
+        if (equipo == null) equipo = new Equipo();
+        if (equipo.getTipoEquipo() == null) equipo.setTipoEquipo(new TipoEquipo());
         
         String dml = "update equipo set numero_etiqueta_consejeria = ?, tipo_equipo_id = ? where equipo_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, equipo.getNumeroEtiquetaConsejeria());
-            sentenciaPreparada.setInt(2, equipo.getTipoEquipo().getTipoEquipoId());
-            sentenciaPreparada.setInt(3, equipoId);
+//            sentenciaPreparada.setInt(2, equipo.getTipoEquipo().getTipoEquipoId());
+//            sentenciaPreparada.setInt(3, equipoId);
+            sentenciaPreparada.setObject(2, equipo.getTipoEquipo().getTipoEquipoId(), Types.INTEGER);
+            sentenciaPreparada.setObject(3, equipoId, Types.INTEGER);
+            System.out.println(sentenciaPreparada);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             conexion.close();
