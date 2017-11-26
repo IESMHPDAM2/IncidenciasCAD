@@ -46,6 +46,9 @@ public class Incidencia {
     }
 
     public String getPosicionEquipoDependencia() {
+        if (posicionEquipoDependencia != null) {
+            if (posicionEquipoDependencia.equals("")) return null;
+        }
         return posicionEquipoDependencia;
     }
 
@@ -54,6 +57,9 @@ public class Incidencia {
     }
 
     public String getDescripcion() {
+        if (descripcion != null) {
+            if (descripcion.equals("")) return null;
+        }
         return descripcion;
     }
 
@@ -62,6 +68,9 @@ public class Incidencia {
     }
 
     public String getComentarioAdministrador() {
+        if (comentarioAdministrador != null) {
+            if (comentarioAdministrador.equals("")) return null;
+        }
         return comentarioAdministrador;
     }
 

@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,20 +20,29 @@ import java.util.GregorianCalendar;
  */
 public class IncidenciasCAD {
     private Connection conexion;
+    private String cadenaConexion = "jdbc:mysql://10.0.1.96/incidencias?user=incidencias&password=incidencias";
     
     public static Integer ASCENDENTE = 1;
     public static Integer DESCENDENTE = 2;
-    public static Integer NUMERO_ETIQUETA_CONSEJERIA = 3;
-    public static Integer CUENTA = 5;
+    public static Integer DEPENDENCIA_CODIGO = 10;
+    public static Integer DEPENDENCIA_NOMBRE = 11;
+    public static Integer USUARIO_CUENTA = 20;
+    public static Integer USUARIO_NOMBRE = 21;
+    public static Integer USUARIO_APELLIDO = 22;
+    public static Integer USUARIO_DEPARTAMENTO = 23;
+    public static Integer TIPO_EQUIPO_CODIGO = 30;
+    public static Integer TIPO_EQUIPO_NOMBRE = 31;
+    public static Integer ESTADO_CODIGO = 40;
+    public static Integer ESTADO_NOMBRE = 41;
+    public static Integer EQUIPO_NUMERO_ETIQUETA_CONSEJERIA = 50;
+    public static Integer INCIDENCIA_ID = 60;
+    public static Integer INCIDENCIA_POSICION_EQUIPO_DEPENDENCIA = 61;
+    public static Integer INCIDENCIA_DESCRIPCION = 62;
+    public static Integer INCIDENCIA_COMENTARIO_ADMINISTRADOR = 63;
+    public static Integer INCIDENCIA_FECHA_ESTADO_ACTUAL = 64;
+    
     public static Integer NOMBRE = 6;
-    public static Integer APELLIDO = 7;
-    public static Integer DEPARTAMENTO = 8;
-    public static Integer CODIGO_TIPO_EQUIPO = 9;
-    public static Integer NOMBRE_TIPO_EQUIPO = 10;
-    public static Integer NOMBRE_ESTADO = 12;
-    public static Integer CODIGO_ESTADO = 13;
     public static Integer FECHA = 15;
-    public static Integer INCIDENCIA_ID = 16;
     public static Integer ESTADO_HISTORIAL_ID = 17;
     /**
      * Constructor vacío
@@ -42,7 +52,6 @@ public class IncidenciasCAD {
     public IncidenciasCAD() throws ExcepcionIncidenciasCAD {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conexion = DriverManager.getConnection("jdbc:mysql://10.0.1.96/incidencias?user=incidencias&password=incidencias");
         } catch (ClassNotFoundException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
                     -1,
@@ -50,32 +59,61 @@ public class IncidenciasCAD {
                     "Error general del sistema. Consulte con el administrador",
                     null);
             throw e;
+        }
+    }
+    
+    /**
+     * Abre la conexión con la base de datos 
+     * @author Ignacio Fontecha Hernández
+     * @param conexion Conexión con la base de datos
+     * @param setenciaPreparada Setencia preparada utilizada para el acceso a la base de datos
+     */
+    private void abrirConexion() throws ExcepcionIncidenciasCAD {
+        try {
+            conexion = DriverManager.getConnection(cadenaConexion);
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
                     ex.getErrorCode(),
                     ex.getMessage(),
-                    "Error general del sistema. Consulte con el administrador",
+                    null,
                     null);
-            cerrarConexion(conexion, null);
             throw e;
         }
     }
-
+    
+    /**
+     * Cierra la conexión con la base de datos 
+     * @author Ignacio Fontecha Hernández
+     * @param conexion Conexión con la base de datos
+     * @param setenciaPreparada Setencia preparada utilizada para el acceso a la base de datos
+     */
+    private void cerrarConexion() throws ExcepcionIncidenciasCAD {
+        try {
+            conexion.close();
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    null,
+                    null);
+            throw e;
+        }
+    }
+    
     /**
      * Cierra tanto la conexión con la base de datos como la sentencia preparada
      * utilizada
      * @author Ignacio Fontecha Hernández
-     * @param conexion Coexión con la base de datos
+     * @param conexion Conexión con la base de datos
      * @param setenciaPreparada Setencia preparada utilizada para el acceso a la base de datos
      */
-    private void cerrarConexion(Connection conexion, PreparedStatement sentenciaPreparada) {
+    private void cerrarConexionExcepcion(Connection conexion, PreparedStatement sentenciaPreparada) {
         try {
            sentenciaPreparada.close();
         } catch (SQLException | NullPointerException ex) {}
         try {
            conexion.close();
         } catch (SQLException | NullPointerException ex) {}
-       
     }
     
     /**
@@ -90,12 +128,13 @@ public class IncidenciasCAD {
         String dml = "insert into dependencia(codigo,nombre) values (?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, dependencia.getCodigo());
             sentenciaPreparada.setString(2, dependencia.getNombre());
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -114,7 +153,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -130,11 +169,12 @@ public class IncidenciasCAD {
         String dml = "delete from dependencia where dependencia_id=?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setObject(1, dependenciaId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -150,7 +190,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -168,13 +208,14 @@ public class IncidenciasCAD {
         String dml = "update dependencia set codigo = ?, nombre = ? where dependencia_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, dependencia.getCodigo());
             sentenciaPreparada.setString(2, dependencia.getNombre());
             sentenciaPreparada.setObject(3, dependenciaId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -193,7 +234,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -212,6 +253,7 @@ public class IncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;       
         Dependencia dependencia = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             sentenciaPreparada.setInt(1,dependenciaId);
             ResultSet resultado = sentenciaPreparada.executeQuery();
@@ -223,7 +265,7 @@ public class IncidenciasCAD {
             }
             resultado.close();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return dependencia;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -231,20 +273,9 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     sentenciaPreparada.toString());
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
-    }
-    
-/**
-     * Lee las dependencias filtradas de la base de datos
-     * @author Óscar Barahona Ortega
-     * @return Una lista de dependencias
-     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
-     */
-    public ArrayList<Dependencia> leerDependencias() throws ExcepcionIncidenciasCAD {
-        String dql = "select * from dependencia";
-        return leerDependencias(dql);
     }
     
     /**
@@ -259,6 +290,7 @@ public class IncidenciasCAD {
         ArrayList<Dependencia> listaDependencias = new ArrayList();
         Dependencia dependencia = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             ResultSet resultado = sentenciaPreparada.executeQuery();
             while (resultado.next()) {
@@ -271,7 +303,7 @@ public class IncidenciasCAD {
             }
             resultado.close();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return listaDependencias;         
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -279,9 +311,20 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     dql);
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
+    }
+    
+    /**
+     * Lee las dependencias filtradas de la base de datos
+     * @author Óscar Barahona Ortega
+     * @return Una lista de dependencias
+     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+     */
+    public ArrayList<Dependencia> leerDependencias() throws ExcepcionIncidenciasCAD {
+        String dql = "select * from dependencia";
+        return leerDependencias(dql);
     }
     
     /**
@@ -294,24 +337,24 @@ public class IncidenciasCAD {
      * @return Lista con todas las dependencias de la base de datos
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-//    public ArrayList<Dependencia> leerDependencias(String codigo, String nombre, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
-//        String dql = "select * "
-//                + "from dependencia "
-//                + "where 1=1";
-//        if (codigo != null) dql = dql + " and codigo like '%" + codigo + "%'";
-//        if (nombre != null) dql = dql + " and nombre like '%" + nombre + "%'";
-//        if (criterioOrden == CODIGO_DEPENDENCIA) {
-//            dql = dql + " order by codigo";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        if (criterioOrden == NOMBRE_DEPENDENCIA) {
-//            dql = dql + " order by codigo";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        return leerDependencias(dql);
-//    }
+    public ArrayList<Dependencia> leerDependencias(String codigo, String nombre, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from dependencia "
+                + "where 1=1";
+        if (codigo != null) dql = dql + " and codigo like '%" + codigo + "%'";
+        if (nombre != null) dql = dql + " and nombre like '%" + nombre + "%'";
+        if (criterioOrden == DEPENDENCIA_CODIGO) {
+            dql = dql + " order by codigo";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        if (criterioOrden == DEPENDENCIA_NOMBRE) {
+            dql = dql + " order by codigo";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        return leerDependencias(dql);
+    }
     
     /**
      * Inserta un usuario en la base de datos
@@ -325,6 +368,7 @@ public class IncidenciasCAD {
         String dml = "insert into usuario(cuenta,nombre,apellido,departamento) values (?,?,?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, usuario.getCuenta());
             sentenciaPreparada.setString(2, usuario.getNombre());
@@ -332,7 +376,7 @@ public class IncidenciasCAD {
             sentenciaPreparada.setString(4, usuario.getDepartamento());
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -342,16 +386,16 @@ public class IncidenciasCAD {
                     sentenciaPreparada.toString());
             switch (ex. getErrorCode()) {
                 case 1048:  
-                    e.setMensajeErrorUsuario("El nombre de cuenta es obligatorio");
+                    e.setMensajeErrorUsuario("La cuenta es obligatoria");
                     break;
                 case 1062:  
-                    e.setMensajeErrorUsuario("El nombre de cuenta ya existe y no se puede repetir");
+                    e.setMensajeErrorUsuario("La cuenta ya existe y no se puede repetir");
                     break;
                 default:    
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -367,11 +411,12 @@ public class IncidenciasCAD {
         String dml = "delete from usuario where usuario_id=?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
-            sentenciaPreparada.setObject(5, usuarioId, Types.INTEGER);
+            sentenciaPreparada.setObject(1, usuarioId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -387,7 +432,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -405,6 +450,7 @@ public class IncidenciasCAD {
         String dml = "update usuario set cuenta = ?, nombre = ?, apellido = ?, departamento = ? where usuario_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, usuario.getCuenta());
             sentenciaPreparada.setString(2, usuario.getNombre());
@@ -413,7 +459,7 @@ public class IncidenciasCAD {
             sentenciaPreparada.setObject(5, usuarioId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -423,16 +469,16 @@ public class IncidenciasCAD {
                     sentenciaPreparada.toString());
             switch (ex. getErrorCode()) {
                 case 1048:  
-                    e.setMensajeErrorUsuario("El nombre de cuenta es obligatorio");
+                    e.setMensajeErrorUsuario("La cuenta es obligatoria");
                     break;
                 case 1062:  
-                    e.setMensajeErrorUsuario("El nombre de cuenta ya existe y no se puede repetir");
+                    e.setMensajeErrorUsuario("La cuenta ya existe y no se puede repetir");
                     break;
                 default:    
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -451,6 +497,7 @@ public class IncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         Usuario usuario = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             sentenciaPreparada.setInt(1, usuarioId);
             ResultSet resultado = sentenciaPreparada.executeQuery();
@@ -464,7 +511,7 @@ public class IncidenciasCAD {
             }
             resultado.close();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return usuario;
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -472,7 +519,7 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     sentenciaPreparada.toString());
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -480,16 +527,16 @@ public class IncidenciasCAD {
     /**
      * Lee todos los usuarios de la base de datos
      * @author Óscar Barahona Ortega
+     * @param dql
      * @return Lista con todos los usuarios de la base de datos
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<Usuario> leerUsuarios() throws ExcepcionIncidenciasCAD {
-        String dql = "select * "
-                + "from usuario ";
+    public ArrayList<Usuario> leerUsuarios(String dql) throws ExcepcionIncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         ArrayList<Usuario> listaUsuarios = new ArrayList();
         Usuario usuario = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             ResultSet resultado = sentenciaPreparada.executeQuery(dql);
             while (resultado.next()) {
@@ -503,7 +550,7 @@ public class IncidenciasCAD {
             }
             resultado.close();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return listaUsuarios;          
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -511,11 +558,22 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     dql);
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
 
+    /**
+     * Lee todos los usuarios de la base de datos
+     * @author Óscar Barahona Ortega
+     * @return Lista con todos los usuarios de la base de datos
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public ArrayList<Usuario> leerUsuarios() throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from usuario ";
+        return leerUsuarios(dql);
+    }    
     /**
      * Lee todos los usuarios de la base de datos
      * @author Óscar Barahona Ortega
@@ -536,54 +594,27 @@ public class IncidenciasCAD {
         if (nombre != null) dql = dql + " and nombre like '%" + nombre + "%'";
         if (apellido != null) dql = dql + " and apellido like '%" + apellido + "%'";
         if (departamento != null) dql = dql + " and departamento like '%" + departamento + "%'";
-        if (criterioOrden == CUENTA) {
+        if (criterioOrden == USUARIO_CUENTA) {
             dql = dql + " order by CUENTA";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
-        if (criterioOrden == NOMBRE) {
+        if (criterioOrden == USUARIO_NOMBRE) {
             dql = dql + " order by nombre";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
-        if (criterioOrden == APELLIDO) {
+        if (criterioOrden == USUARIO_APELLIDO) {
             dql = dql + " order by apellido";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
-        if (criterioOrden == DEPARTAMENTO) {
+        if (criterioOrden == USUARIO_DEPARTAMENTO) {
             dql = dql + " order by departamento";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
-        PreparedStatement sentenciaPreparada = null;
-        ArrayList<Usuario> listaUsuarios = new ArrayList();
-        Usuario usuario = null;
-        try {
-            sentenciaPreparada = conexion.prepareStatement(dql);
-            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
-            while (resultado.next()) {
-                usuario = new Usuario();
-                usuario.setUsuarioId(resultado.getInt("usuario_id"));
-                usuario.setCuenta(resultado.getString("cuenta"));
-                usuario.setNombre(resultado.getString("nombre"));
-                usuario.setApellido(resultado.getString("apellido"));
-                usuario.setDepartamento(resultado.getString("departamento"));
-                listaUsuarios.add(usuario);
-            }
-            resultado.close();
-            sentenciaPreparada.close();
-            conexion.close();
-            return listaUsuarios;          
-        } catch (SQLException ex) {
-            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
-                    ex.getErrorCode(),
-                    ex.getMessage(),
-                    "Error general del sistema. Consulte con el administrador",
-                    dql);
-            cerrarConexion(conexion, sentenciaPreparada);
-            throw e;
-        }
+        return leerUsuarios(dql);
     }
     
     /**
@@ -598,12 +629,13 @@ public class IncidenciasCAD {
         String dml = "insert into tipo_equipo(codigo,nombre) values (?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, tipoEquipo.getCodigo());
             sentenciaPreparada.setString(2, tipoEquipo.getNombre());
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -622,7 +654,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -638,11 +670,12 @@ public class IncidenciasCAD {
         String dml = "delete from tipo_equipo where tipo_equipo_id=?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setObject(1, tipoEquipoID, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -658,7 +691,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -676,13 +709,14 @@ public class IncidenciasCAD {
         String dml = "update tipo_equipo set codigo = ?, nombre = ? where tipo_equipo_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, tipoEquipo.getCodigo());
             sentenciaPreparada.setString(2, tipoEquipo.getNombre());
             sentenciaPreparada.setObject(3, tipoEquipoId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -701,7 +735,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -718,6 +752,7 @@ public class IncidenciasCAD {
         
         TipoEquipo tipoEquipo = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             sentenciaPreparada.setInt(1, tipoEquipoID);
             ResultSet resultado = sentenciaPreparada.executeQuery();
@@ -732,7 +767,7 @@ public class IncidenciasCAD {
             }
             resultado.close();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return tipoEquipo;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -740,7 +775,7 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     dql);
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -749,15 +784,16 @@ public class IncidenciasCAD {
     /**
      * Lee todos los equipos de la base de datos
      * @author Ramon Tezanos San Emeterio
+     * @param dql
      * @return Lista con todos los equipos de la base de datos
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<TipoEquipo> leerTiposEquipo() throws ExcepcionIncidenciasCAD {
-        String dql = "select * from tipo_equipo";
+    public ArrayList<TipoEquipo> leerTiposEquipo(String dql) throws ExcepcionIncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         ArrayList<TipoEquipo> listaTipoEquipos = new ArrayList(); 
         TipoEquipo tipoEquipo = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             ResultSet resultado = sentenciaPreparada.executeQuery(dql);
             while (resultado.next()) {
@@ -769,7 +805,7 @@ public class IncidenciasCAD {
             }
             resultado.close();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return listaTipoEquipos;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -777,11 +813,21 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     dql);
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
 
+    /**
+     * Lee todos los equipos de la base de datos
+     * @author Ramon Tezanos San Emeterio
+     * @return Lista con todos los equipos de la base de datos
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public ArrayList<TipoEquipo> leerTiposEquipo() throws ExcepcionIncidenciasCAD {
+        String dql = "select * from tipo_equipo";
+        return leerTiposEquipo(dql);
+    }    
      /**
      * Lee los equipos de la base de datos que coincidan con los filtros pasados
      * @author Ramon Tezanos San Emeterio
@@ -798,41 +844,17 @@ public class IncidenciasCAD {
         if(codigo != null || nombre != null)
         if (codigo != null) dql = dql + " and codigo like '%" + codigo + "%'";
         if (nombre != null) dql = dql + " and nombre like '%" + nombre + "%'";
-        if (criterioOrden == NOMBRE_TIPO_EQUIPO) {
+        if (criterioOrden == TIPO_EQUIPO_NOMBRE) {
             dql = dql + " order by nombre";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
-        if (criterioOrden == CODIGO_TIPO_EQUIPO) {
+        if (criterioOrden == TIPO_EQUIPO_CODIGO) {
             dql = dql + " order by codigo";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
-        }PreparedStatement sentenciaPreparada = null;
-        ArrayList<TipoEquipo> listaTipoEquipos = new ArrayList(); 
-        TipoEquipo tipoEquipo = null;
-        try {
-            sentenciaPreparada = conexion.prepareStatement(dql);
-            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
-            while (resultado.next()) {
-                tipoEquipo = new TipoEquipo();
-                tipoEquipo.setTipoEquipoId(resultado.getInt("tipo_equipo_id"));
-                tipoEquipo.setCodigo(resultado.getString("codigo"));
-                tipoEquipo.setNombre(resultado.getString("nombre"));                
-                listaTipoEquipos.add(tipoEquipo);
-            }
-            resultado.close();
-            sentenciaPreparada.close();
-            conexion.close();
-            return listaTipoEquipos;            
-        } catch (SQLException ex) {
-            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
-                    ex.getErrorCode(),
-                    ex.getMessage(),
-                    "Error general del sistema. Consulte con el administrador",
-                    dql);
-            cerrarConexion(conexion, sentenciaPreparada);
-            throw e;
         }
+        return leerTiposEquipo(dql);
     }
 
     /**
@@ -848,12 +870,13 @@ public class IncidenciasCAD {
         String dml = "insert into equipo(numero_etiqueta_consejeria,tipo_equipo_id) values (?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, equipo.getNumeroEtiquetaConsejeria());
             sentenciaPreparada.setObject(2, equipo.getTipoEquipo().getTipoEquipoId(), Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -875,7 +898,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -891,11 +914,12 @@ public class IncidenciasCAD {
         String dml = "delete from equipo where equipo_id=?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setObject(1, equipoId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -911,7 +935,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -931,6 +955,7 @@ public class IncidenciasCAD {
         String dml = "update equipo set numero_etiqueta_consejeria = ?, tipo_equipo_id = ? where equipo_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, equipo.getNumeroEtiquetaConsejeria());
             sentenciaPreparada.setObject(2, equipo.getTipoEquipo().getTipoEquipoId(), Types.INTEGER);
@@ -938,7 +963,7 @@ public class IncidenciasCAD {
             System.out.println(sentenciaPreparada);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -954,17 +979,14 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("El tipo de equipo seleccionado no existe");
                     break;
                 case 1062:  
-                    e.setMensajeErrorUsuario("El número de etiqueta de Consejería ya existen y no se puede repetir");
+                    e.setMensajeErrorUsuario("El número de etiqueta de Consejería ya existe y no se puede repetir");
                     break;
                 default:    
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
-////        } catch (NullPointerException ex) {
-////            cerrarConexion(conexion, sentenciaPreparada);
-////            return 0;
         }
     }
 
@@ -985,8 +1007,9 @@ public class IncidenciasCAD {
         Equipo equipo = null;
         TipoEquipo tipoEquipo = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
-            sentenciaPreparada.setInt(1, equipoId);
+            sentenciaPreparada.setObject(1, equipoId, Types.INTEGER);
             ResultSet resultado = sentenciaPreparada.executeQuery();
             while (resultado.next()) {
                 equipo = new Equipo();
@@ -1000,7 +1023,7 @@ public class IncidenciasCAD {
             }
             resultado.close();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return equipo;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1008,7 +1031,48 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     sentenciaPreparada.toString());
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
+            throw e;
+        }
+    }
+
+    /**
+     * Lee todos los equipos de la base de datos
+     * @author Ignacio Fontecha Hernández
+     * @return Lista con todos los equipos de la base de datos
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public ArrayList<Equipo> leerEquipos(String dql) throws ExcepcionIncidenciasCAD {
+        PreparedStatement sentenciaPreparada = null;
+        ArrayList<Equipo> listaEquipos = new ArrayList();
+        Equipo equipo = null;
+        TipoEquipo tipoEquipo = null;
+        try {
+            abrirConexion();
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
+            while (resultado.next()) {
+                equipo = new Equipo();
+                equipo.setEquipoId(resultado.getInt("equipo_id"));
+                equipo.setNumeroEtiquetaConsejeria(resultado.getString("numero_etiqueta_consejeria"));
+                tipoEquipo = new TipoEquipo();
+                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
+                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
+                tipoEquipo.setNombre(resultado.getString("te.nombre"));
+                equipo.setTipoEquipo(tipoEquipo);
+                listaEquipos.add(equipo);
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            cerrarConexion();
+            return listaEquipos;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    dql);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -1023,39 +1087,8 @@ public class IncidenciasCAD {
         String dql = "select * "
                 + "from tipo_equipo te, equipo e "
                 + "where te.tipo_equipo_id = e.tipo_equipo_id";
-        PreparedStatement sentenciaPreparada = null;
-        ArrayList<Equipo> listaEquipos = new ArrayList();
-        Equipo equipo = null;
-        TipoEquipo tipoEquipo = null;
-        try {
-            sentenciaPreparada = conexion.prepareStatement(dql);
-            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
-            while (resultado.next()) {
-                equipo = new Equipo();
-                equipo.setEquipoId(resultado.getInt("equipo_id"));
-                equipo.setNumeroEtiquetaConsejeria(resultado.getString("numero_etiqueta_consejeria"));
-                tipoEquipo = new TipoEquipo();
-                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
-                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
-                tipoEquipo.setNombre(resultado.getString("te.nombre"));
-                equipo.setTipoEquipo(tipoEquipo);
-                listaEquipos.add(equipo);
-            }
-            resultado.close();
-            sentenciaPreparada.close();
-            conexion.close();
-            return listaEquipos;            
-        } catch (SQLException ex) {
-            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
-                    ex.getErrorCode(),
-                    ex.getMessage(),
-                    "Error general del sistema. Consulte con el administrador",
-                    dql);
-            cerrarConexion(conexion, sentenciaPreparada);
-            throw e;
-        }
+        return leerEquipos(dql);
     }
-
     /**
      * Lee todos los equipos de la base de datos
      * @author Ignacio Fontecha Hernández
@@ -1070,48 +1103,18 @@ public class IncidenciasCAD {
                 + "from tipo_equipo te, equipo e "
                 + "where te.tipo_equipo_id = e.tipo_equipo_id";
         if (numeroEtiquetaConsejeria != null) dql = dql + " and numero_etiqueta_consejeria like '%" + numeroEtiquetaConsejeria + "%'";
-        if (tipoEquipoId !=null) dql = dql + " and tipo_equipo_id = " + tipoEquipoId;
-        if (criterioOrden == NUMERO_ETIQUETA_CONSEJERIA) {
+        if (tipoEquipoId !=null) dql = dql + " and te.tipo_equipo_id = " + tipoEquipoId;
+        if (criterioOrden == EQUIPO_NUMERO_ETIQUETA_CONSEJERIA) {
             dql = dql + " order by numero_etiqueta_consejeria";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
-        if (criterioOrden == CODIGO_TIPO_EQUIPO) {
+        if (criterioOrden == TIPO_EQUIPO_CODIGO) {
             dql = dql + " order by te.codigo";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
-        PreparedStatement sentenciaPreparada = null;
-        ArrayList<Equipo> listaEquipos = new ArrayList();
-        Equipo equipo = null;
-        TipoEquipo tipoEquipo = null;
-        try {
-            sentenciaPreparada = conexion.prepareStatement(dql);
-            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
-            while (resultado.next()) {
-                equipo = new Equipo();
-                equipo.setEquipoId(resultado.getInt("equipo_id"));
-                equipo.setNumeroEtiquetaConsejeria(resultado.getString("numero_etiqueta_consejeria"));
-                tipoEquipo = new TipoEquipo();
-                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
-                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
-                tipoEquipo.setNombre(resultado.getString("te.nombre"));
-                equipo.setTipoEquipo(tipoEquipo);
-                listaEquipos.add(equipo);
-            }
-            resultado.close();
-            sentenciaPreparada.close();
-            conexion.close();
-            return listaEquipos;            
-        } catch (SQLException ex) {
-            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
-                    ex.getErrorCode(),
-                    ex.getMessage(),
-                    "Error general del sistema. Consulte con el administrador",
-                    dql);
-            cerrarConexion(conexion, sentenciaPreparada);
-            throw e;
-        }
+        return leerEquipos(dql);
     }
     
     /**
@@ -1126,12 +1129,13 @@ public class IncidenciasCAD {
         String dml = "insert into estado(codigo,nombre) values (?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, estado.getCodigo());
             sentenciaPreparada.setString(2, estado.getNombre());            
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1150,7 +1154,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -1166,11 +1170,12 @@ public class IncidenciasCAD {
         String dml = "delete from estado where estado_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setObject(1, estadoId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1186,7 +1191,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -1204,13 +1209,14 @@ public class IncidenciasCAD {
         String dml = "update estado set codigo = ?, nombre = ? where estado_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, estado.getCodigo());
             sentenciaPreparada.setString(2, estado.getNombre());
             sentenciaPreparada.setObject(3, estadoId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1229,7 +1235,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -1248,6 +1254,7 @@ public class IncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;       
         Estado estado = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             sentenciaPreparada.setInt(1,estadoId);
             ResultSet resultado = sentenciaPreparada.executeQuery();
@@ -1259,7 +1266,7 @@ public class IncidenciasCAD {
             }
             resultado.close();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return estado;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1267,7 +1274,7 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     sentenciaPreparada.toString());
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }   
@@ -1278,13 +1285,12 @@ public class IncidenciasCAD {
      * @return Lista de todos los estados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<Estado> leerEstados() throws ExcepcionIncidenciasCAD {
-        String dql = "select * "
-                + "from estado e ";                
+    public ArrayList<Estado> leerEstados(String dql) throws ExcepcionIncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         ArrayList<Estado> listaEstados = new ArrayList();
         Estado estado = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             ResultSet resultado = sentenciaPreparada.executeQuery(dql);
             while (resultado.next()) {
@@ -1296,7 +1302,7 @@ public class IncidenciasCAD {
             }
             resultado.close();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return listaEstados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1304,10 +1310,22 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     dql);
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }    
+    
+    /**
+     * Lee todos los estados de la base de datos
+     * @author Marcos González Fernández
+     * @return Lista de todos los estados
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public ArrayList<Estado> leerEstados() throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from estado e ";
+        return leerEstados(dql);
+    }
     
     /**
      * @author Marcos Gonzalez Fernandez
@@ -1324,41 +1342,17 @@ public class IncidenciasCAD {
         if (codigo !=null || nombre !=null)
         if (codigo !=null) dql = dql + " and codigo like '%" + codigo + "%'";
         if (nombre !=null) dql = dql + " and nombre like '%" + nombre + "%'";
-        if (criterioOrden == NOMBRE_ESTADO){
+        if (criterioOrden == ESTADO_NOMBRE){
             dql = dql + " order by e.nombre";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
-        if (criterioOrden == CODIGO_ESTADO){
+        if (criterioOrden == ESTADO_CODIGO){
             dql = dql + " order by e.codigo";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
-        } PreparedStatement sentenciaPreparada = null;
-        ArrayList<Estado> listaEstados = new ArrayList();
-        Estado estado = null;   
-        try {
-            sentenciaPreparada = conexion.prepareStatement(dql);
-            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
-            while (resultado.next()) {
-                estado = new Estado();
-                estado.setEstadoId(resultado.getInt("e.estado_id"));
-                estado.setCodigo(resultado.getString("e.codigo"));
-                estado.setNombre(resultado.getString("e.nombre"));
-                listaEstados.add(estado);
-            }
-            resultado.close();
-            sentenciaPreparada.close();
-            conexion.close();
-            return listaEstados;            
-        } catch (SQLException ex) {
-            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
-                    ex.getErrorCode(),
-                    ex.getMessage(),
-                    "Error general del sistema. Consulte con el administrador",
-                    dql);
-            cerrarConexion(conexion, sentenciaPreparada);
-            throw e;
         }
+        return leerEstados(dql);
     }
     
     /**
@@ -1379,20 +1373,25 @@ public class IncidenciasCAD {
                 + "values (?,?,?,?,?,?,?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, incidencia.getPosicionEquipoDependencia());
             sentenciaPreparada.setString(2, incidencia.getDescripcion());
             sentenciaPreparada.setString(3, incidencia.getComentarioAdministrador());
             //Se crea una java.sql.date para formatear la fecha de la incidencia.
-            java.sql.Date fecha = new java.sql.Date(incidencia.getFechaEstadoActual().getTime());
-            sentenciaPreparada.setDate(4, fecha);
+            if (incidencia.getFechaEstadoActual() == null) {
+                sentenciaPreparada.setNull(4, Types.DATE);
+            } else {
+                java.sql.Date fecha = new java.sql.Date(incidencia.getFechaEstadoActual().getTime());
+                sentenciaPreparada.setObject(4, fecha, Types.DATE);
+            }
             sentenciaPreparada.setObject(5, incidencia.getUsuario().getUsuarioId(), Types.INTEGER);
             sentenciaPreparada.setObject(6, incidencia.getEquipo().getEquipoId(), Types.INTEGER);
             sentenciaPreparada.setObject(7, incidencia.getDependencia().getDependenciaId(), Types.INTEGER);
             sentenciaPreparada.setObject(8, incidencia.getEstado().getEstadoId(), Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1412,7 +1411,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -1428,11 +1427,12 @@ public class IncidenciasCAD {
         String dml = "delete from incidencia where incidencia_id=?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setObject(1, incidenciaId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1448,7 +1448,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador.");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -1475,24 +1475,30 @@ public class IncidenciasCAD {
                 + "equipo_id=?, "
                 + "dependencia_id=?, "
                 + "estado_id=? "
-                + "where incidencia_id=?" + incidenciaId;
+                + "where incidencia_id=?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setString(1, incidencia.getPosicionEquipoDependencia());
             sentenciaPreparada.setString(2, incidencia.getDescripcion());
             sentenciaPreparada.setString(3, incidencia.getComentarioAdministrador());
             //Se crea una java.sql.date para formatear la fecha de la incidencia.
-            java.sql.Date fecha = new java.sql.Date(incidencia.getFechaEstadoActual().getTime());
-            sentenciaPreparada.setDate(4, fecha);
+            if (incidencia.getFechaEstadoActual() == null) {
+                sentenciaPreparada.setNull(4, Types.DATE);
+            } else {
+                java.sql.Date fecha = new java.sql.Date(incidencia.getFechaEstadoActual().getTime());
+                sentenciaPreparada.setObject(4, fecha, Types.DATE);
+            }
             sentenciaPreparada.setObject(5, incidencia.getUsuario().getUsuarioId(), Types.INTEGER);
             sentenciaPreparada.setObject(6, incidencia.getEquipo().getEquipoId(), Types.INTEGER);
             sentenciaPreparada.setObject(7, incidencia.getDependencia().getDependenciaId(), Types.INTEGER);
             sentenciaPreparada.setObject(8, incidencia.getEstado().getEstadoId(), Types.INTEGER);
             sentenciaPreparada.setObject(9, incidenciaId, Types.INTEGER);
+            System.out.println(sentenciaPreparada.toString());
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1512,12 +1518,88 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
     
-/**
+    /**
+     * Lee una incidencia de la base de datos
+     * @author Víctor Bolado Obregón
+     * @param incidenciaId Identificardor de la incidencia
+     * @return Una lista de incidencias
+     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+     */
+    public Incidencia leerIncidencia(Integer incidenciaId) throws ExcepcionIncidenciasCAD {
+        String dql = "select * from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
+            "where i.USUARIO_ID=u.USUARIO_ID " +
+            "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
+            "and e.TIPO_EQUIPO_ID=te.TIPO_EQUIPO_ID " +
+            "and i.EQUIPO_ID=e.EQUIPO_ID " +
+            "and i.ESTADO_ID=es.ESTADO_ID "
+                + "and i.incidencia_id = " + incidenciaId;
+        PreparedStatement sentenciaPreparada = null;
+        Incidencia incidencia = null;
+        Equipo equipo = new Equipo();
+        TipoEquipo tipoEquipo = new TipoEquipo();
+        Usuario usuario = new Usuario();
+        Dependencia dependencia = new Dependencia();
+        Estado estado = new Estado();
+        try {
+            abrirConexion();
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            ResultSet resultado = sentenciaPreparada.executeQuery();
+            while (resultado.next()) {
+                //INCIDENCIA
+                incidencia = new Incidencia();
+                incidencia.setIncidenciaId(resultado.getInt("i.incidencia_id"));
+                incidencia.setPosicionEquipoDependencia(resultado.getString("i.posicion_equipo_dependencia"));
+                incidencia.setDescripcion(resultado.getString("i.descripcion"));
+                incidencia.setComentarioAdministrador(resultado.getString("i.comentario_administrador"));
+                incidencia.setFechaEstadoActual(resultado.getDate("i.fecha_estado_actual"));
+                //USUARIO
+                usuario.setUsuarioId(resultado.getInt("u.usuario_id"));
+                usuario.setCuenta(resultado.getString("u.cuenta"));
+                usuario.setNombre(resultado.getString("u.nombre"));
+                usuario.setApellido(resultado.getString("u.apellido"));
+                usuario.setDepartamento(resultado.getString("u.departamento"));
+                incidencia.setUsuario(usuario);
+                //TIPO EQUIPO
+                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
+                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
+                tipoEquipo.setNombre(resultado.getString("te.nombre"));
+                //EQUIPO
+                equipo.setEquipoId(resultado.getInt("e.equipo_id"));
+                equipo.setNumeroEtiquetaConsejeria(resultado.getString("e.numero_etiqueta_consejeria"));
+                equipo.setTipoEquipo(tipoEquipo);
+                incidencia.setEquipo(equipo);
+                //DEPENDENCIA
+                dependencia.setDependenciaId(resultado.getInt("d.dependencia_id"));
+                dependencia.setCodigo(resultado.getString("d.codigo"));
+                dependencia.setNombre(resultado.getString("d.nombre"));
+                incidencia.setDependencia(dependencia);
+                //ESTADO
+                estado.setEstadoId(resultado.getInt("es.estado_id"));
+                estado.setCodigo(resultado.getString("es.codigo"));
+                estado.setNombre(resultado.getString("es.nombre"));
+                incidencia.setEstado(estado);
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            cerrarConexion();
+            return incidencia;         
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    dql);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
+            throw e;
+        }
+    }
+    
+    /**
      * Lee las incidencias filtradas de la base de datos
      * @author Víctor Bolado Obregón
      * @return Una lista de incidencias
@@ -1533,6 +1615,7 @@ public class IncidenciasCAD {
         Dependencia dependencia = new Dependencia();
         Estado estado = new Estado();
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             ResultSet resultado = sentenciaPreparada.executeQuery();
             while (resultado.next()) {
@@ -1574,7 +1657,7 @@ public class IncidenciasCAD {
             }
             resultado.close();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return listaIncidencias;         
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1582,7 +1665,7 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     dql);
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -1604,174 +1687,108 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Lee una incidencia de la base de datos
+     * Lee las incidencias filtradas de la base de datos
      * @author Víctor Bolado Obregón
-     * @param incidenciaId Identificardor de la incidencia
      * @return Una lista de incidencias
+     * @param posicionEquipoDependencia posicion del equipo en la dependencia
+     * @param descripcion descripción de la incidencia
+     * @param comentarioAdministrador comentario del administrador para la incidencia
+     * @param fechaEstadoActual fecha del estado de la incidencia
+     * @param usuarioID identificador del usuario
+     * @param equipoID identificador del equipo
+     * @param dependenciaID identificador de la dependencia
+     * @param estadoID identificador del estado
+     * @param criterioOrden numero para indicar el orden en que se va a mostrar
+     * @param orden numero que indica si el orden es ascendente o descendente
      * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
      */
-    public Incidencia leerIncidencia(int incidenciaId) throws ExcepcionIncidenciasCAD {
-        String dql = "select * from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
+    public ArrayList<Incidencia> leerIncidencias(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaEstadoActual, String usuarioCuenta, String tipoEquipoCodigo, String equipoNumeroEtiquetaConsejeria, String dependenciaCodigo, String estadoCodigo, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+        String dql = "select i.*,u.*,te.*,e.*,d.*,es.* from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
             "where i.USUARIO_ID=u.USUARIO_ID " +
             "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
             "and e.TIPO_EQUIPO_ID=te.TIPO_EQUIPO_ID " +
             "and i.EQUIPO_ID=e.EQUIPO_ID " +
-            "and i.ESTADO_ID=es.ESTADO_ID "
-                + "and i.incidencia_id = " + incidenciaId;
-        PreparedStatement sentenciaPreparada = null;
-        Incidencia incidencia = null;
-        Equipo equipo = new Equipo();
-        TipoEquipo tipoEquipo = new TipoEquipo();
-        Usuario usuario = new Usuario();
-        Dependencia dependencia = new Dependencia();
-        Estado estado = new Estado();
-        try {
-            sentenciaPreparada = conexion.prepareStatement(dql);
-            ResultSet resultado = sentenciaPreparada.executeQuery();
-            while (resultado.next()) {
-                //INCIDENCIA
-                incidencia = new Incidencia();
-                incidencia.setIncidenciaId(resultado.getInt("i.incidencia_id"));
-                incidencia.setPosicionEquipoDependencia(resultado.getString("i.posicion_equipo_dependencia"));
-                incidencia.setDescripcion(resultado.getString("i.descripcion"));
-                incidencia.setComentarioAdministrador(resultado.getString("i.comentario_administrador"));
-                incidencia.setFechaEstadoActual(resultado.getDate("i.fecha_estado_actual"));
-                //USUARIO
-                usuario.setUsuarioId(resultado.getInt("u.usuario_id"));
-                usuario.setCuenta(resultado.getString("u.cuenta"));
-                usuario.setNombre(resultado.getString("u.nombre"));
-                usuario.setApellido(resultado.getString("u.apellido"));
-                usuario.setDepartamento(resultado.getString("u.departamento"));
-                incidencia.setUsuario(usuario);
-                //TIPO EQUIPO
-                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
-                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
-                tipoEquipo.setNombre(resultado.getString("te.nombre"));
-                //EQUIPO
-                equipo.setEquipoId(resultado.getInt("e.equipo_id"));
-                equipo.setNumeroEtiquetaConsejeria(resultado.getString("e.numero_etiqueta_consejeria"));
-                equipo.setTipoEquipo(tipoEquipo);
-                incidencia.setEquipo(equipo);
-                //DEPENDENCIA
-                dependencia.setDependenciaId(resultado.getInt("d.dependencia_id"));
-                dependencia.setCodigo(resultado.getString("d.codigo"));
-                dependencia.setNombre(resultado.getString("d.nombre"));
-                incidencia.setDependencia(dependencia);
-                //ESTADO
-                estado.setEstadoId(resultado.getInt("es.estado_id"));
-                estado.setCodigo(resultado.getString("es.codigo"));
-                estado.setNombre(resultado.getString("es.nombre"));
-                incidencia.setEstado(estado);
-            }
-            resultado.close();
-            sentenciaPreparada.close();
-            conexion.close();
-            return incidencia;         
-        } catch (SQLException ex) {
-            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
-                    ex.getErrorCode(),
-                    ex.getMessage(),
-                    "Error general del sistema. Consulte con el administrador",
-                    dql);
-            cerrarConexion(conexion, sentenciaPreparada);
-            throw e;
+            "and i.ESTADO_ID=es.ESTADO_ID";
+        
+        if (incidenciaId != null) dql = dql + " and incidencia_id =" + incidenciaId;
+        if (posicionEquipoDependencia != null) dql = dql + " and posicion_equipo_dependencia like '%" + posicionEquipoDependencia + "%'";
+        if (descripcion != null) dql = dql + " and descripcion like '%" + descripcion + "%'";
+        if (comentarioAdministrador != null) dql = dql + " and comentario_administrador like '%" + comentarioAdministrador + "%'";
+        if (fechaEstadoActual != null)
+        {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            dql = dql + " and date_format(i.FECHA_ESTADO_ACTUAL, \"%Y-%m-%d\") like '%" + sdf.format(fechaEstadoActual) + "%'";
         }
+        if (usuarioCuenta != null) dql = dql + " and u.cuenta like '%" + usuarioCuenta + "%'";
+        if (tipoEquipoCodigo != null) dql = dql + " and te.codigo like '%" + tipoEquipoCodigo + "%'";
+        if (equipoNumeroEtiquetaConsejeria != null) dql = dql + " and e.numero_etiqueta_consejeria like '%" + equipoNumeroEtiquetaConsejeria + "%'";
+        if (dependenciaCodigo !=null) dql = dql + " and d.codigo like '%" + dependenciaCodigo + "%'";
+        if (estadoCodigo != null) dql = dql + " and es.codigo like '%" + estadoCodigo + "%'";
+        
+        if (criterioOrden == INCIDENCIA_POSICION_EQUIPO_DEPENDENCIA) 
+        {
+            dql = dql + " order by posicion_equipo_dependencia";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        
+        if (criterioOrden == INCIDENCIA_DESCRIPCION) 
+        {
+            dql = dql + " order by descripcion";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        
+        if (criterioOrden == INCIDENCIA_COMENTARIO_ADMINISTRADOR) 
+        {
+            dql = dql + " order by comentario_administrador";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        
+        if (criterioOrden == INCIDENCIA_FECHA_ESTADO_ACTUAL) 
+        {
+            dql = dql + " order by fecha_estado_actual";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        
+        if (criterioOrden == USUARIO_CUENTA) 
+        {
+            dql = dql + " order by u.cuenta";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        
+        if (criterioOrden == TIPO_EQUIPO_CODIGO) 
+        {
+            dql = dql + " order by te.codigo";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        
+        if (criterioOrden == EQUIPO_NUMERO_ETIQUETA_CONSEJERIA) 
+        {
+            dql = dql + " order by e.numero_etiqueta_consejeria";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        
+        if (criterioOrden == DEPENDENCIA_CODIGO) 
+        {
+            dql = dql + " order by d.codigo";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        
+        if (criterioOrden == ESTADO_CODIGO) 
+        {
+            dql = dql + " order by es.codigo";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        return leerIncidencias(dql);
     }
-    
-//    /**
-//     * Lee las incidencias filtradas de la base de datos
-//     * @author Víctor Bolado Obregón
-//     * @return Una lista de incidencias
-//     * @param posicionEquipoDependencia posicion del equipo en la dependencia
-//     * @param descripcion descripción de la incidencia
-//     * @param comentarioAdministrador comentario del administrador para la incidencia
-//     * @param fechaEstadoActual fecha del estado de la incidencia
-//     * @param usuarioID identificador del usuario
-//     * @param equipoID identificador del equipo
-//     * @param dependenciaID identificador de la dependencia
-//     * @param estadoID identificador del estado
-//     * @param criterioOrden numero para indicar el orden en que se va a mostrar
-//     * @param orden numero que indica si el orden es ascendente o descendente
-//     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
-//     */
-//    public ArrayList<Incidencia> leerIncidencias(String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaEstadoActual, Integer usuarioID, Integer equipoID, Integer dependenciaID, Integer estadoID, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
-//        String dql = "select i.*,u.*,te.*,e.*,d.*,es.* from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
-//            "where i.USUARIO_ID=u.USUARIO_ID " +
-//            "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
-//            "and e.TIPO_EQUIPO_ID=te.TIPO_EQUIPO_ID " +
-//            "and i.EQUIPO_ID=e.EQUIPO_ID " +
-//            "and i.ESTADO_ID=es.ESTADO_ID";
-//        
-//        if (posicionEquipoDependencia != null) dql = dql + " and posicion_equipo_dependencia like '%" + posicionEquipoDependencia + "%'";
-//        if (descripcion != null) dql = dql + " and descripcion like '%" + descripcion + "%'";
-//        if (comentarioAdministrador != null) dql = dql + " and comentario_administrador like '%" + comentarioAdministrador + "%'";
-//        if (fechaEstadoActual != null)
-//        {
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//            dql = dql + " and date_format(i.FECHA_ESTADO_ACTUAL, \"%Y-%m-%d\") like '%" + sdf.format(fechaEstadoActual) + "%'";
-//        }
-//        if (usuarioID != null) dql = dql + " and usuario_id like '%" + usuarioID + "%'";
-//        if (equipoID != null) dql = dql + " and equipo_id like '%" + equipoID + "%'";
-//        if (dependenciaID !=null) dql = dql + " and dependencia_id like '%" + dependenciaID + "%'";
-//        if (estadoID != null) dql = dql + " and estado_id like '%" + estadoID + "%'";
-//        
-//        if (criterioOrden == POSICION_EQUIPO_DEPENDENCIA) 
-//        {
-//            dql = dql + " order by posicion_equipo_dependencia";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == DESCRIPCION) 
-//        {
-//            dql = dql + " order by descripcion";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == COMENTARIO_ADMINISTRADOR) 
-//        {
-//            dql = dql + " order by comentario_administrador";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == FECHA_ESTADO_ACTUAL) 
-//        {
-//            dql = dql + " order by fecha_estado_actual";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == USUARIO_ID) 
-//        {
-//            dql = dql + " order by usuario_id";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == EQUIPO_ID) 
-//        {
-//            dql = dql + " order by equipo_id";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == DEPENDENCIA_ID) 
-//        {
-//            dql = dql + " order by dependencia_id";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == ESTADO_ID) 
-//        {
-//            dql = dql + " order by estado_id";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        return leerIncidencias(dql);
-//    }
     
     /**
      * Inserta un dato historico en la base de datos
@@ -1788,15 +1805,19 @@ public class IncidenciasCAD {
                 + "(fecha,incidencia_id,estado_id) values (?,?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
-            Date fechaUtil = historial.getFecha();
-            java.sql.Date fechaSql = new java.sql.Date(fechaUtil.getTime());
-            sentenciaPreparada.setDate(1, fechaSql);
-            sentenciaPreparada.setInt(2, historial.getIncidencia().getIncidenciaId());
-            sentenciaPreparada.setInt(3, historial.getEstado().getEstadoId());
+            if (historial.getFecha() == null) {
+                sentenciaPreparada.setNull(4, Types.DATE);
+            } else {
+                java.sql.Date fecha = new java.sql.Date(historial.getFecha().getTime());
+                sentenciaPreparada.setObject(1, fecha, Types.DATE);
+            }
+            sentenciaPreparada.setObject(2, historial.getIncidencia().getIncidenciaId(), Types.INTEGER);
+            sentenciaPreparada.setObject(3, historial.getEstado().getEstadoId(), Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1815,7 +1836,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -1831,11 +1852,12 @@ public class IncidenciasCAD {
         String dml = "delete from historial where historial_id=?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             sentenciaPreparada.setObject(1, historialId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1843,7 +1865,7 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     sentenciaPreparada.toString());
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -1863,16 +1885,20 @@ public class IncidenciasCAD {
         String dml = "update historial set fecha = ?, incidencia_id = ?, estado_id = ? where historial_id = ?";
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
-            Date fechaUtil = historial.getFecha();
-            java.sql.Date fechaSql = new java.sql.Date(fechaUtil.getTime());
-            sentenciaPreparada.setDate(1, fechaSql);
+            if (historial.getFecha() == null) {
+                sentenciaPreparada.setNull(4, Types.DATE);
+            } else {
+                java.sql.Date fecha = new java.sql.Date(historial.getFecha().getTime());
+                sentenciaPreparada.setObject(1, fecha, Types.DATE);
+            }
             sentenciaPreparada.setObject(2, historial.getIncidencia().getIncidenciaId(), Types.INTEGER);
             sentenciaPreparada.setObject(3, historial.getEstado().getEstadoId(), Types.INTEGER);
             sentenciaPreparada.setObject(4, historialId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1894,12 +1920,12 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
     
-/**
+    /**
      * Lee un dato historico de la base de datos
      * @author Diego Fernandez Diaz
      * @param historialId Identificador del dato historico a leer
@@ -1920,6 +1946,7 @@ public class IncidenciasCAD {
                 + "and hi.historial_id="+historialId;
         PreparedStatement sentenciaPreparada = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             ResultSet resultado = sentenciaPreparada.executeQuery(dql);
             Historial historial =null;
@@ -1968,7 +1995,7 @@ public class IncidenciasCAD {
             }
             resultado.close();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return historial;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -1976,7 +2003,7 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     dql);
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -1987,20 +2014,11 @@ public class IncidenciasCAD {
      * @return Lista con todos los datos historicos de la base de datos
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<Historial> leerHistorial() throws ExcepcionIncidenciasCAD {
-        String dql = "select * "
-                + "from historial hi,incidencia inc,estado es,estado ies, "
-                + "usuario us,equipo eq,dependencia de,tipo_equipo teq "
-                + "where hi.incidencia_id=inc.incidencia_id "
-                + "and hi.estado_id=es.estado_id "
-                + "and inc.usuario_id=us.usuario_id "
-                + "and inc.equipo_id=eq.equipo_id "
-                + "and inc.dependencia_id=de.dependencia_id "
-                + "and inc.estado_id=ies.estado_id "
-                + "and eq.tipo_equipo_id=teq.tipo_equipo_id";
+    public ArrayList<Historial> leerHistorial(String dql) throws ExcepcionIncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         ArrayList<Historial> listaHistorial = new ArrayList();
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             ResultSet resultado = sentenciaPreparada.executeQuery(dql);
             while (resultado.next()) {
@@ -2049,7 +2067,7 @@ public class IncidenciasCAD {
             }
             resultado.close();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return listaHistorial;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -2057,10 +2075,31 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     dql);
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
-    }  
+    }
+
+    /**
+     * Lee todos los datos historicos de la base de datos
+     * @author Diego Fernandez Diaz
+     * @return Lista con todos los datos historicos de la base de datos
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public ArrayList<Historial> leerHistorial() throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from historial hi,incidencia inc,estado es,estado ies, "
+                + "usuario us,equipo eq,dependencia de,tipo_equipo teq "
+                + "where hi.incidencia_id=inc.incidencia_id "
+                + "and hi.estado_id=es.estado_id "
+                + "and inc.usuario_id=us.usuario_id "
+                + "and inc.equipo_id=eq.equipo_id "
+                + "and inc.dependencia_id=de.dependencia_id "
+                + "and inc.estado_id=ies.estado_id "
+                + "and eq.tipo_equipo_id=teq.tipo_equipo_id";
+        return leerHistorial(dql);
+    }
+    
     /**
      * Lee todos los datos historicos de la base de datos
      * @author Diego Fernández Díaz
@@ -2100,68 +2139,7 @@ public class IncidenciasCAD {
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
-        PreparedStatement sentenciaPreparada = null;
-        ArrayList<Historial> listaHistorial = new ArrayList();
-        try {
-            sentenciaPreparada = conexion.prepareStatement(dql);
-            ResultSet resultado = sentenciaPreparada.executeQuery(dql);
-            while (resultado.next()) {
-                TipoEquipo tipoEquipo = new TipoEquipo();
-                tipoEquipo.setTipoEquipoId(resultado.getInt("teq.tipo_equipo_id"));
-                tipoEquipo.setCodigo(resultado.getString("teq.codigo"));
-                tipoEquipo.setNombre(resultado.getString("teq.nombre"));
-                Dependencia dependencia = new Dependencia();
-                dependencia.setDependenciaId(resultado.getInt("de.dependencia_id"));
-                dependencia.setCodigo(resultado.getString("de.codigo"));
-                dependencia.setNombre(resultado.getString("de.nombre"));
-                Usuario usuario = new Usuario();
-                usuario.setUsuarioId(resultado.getInt("us.usuario_id"));
-                usuario.setCuenta(resultado.getString("us.cuenta"));
-                usuario.setNombre(resultado.getString("us.nombre"));
-                usuario.setApellido(resultado.getString("us.apellido"));
-                usuario.setDepartamento(resultado.getString("us.departamento"));
-                Equipo equipo = new Equipo();
-                equipo.setEquipoId(resultado.getInt("eq.equipo_id"));
-                equipo.setNumeroEtiquetaConsejeria(resultado.getString("eq.numero_etiqueta_consejeria"));
-                equipo.setTipoEquipo(tipoEquipo);
-                Estado estadoIncidencia = new Estado();
-                estadoIncidencia.setEstadoId(resultado.getInt("ies.estado_id"));
-                estadoIncidencia.setCodigo(resultado.getString("ies.codigo"));
-                estadoIncidencia.setNombre(resultado.getString("ies.nombre"));
-                Incidencia incidencia = new Incidencia();
-                incidencia.setIncidenciaId(resultado.getInt("incidencia_id"));
-                incidencia.setPosicionEquipoDependencia(resultado.getString("posicion_equipo_dependencia"));
-                incidencia.setDescripcion(resultado.getString("descripcion"));
-                incidencia.setComentarioAdministrador(resultado.getString("comentario_administrador"));
-                incidencia.setFechaEstadoActual(resultado.getDate("fecha_estado_actual"));
-                incidencia.setUsuario(usuario);
-                incidencia.setEquipo(equipo);
-                incidencia.setDependencia(dependencia);
-                incidencia.setEstado(estadoIncidencia);
-                Estado estadoHistorial = new Estado();
-                estadoHistorial.setEstadoId(resultado.getInt("es.estado_id"));
-                estadoHistorial.setCodigo(resultado.getString("es.codigo"));
-                estadoHistorial.setNombre(resultado.getString("es.nombre"));
-                Historial historial = new Historial();
-                historial.setHistorialId(resultado.getInt("hi.historial_id"));
-                historial.setFecha(resultado.getDate("hi.fecha"));
-                historial.setIncidencia(incidencia);
-                historial.setEstado(estadoHistorial);
-                listaHistorial.add(historial);
-            }
-            resultado.close();
-            sentenciaPreparada.close();
-            conexion.close();
-            return listaHistorial;            
-        } catch (SQLException ex) {
-            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
-                    ex.getErrorCode(),
-                    ex.getMessage(),
-                    "Error general del sistema. Consulte con el administrador",
-                    dql);
-            cerrarConexion(conexion, sentenciaPreparada);
-            throw e;
-        }
+        return leerHistorial(dql);
     }
     
     /**
@@ -2285,7 +2263,7 @@ public class IncidenciasCAD {
                     e.setMensajeErrorUsuario("Error general del sistema. Consulte con el administrador");
                     break;
             }
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     }
@@ -2341,7 +2319,7 @@ public class IncidenciasCAD {
                     ex.getMessage(),
                     "Error general del sistema. Consulte con el administrador",
                     dql);
-            cerrarConexion(conexion, sentenciaPreparada);
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
             throw e;
         }
     } 
