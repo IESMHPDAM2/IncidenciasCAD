@@ -1599,16 +1599,207 @@ public class IncidenciasCAD {
         }
     }
     
+//    /**
+//     * Lee las incidencias filtradas de la base de datos
+//     * @author Víctor Bolado Obregón
+//     * @return Una lista de incidencias
+//     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+//     */
+//    public ArrayList<Incidencia> leerIncidencias(String dql) throws ExcepcionIncidenciasCAD {
+//        PreparedStatement sentenciaPreparada = null;
+//        ArrayList<Incidencia> listaIncidencias = new ArrayList();
+//        Incidencia incidencia = null;
+//        Equipo equipo = new Equipo();
+//        TipoEquipo tipoEquipo = new TipoEquipo();
+//        Usuario usuario = new Usuario();
+//        Dependencia dependencia = new Dependencia();
+//        Estado estado = new Estado();
+//        try {
+//            abrirConexion();
+//            sentenciaPreparada = conexion.prepareStatement(dql);
+//            ResultSet resultado = sentenciaPreparada.executeQuery();
+//            while (resultado.next()) {
+//                //INCIDENCIA
+//                incidencia = new Incidencia();
+//                incidencia.setIncidenciaId(resultado.getInt("i.incidencia_id"));
+//                incidencia.setPosicionEquipoDependencia(resultado.getString("i.posicion_equipo_dependencia"));
+//                incidencia.setDescripcion(resultado.getString("i.descripcion"));
+//                incidencia.setComentarioAdministrador(resultado.getString("i.comentario_administrador"));
+//                incidencia.setFechaEstadoActual(resultado.getDate("i.fecha_estado_actual"));
+//                //USUARIO
+//                usuario.setUsuarioId(resultado.getInt("u.usuario_id"));
+//                usuario.setCuenta(resultado.getString("u.cuenta"));
+//                usuario.setNombre(resultado.getString("u.nombre"));
+//                usuario.setApellido(resultado.getString("u.apellido"));
+//                usuario.setDepartamento(resultado.getString("u.departamento"));
+//                incidencia.setUsuario(usuario);
+//                //TIPO EQUIPO
+//                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
+//                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
+//                tipoEquipo.setNombre(resultado.getString("te.nombre"));
+//                //EQUIPO
+//                equipo.setEquipoId(resultado.getInt("e.equipo_id"));
+//                equipo.setNumeroEtiquetaConsejeria(resultado.getString("e.numero_etiqueta_consejeria"));
+//                equipo.setTipoEquipo(tipoEquipo);
+//                incidencia.setEquipo(equipo);
+//                //DEPENDENCIA
+//                dependencia.setDependenciaId(resultado.getInt("d.dependencia_id"));
+//                dependencia.setCodigo(resultado.getString("d.codigo"));
+//                dependencia.setNombre(resultado.getString("d.nombre"));
+//                incidencia.setDependencia(dependencia);
+//                //ESTADO
+//                estado.setEstadoId(resultado.getInt("es.estado_id"));
+//                estado.setCodigo(resultado.getString("es.codigo"));
+//                estado.setNombre(resultado.getString("es.nombre"));
+//                incidencia.setEstado(estado);
+//                
+//                listaIncidencias.add(incidencia);
+//            }
+//            resultado.close();
+//            sentenciaPreparada.close();
+//            cerrarConexion();
+//            return listaIncidencias;         
+//        } catch (SQLException ex) {
+//            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+//                    ex.getErrorCode(),
+//                    ex.getMessage(),
+//                    "Error general del sistema. Consulte con el administrador",
+//                    dql);
+//            cerrarConexionExcepcion(conexion, sentenciaPreparada);
+//            throw e;
+//        }
+//    }
+//
+//    /**
+//     * Lee las incidencias de la base de datos
+//     * @author Víctor Bolado Obregón
+//     * @return Una lista de incidencias
+//     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+//     */
+//    public ArrayList<Incidencia> leerIncidencias() throws ExcepcionIncidenciasCAD {
+//        String dql = "select * from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
+//            "where i.USUARIO_ID=u.USUARIO_ID " +
+//            "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
+//            "and e.TIPO_EQUIPO_ID=te.TIPO_EQUIPO_ID " +
+//            "and i.EQUIPO_ID=e.EQUIPO_ID " +
+//            "and i.ESTADO_ID=es.ESTADO_ID";
+//        return leerIncidencias(dql);
+//    }
+//    
+//    /**
+//     * Lee las incidencias filtradas de la base de datos
+//     * @author Víctor Bolado Obregón
+//     * @return Una lista de incidencias
+//     * @param posicionEquipoDependencia posicion del equipo en la dependencia
+//     * @param descripcion descripción de la incidencia
+//     * @param comentarioAdministrador comentario del administrador para la incidencia
+//     * @param fechaEstadoActual fecha del estado de la incidencia
+//     * @param usuarioID identificador del usuario
+//     * @param equipoID identificador del equipo
+//     * @param dependenciaID identificador de la dependencia
+//     * @param estadoID identificador del estado
+//     * @param criterioOrden numero para indicar el orden en que se va a mostrar
+//     * @param orden numero que indica si el orden es ascendente o descendente
+//     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+//     */
+//    public ArrayList<Incidencia> leerIncidencias(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaEstadoActual, Integer usuarioId, Integer tipoEquipoId, String equipoNumeroEtiquetaConsejeria, Integer dependenciaId, Integer estadoId, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+//        String dql = "select i.*,u.*,te.*,e.*,d.*,es.* from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
+//            "where i.USUARIO_ID=u.USUARIO_ID " +
+//            "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
+//            "and e.TIPO_EQUIPO_ID=te.TIPO_EQUIPO_ID " +
+//            "and i.EQUIPO_ID=e.EQUIPO_ID " +
+//            "and i.ESTADO_ID=es.ESTADO_ID";
+//        
+//        if (incidenciaId != null) dql = dql + " and incidencia_id =" + incidenciaId;
+//        if (posicionEquipoDependencia != null) dql = dql + " and posicion_equipo_dependencia like '%" + posicionEquipoDependencia + "%'";
+//        if (descripcion != null) dql = dql + " and descripcion like '%" + descripcion + "%'";
+//        if (comentarioAdministrador != null) dql = dql + " and comentario_administrador like '%" + comentarioAdministrador + "%'";
+//        if (fechaEstadoActual != null)
+//        {
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//            dql = dql + " and date_format(i.FECHA_ESTADO_ACTUAL, \"%Y-%m-%d\") like '%" + sdf.format(fechaEstadoActual) + "%'";
+//        }
+//        if (usuarioId != null) dql = dql + " and u.usuario_id =" + usuarioId;
+//        if (tipoEquipoId != null) dql = dql + " and te.tipo_equipo_id =" + tipoEquipoId;
+//        if (equipoNumeroEtiquetaConsejeria != null) dql = dql + " and e.numero_etiqueta_consejeria like '%" + equipoNumeroEtiquetaConsejeria + "%'";
+//        if (dependenciaId !=null) dql = dql + " and d.dependencia_id =" + dependenciaId;
+//        if (estadoId != null) dql = dql + " and es.estado_id =" + estadoId;
+//        
+//        if (criterioOrden == INCIDENCIA_POSICION_EQUIPO_DEPENDENCIA) 
+//        {
+//            dql = dql + " order by posicion_equipo_dependencia";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == INCIDENCIA_DESCRIPCION) 
+//        {
+//            dql = dql + " order by descripcion";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == INCIDENCIA_COMENTARIO_ADMINISTRADOR) 
+//        {
+//            dql = dql + " order by comentario_administrador";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == INCIDENCIA_FECHA_ESTADO_ACTUAL) 
+//        {
+//            dql = dql + " order by fecha_estado_actual";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == USUARIO_CUENTA) 
+//        {
+//            dql = dql + " order by u.cuenta";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == TIPO_EQUIPO_CODIGO) 
+//        {
+//            dql = dql + " order by te.codigo";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == EQUIPO_NUMERO_ETIQUETA_CONSEJERIA) 
+//        {
+//            dql = dql + " order by e.numero_etiqueta_consejeria";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == DEPENDENCIA_CODIGO) 
+//        {
+//            dql = dql + " order by d.codigo";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        
+//        if (criterioOrden == ESTADO_CODIGO) 
+//        {
+//            dql = dql + " order by es.codigo";
+//            if (orden == ASCENDENTE) dql = dql + " asc";
+//            if (orden == DESCENDENTE) dql = dql + " desc";
+//        }
+//        return leerIncidencias(dql);
+//    }
+
     /**
      * Lee las incidencias filtradas de la base de datos
      * @author Víctor Bolado Obregón
      * @return Una lista de incidencias
      * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<Incidencia> leerIncidencias(String dql) throws ExcepcionIncidenciasCAD {
+    public ArrayList<IncidenciaPlus> leerIncidenciasPlus(String dql) throws ExcepcionIncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
-        ArrayList<Incidencia> listaIncidencias = new ArrayList();
-        Incidencia incidencia = null;
+        ArrayList<IncidenciaPlus> listaIncidencias = new ArrayList();
+        IncidenciaPlus incidenciaPlus = null;
         Equipo equipo = new Equipo();
         TipoEquipo tipoEquipo = new TipoEquipo();
         Usuario usuario = new Usuario();
@@ -1620,19 +1811,19 @@ public class IncidenciasCAD {
             ResultSet resultado = sentenciaPreparada.executeQuery();
             while (resultado.next()) {
                 //INCIDENCIA
-                incidencia = new Incidencia();
-                incidencia.setIncidenciaId(resultado.getInt("i.incidencia_id"));
-                incidencia.setPosicionEquipoDependencia(resultado.getString("i.posicion_equipo_dependencia"));
-                incidencia.setDescripcion(resultado.getString("i.descripcion"));
-                incidencia.setComentarioAdministrador(resultado.getString("i.comentario_administrador"));
-                incidencia.setFechaEstadoActual(resultado.getDate("i.fecha_estado_actual"));
+                incidenciaPlus = new IncidenciaPlus();
+                incidenciaPlus.setIncidenciaId(resultado.getInt("i.incidencia_id"));
+                incidenciaPlus.setPosicionEquipoDependencia(resultado.getString("i.posicion_equipo_dependencia"));
+                incidenciaPlus.setDescripcion(resultado.getString("i.descripcion"));
+                incidenciaPlus.setComentarioAdministrador(resultado.getString("i.comentario_administrador"));
+                incidenciaPlus.setFechaEstadoActual(resultado.getDate("i.fecha_estado_actual"));
                 //USUARIO
                 usuario.setUsuarioId(resultado.getInt("u.usuario_id"));
                 usuario.setCuenta(resultado.getString("u.cuenta"));
                 usuario.setNombre(resultado.getString("u.nombre"));
                 usuario.setApellido(resultado.getString("u.apellido"));
                 usuario.setDepartamento(resultado.getString("u.departamento"));
-                incidencia.setUsuario(usuario);
+                incidenciaPlus.setUsuario(usuario);
                 //TIPO EQUIPO
                 tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
                 tipoEquipo.setCodigo(resultado.getString("te.codigo"));
@@ -1641,19 +1832,25 @@ public class IncidenciasCAD {
                 equipo.setEquipoId(resultado.getInt("e.equipo_id"));
                 equipo.setNumeroEtiquetaConsejeria(resultado.getString("e.numero_etiqueta_consejeria"));
                 equipo.setTipoEquipo(tipoEquipo);
-                incidencia.setEquipo(equipo);
+                incidenciaPlus.setEquipo(equipo);
                 //DEPENDENCIA
                 dependencia.setDependenciaId(resultado.getInt("d.dependencia_id"));
                 dependencia.setCodigo(resultado.getString("d.codigo"));
                 dependencia.setNombre(resultado.getString("d.nombre"));
-                incidencia.setDependencia(dependencia);
+                incidenciaPlus.setDependencia(dependencia);
                 //ESTADO
                 estado.setEstadoId(resultado.getInt("es.estado_id"));
                 estado.setCodigo(resultado.getString("es.codigo"));
                 estado.setNombre(resultado.getString("es.nombre"));
-                incidencia.setEstado(estado);
-                
-                listaIncidencias.add(incidencia);
+                incidenciaPlus.setEstado(estado);
+                //HISTORIAL
+//                sentenciaPreparadaHistorial = conexion.prepareStatement(dqlHistorial);
+//                sentenciaPreparadaHistorial.setObject(1, incidenciaPlus.getIncidenciaId(), Types.INTEGER);
+//                PreparedStatement sentenciaPreparadaHistorial = null;
+//                String dqlHistorial = "select * from historial where incidencia_id = ?";
+//                Historial historial = new Historial();
+                incidenciaPlus.setHistoriales(leerHistoriales());
+                listaIncidencias.add(incidenciaPlus);
             }
             resultado.close();
             sentenciaPreparada.close();
@@ -1669,21 +1866,21 @@ public class IncidenciasCAD {
             throw e;
         }
     }
-
+    
     /**
      * Lee las incidencias de la base de datos
      * @author Víctor Bolado Obregón
      * @return Una lista de incidencias
      * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<Incidencia> leerIncidencias() throws ExcepcionIncidenciasCAD {
+    public ArrayList<IncidenciaPlus> leerIncidenciasPlus() throws ExcepcionIncidenciasCAD {
         String dql = "select * from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
             "where i.USUARIO_ID=u.USUARIO_ID " +
             "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
             "and e.TIPO_EQUIPO_ID=te.TIPO_EQUIPO_ID " +
             "and i.EQUIPO_ID=e.EQUIPO_ID " +
             "and i.ESTADO_ID=es.ESTADO_ID";
-        return leerIncidencias(dql);
+        return leerIncidenciasPlus(dql);
     }
     
     /**
@@ -1702,7 +1899,7 @@ public class IncidenciasCAD {
      * @param orden numero que indica si el orden es ascendente o descendente
      * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<Incidencia> leerIncidencias(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaEstadoActual, String usuarioCuenta, String tipoEquipoCodigo, String equipoNumeroEtiquetaConsejeria, String dependenciaCodigo, String estadoCodigo, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+    public ArrayList<IncidenciaPlus> leerIncidenciasPlus(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaEstadoActual, Integer usuarioId, Integer tipoEquipoId, String equipoNumeroEtiquetaConsejeria, Integer dependenciaId, Integer estadoId, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
         String dql = "select i.*,u.*,te.*,e.*,d.*,es.* from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
             "where i.USUARIO_ID=u.USUARIO_ID " +
             "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
@@ -1719,11 +1916,11 @@ public class IncidenciasCAD {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             dql = dql + " and date_format(i.FECHA_ESTADO_ACTUAL, \"%Y-%m-%d\") like '%" + sdf.format(fechaEstadoActual) + "%'";
         }
-        if (usuarioCuenta != null) dql = dql + " and u.cuenta like '%" + usuarioCuenta + "%'";
-        if (tipoEquipoCodigo != null) dql = dql + " and te.codigo like '%" + tipoEquipoCodigo + "%'";
+        if (usuarioId != null) dql = dql + " and u.usuario_id =" + usuarioId;
+        if (tipoEquipoId != null) dql = dql + " and te.tipo_equipo_id =" + tipoEquipoId;
         if (equipoNumeroEtiquetaConsejeria != null) dql = dql + " and e.numero_etiqueta_consejeria like '%" + equipoNumeroEtiquetaConsejeria + "%'";
-        if (dependenciaCodigo !=null) dql = dql + " and d.codigo like '%" + dependenciaCodigo + "%'";
-        if (estadoCodigo != null) dql = dql + " and es.codigo like '%" + estadoCodigo + "%'";
+        if (dependenciaId !=null) dql = dql + " and d.dependencia_id =" + dependenciaId;
+        if (estadoId != null) dql = dql + " and es.estado_id =" + estadoId;
         
         if (criterioOrden == INCIDENCIA_POSICION_EQUIPO_DEPENDENCIA) 
         {
@@ -1787,9 +1984,9 @@ public class IncidenciasCAD {
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
-        return leerIncidencias(dql);
+        return leerIncidenciasPlus(dql);
     }
-    
+
     /**
      * Inserta un dato historico en la base de datos
      * @author Diego Fernández Díaz
@@ -2014,7 +2211,7 @@ public class IncidenciasCAD {
      * @return Lista con todos los datos historicos de la base de datos
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<Historial> leerHistorial(String dql) throws ExcepcionIncidenciasCAD {
+    public ArrayList<Historial> leerHistoriales(String dql) throws ExcepcionIncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         ArrayList<Historial> listaHistorial = new ArrayList();
         try {
@@ -2086,7 +2283,7 @@ public class IncidenciasCAD {
      * @return Lista con todos los datos historicos de la base de datos
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<Historial> leerHistorial() throws ExcepcionIncidenciasCAD {
+    public ArrayList<Historial> leerHistoriales() throws ExcepcionIncidenciasCAD {
         String dql = "select * "
                 + "from historial hi,incidencia inc,estado es,estado ies, "
                 + "usuario us,equipo eq,dependencia de,tipo_equipo teq "
@@ -2097,7 +2294,7 @@ public class IncidenciasCAD {
                 + "and inc.dependencia_id=de.dependencia_id "
                 + "and inc.estado_id=ies.estado_id "
                 + "and eq.tipo_equipo_id=teq.tipo_equipo_id";
-        return leerHistorial(dql);
+        return leerHistoriales(dql);
     }
     
     /**
@@ -2110,7 +2307,7 @@ public class IncidenciasCAD {
      * @return Lista con todos los equipos de la base de datos
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<Historial> leerHistorial(Date fecha, Integer incidenciaId,Integer estadoId, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+    public ArrayList<Historial> leerHistoriales(Integer incidenciaId, Integer estadoId, Date fecha, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
         String dql = "select * "
                 + "from historial hi,incidencia inc,estado es,estado ies, "
                 + "usuario us,equipo eq,dependencia de,tipo_equipo teq "
@@ -2121,14 +2318,9 @@ public class IncidenciasCAD {
                 + "and inc.dependencia_id=de.dependencia_id "
                 + "and inc.estado_id=ies.estado_id "
                 + "and eq.tipo_equipo_id=teq.tipo_equipo_id";
-        if (fecha != null) dql = dql + " and date_format(hi.fecha,'%Y-%m-%d') = '"+ formatearFecha(fecha)+"'";
         if (incidenciaId !=null) dql = dql + " and hi.incidencia_id = " + incidenciaId;
         if (estadoId !=null) dql = dql + " and hi.estado_id = " + estadoId;
-        if (criterioOrden == FECHA) {
-            dql = dql + " order by hi.fecha";
-            if (orden == ASCENDENTE) dql = dql + " asc";
-            if (orden == DESCENDENTE) dql = dql + " desc";
-        }
+        if (fecha != null) dql = dql + " and date_format(hi.fecha,'%Y-%m-%d') = '"+ formatearFecha(fecha)+"'";
         if (criterioOrden == INCIDENCIA_ID) {
             dql = dql + " order by hi.incidencia_id";
             if (orden == ASCENDENTE) dql = dql + " asc";
@@ -2139,7 +2331,12 @@ public class IncidenciasCAD {
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
-        return leerHistorial(dql);
+        if (criterioOrden == FECHA) {
+            dql = dql + " order by hi.fecha";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        return leerHistoriales(dql);
     }
     
     /**
