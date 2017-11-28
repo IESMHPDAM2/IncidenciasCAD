@@ -5,6 +5,7 @@
  */
 package incidenciascad;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -16,25 +17,29 @@ public class Incidencia {
     private String posicionEquipoDependencia;
     private String descripcion;
     private String comentarioAdministrador;
+    private Date fechaRegistro;
     private Date fechaEstadoActual;
     private Usuario usuario;
     private Equipo equipo;
     private Dependencia dependencia;
     private Estado estado;
+    private ArrayList<Historial> historiales;
 
     public Incidencia() {
     }
 
-    public Incidencia(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaEstadoActual, Usuario usuario, Equipo equipo, Dependencia dependencia, Estado estado) {
+    public Incidencia(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaRegistro, Date fechaEstadoActual, Usuario usuario, Equipo equipo, Dependencia dependencia, Estado estado, ArrayList<Historial> historiales) {
         this.incidenciaId = incidenciaId;
         this.posicionEquipoDependencia = posicionEquipoDependencia;
         this.descripcion = descripcion;
         this.comentarioAdministrador = comentarioAdministrador;
+        this.fechaRegistro = fechaRegistro;
         this.fechaEstadoActual = fechaEstadoActual;
         this.usuario = usuario;
         this.equipo = equipo;
         this.dependencia = dependencia;
         this.estado = estado;
+        this.historiales = historiales;
     }
 
     public Integer getIncidenciaId() {
@@ -46,9 +51,6 @@ public class Incidencia {
     }
 
     public String getPosicionEquipoDependencia() {
-        if (posicionEquipoDependencia != null) {
-            if (posicionEquipoDependencia.equals("")) return null;
-        }
         return posicionEquipoDependencia;
     }
 
@@ -57,9 +59,6 @@ public class Incidencia {
     }
 
     public String getDescripcion() {
-        if (descripcion != null) {
-            if (descripcion.equals("")) return null;
-        }
         return descripcion;
     }
 
@@ -68,14 +67,19 @@ public class Incidencia {
     }
 
     public String getComentarioAdministrador() {
-        if (comentarioAdministrador != null) {
-            if (comentarioAdministrador.equals("")) return null;
-        }
         return comentarioAdministrador;
     }
 
     public void setComentarioAdministrador(String comentarioAdministrador) {
         this.comentarioAdministrador = comentarioAdministrador;
+    }
+
+    public Date getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(Date fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
     }
 
     public Date getFechaEstadoActual() {
@@ -118,9 +122,17 @@ public class Incidencia {
         this.estado = estado;
     }
 
+    public ArrayList<Historial> getHistoriales() {
+        return historiales;
+    }
+
+    public void setHistoriales(ArrayList<Historial> historiales) {
+        this.historiales = historiales;
+    }
+
     @Override
     public String toString() {
-        return "Incidencia{" + "incidenciaId=" + incidenciaId + ", posicionEquipoDependencia=" + posicionEquipoDependencia + ", descripcion=" + descripcion + ", comentarioAdministrador=" + comentarioAdministrador + ", fechaEstadoActual=" + fechaEstadoActual + ", usuario=" + usuario + ", equipo=" + equipo + ", dependencia=" + dependencia + ", estado=" + estado + '}';
+        return "Incidencia{" + "incidenciaId=" + incidenciaId + ", posicionEquipoDependencia=" + posicionEquipoDependencia + ", descripcion=" + descripcion + ", comentarioAdministrador=" + comentarioAdministrador + ", fechaRegistro=" + fechaRegistro + ", fechaEstadoActual=" + fechaEstadoActual + ", usuario=" + usuario + ", equipo=" + equipo + ", dependencia=" + dependencia + ", estado=" + estado + ", historiales=" + historiales + '}';
     }
 
 }

@@ -141,18 +141,20 @@ public class Prueba {
 //            System.out.println(ex);
 //        }
         
-        System.out.println("Incidencia");
-        Incidencia in = new Incidencia(null,"1","2","3",
-                new Date(),
-                new Usuario(1,null,null,null,null),
-                new Equipo(1,null,null), 
-                new Dependencia(1,null,null), 
-                new Estado(189,null,null));
-        ArrayList<Incidencia> l = null;
-        int r;
-        try {
-            IncidenciasCAD i = new IncidenciasCAD();
-//            r = i.insertarIncidencia(null);
+//        System.out.println("Incidencia");
+//        Incidencia in = new Incidencia(null,"1","2","3",
+//                new Date(),
+//                new Date(),
+//                new Usuario(1,null,null,null,null),
+//                new Equipo(1,null,null), 
+//                new Dependencia(1,null,null), 
+//                new Estado(1,null,null),
+//                null);
+//        ArrayList<Incidencia> l = null;
+//        int r;
+//        try {
+//            IncidenciasCAD i = new IncidenciasCAD();
+//            r = i.insertarIncidencia(in);
 //            System.out.println(r + "registros");
 //            r = i.eliminarIncidencia(589);
 //            System.out.println(r + "registros");
@@ -162,37 +164,39 @@ public class Prueba {
 //            System.out.println(in);
 //            l = i.leerIncidencias();
 //            System.out.println(l);
-//            l = i.leerIncidencias(null,"","o","",java.sql.Date.valueOf("2017-11-26"),null,null,null,null,null,null);
-//            l = i.leerIncidencias(null,"","o","",null,null,null,null,null,1,IncidenciasCAD.ESTADO_CODIGO,IncidenciasCAD.ASCENDENTE);
+////            l = i.leerIncidencias(null,"","o","",null,java.sql.Date.valueOf("2017-11-26"),null,null,null,null,null,null,null);
+//            l = i.leerIncidencias(null,"","o","",java.sql.Date.valueOf("2017-12-28"),null,null,null,null,null,1,IncidenciasCAD.ESTADO_CODIGO,IncidenciasCAD.ASCENDENTE);
 //            System.out.println(l);
-            ArrayList<IncidenciaPlus> lp = i.leerIncidenciasPlus();
-            System.out.println(lp);
-        } catch (ExcepcionIncidenciasCAD ex) {
-            System.out.println(ex);
-        }
-        
-//        System.out.println("Historial");
-//        Historial h = new Historial(null,null,null,null);
-//        ArrayList<Historial> l = null;
-//        int r;
-//        try {
-//            IncidenciasCAD i = new IncidenciasCAD();
-////            r = i.insertarIncidencia(null);
-////            System.out.println(r + "registros");
-////            r = i.eliminarIncidencia(589);
-////            System.out.println(r + "registros");
-////            r = i.modificarIncidencia(52,in);
-////            System.out.println(r + "registros");
-//            h = i.leerHistorial(1);
-//            System.out.println(h);
-//            l = i.leerHistoriales();
-//            System.out.println(l);
-////            l = i.leerIncidencias(null,"","o","",java.sql.Date.valueOf("2017-11-26"),null,null,null,null,null,null);
-//            l = i.leerHistoriales(null,null,null,IncidenciasCAD.ESTADO_CODIGO,IncidenciasCAD.ASCENDENTE);
-//            System.out.println(l);
+////            ArrayList<IncidenciaPlus> lp = i.leerIncidenciasPlus();
+////            System.out.println(lp);
 //        } catch (ExcepcionIncidenciasCAD ex) {
 //            System.out.println(ex);
 //        }
+        
+        System.out.println("Historial");
+        Historial h = new Historial(null,new Date(),
+                new Incidencia(1,null,null,null,null,null,null,null,null,null,null),
+                new Estado(1,null,null));
+        ArrayList<Historial> l = null;
+        int r;
+        try {
+            IncidenciasCAD i = new IncidenciasCAD();
+            r = i.insertarHistorial(h);
+            System.out.println(r + "registros");
+            r = i.eliminarHistorial(null);
+            System.out.println(r + "registros");
+            r = i.modificarHistorial(1,null); // funciona mal
+            System.out.println(r + "registros");
+            h = i.leerHistorial(1);
+            System.out.println(h);
+            l = i.leerHistoriales();
+            System.out.println(l);
+//            l = i.leerIncidencias(null,"","o","",java.sql.Date.valueOf("2017-11-26"),null,null,null,null,null,null);
+            l = i.leerHistoriales(null,null,null,IncidenciasCAD.HISTORIAL_FECHA,IncidenciasCAD.DESCENDENTE);
+            System.out.println(l);
+        } catch (ExcepcionIncidenciasCAD ex) {
+            System.out.println(ex);
+        }
         
     }
     
