@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
- * Clase prinjcipal del componenete de acceso a datos especializado en acceder
+ * Clase principal del componenete de acceso a datos especializado en acceder
  * a la base de datos de incidencias
  * @author Ignacio Fontecha Hernández
  * @version 1.0
@@ -44,7 +44,6 @@ public class IncidenciasCAD {
     public static Integer HISTORIAL_FECHA = 70;
 
     
-//    public static Integer ESTADO_HISTORIAL_ID = 17;
     /**
      * Constructor vacío
      * @author Ignacio Fontecha Hernández
@@ -121,7 +120,7 @@ public class IncidenciasCAD {
      * Inserta una dependencia en la base de datos
      * @author Ignacio Fontecha Hernández
      * @param dependencia Datos de la dependencia a insertar
-     * @return Cantidad de registros insertados
+     * @return Cantidad de dependencias insertadas
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarDependencia(Dependencia dependencia) throws ExcepcionIncidenciasCAD {
@@ -163,7 +162,7 @@ public class IncidenciasCAD {
      * Elimina una dependencia de la base de datos
      * @author Ignacio Fontecha Hernández
      * @param dependenciaId Identificador de la dependencia a eliminar
-     * @return Cantidad de registros eliminados
+     * @return Cantidad de dependencias eliminadas
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int eliminarDependencia(Integer dependenciaId) throws ExcepcionIncidenciasCAD {
@@ -201,7 +200,7 @@ public class IncidenciasCAD {
      * @author Ignacio Fontecha Hernández
      * @param dependenciaId Identificador de la dependencia a modificar
      * @param dependencia Nuevos datos de la dependencia a modificar
-     * @return Cantidad de registros modificados
+     * @return Cantidad de dependencias modificadas
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarDependencia(Integer dependenciaId, Dependencia dependencia) throws ExcepcionIncidenciasCAD {
@@ -244,7 +243,7 @@ public class IncidenciasCAD {
      * Lee una dependencia de la base de datos
      * @author Marcos González Fernández
      * @param dependenciaId Identificador de la dependencia a leer
-     * @return La dependencia a leer
+     * @return Dependencia a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Dependencia leerDependencia(Integer dependenciaId)throws ExcepcionIncidenciasCAD {
@@ -280,10 +279,11 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Lee las dependencias filtradas de la base de datos
+     * Lee una lista de dependencias de la base de datos a partir de una 
+     * sentencia DQL
      * @author Óscar Barahona Ortega
-     * @param dql Sentencia DQL que determinará la lista de dependencias a leer
-     * @return Una lista de incidencias
+     * @param dql Sentencia DQL que determina la lista de dependencias a leer
+     * @return Lista de dependencias a leer
      * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Dependencia> leerDependencias(String dql) throws ExcepcionIncidenciasCAD {
@@ -318,10 +318,10 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Lee las dependencias filtradas de la base de datos
+     * Lee todas las dependencias de la base de datos
      * @author Óscar Barahona Ortega
-     * @return Una lista de dependencias
-     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+     * @return Lista de todas las dependencias
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Dependencia> leerDependencias() throws ExcepcionIncidenciasCAD {
         String dql = "select * from dependencia";
@@ -361,7 +361,7 @@ public class IncidenciasCAD {
      * Inserta un usuario en la base de datos
      * @author Óscar Barahona Ortega
      * @param usuario Datos del usuario a insertar
-     * @return Cantidad de registros insertados
+     * @return Cantidad de usuarios insertados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarUsuario(Usuario usuario) throws ExcepcionIncidenciasCAD {
@@ -405,7 +405,7 @@ public class IncidenciasCAD {
      * Elimina un usuario de la base de datos
      * @author Óscar Barahona Ortega
      * @param usuarioId Identificador del usuario a eliminar
-     * @return Cantidad de registros eliminados
+     * @return Cantidad de usuarios eliminados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int eliminarUsuario(Integer usuarioId) throws ExcepcionIncidenciasCAD {
@@ -443,7 +443,7 @@ public class IncidenciasCAD {
      * @author Óscar Barahona Ortega
      * @param usuarioId Identificador del usuario a modificar
      * @param usuario Nuevos datos del usuario a modificar
-     * @return Cantidad de registros modificados
+     * @return Cantidad de usuarios modificados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarUsuario(Integer usuarioId, Usuario usuario) throws ExcepcionIncidenciasCAD {
@@ -526,10 +526,11 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Lee todos los usuarios de la base de datos
+     * Lee una lista de usuarios de la base de datos a partir de una 
+     * sentencia DQL
      * @author Óscar Barahona Ortega
-     * @param dql
-     * @return Lista con todos los usuarios de la base de datos
+     * @param dql Sentencia DQL que determina la lista de usuarios a leer
+     * @return Lista de usuarios a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Usuario> leerUsuarios(String dql) throws ExcepcionIncidenciasCAD {
@@ -567,7 +568,7 @@ public class IncidenciasCAD {
     /**
      * Lee todos los usuarios de la base de datos
      * @author Óscar Barahona Ortega
-     * @return Lista con todos los usuarios de la base de datos
+     * @return Lista de todos los usuarios
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Usuario> leerUsuarios() throws ExcepcionIncidenciasCAD {
@@ -621,8 +622,8 @@ public class IncidenciasCAD {
     /**
      * Inserta un tipo de equipo en la base de datos
      * @author Ramon Tezanos San Emeterio
-     * @param tipoEquipo Datos de la dependencia a insertar
-     * @return Cantidad de registros insertados
+     * @param tipoEquipo Datos del tipo de equipo a insertar
+     * @return Cantidad de tipos de equipo insertados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarTipoEquipo(TipoEquipo tipoEquipo) throws ExcepcionIncidenciasCAD {
@@ -663,8 +664,8 @@ public class IncidenciasCAD {
     /**
      * Elimina un tipo de equipo de la base de datos
      * @author Ramon Tezanos San Emeterio
-     * @param tipoEquipoID Identificador de la dependencia a eliminar
-     * @return Cantidad de registros eliminados
+     * @param tipoEquipoID Identificador del tipo de equipo a eliminar
+     * @return Cantidad de tipos de equipo eliminados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int eliminarTipoEquipo(Integer tipoEquipoID) throws ExcepcionIncidenciasCAD {
@@ -702,7 +703,7 @@ public class IncidenciasCAD {
      * @author Ramon Tezanos San Emeterio
      * @param tipoEquipoId Identificador del tipo de equipo a modificar
      * @param tipoEquipo Nuevos datos del tipo de equipo a modificar
-     * @return Cantidad de registros modificados
+     * @return Cantidad de tipos de equipo modificados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarTipoEquipo(Integer tipoEquipoId, TipoEquipo tipoEquipo) throws ExcepcionIncidenciasCAD {
@@ -743,9 +744,9 @@ public class IncidenciasCAD {
     
 /**
      * Lee un tipo de equipo de la base de datos
-     * @param tipoEquipoID Recibe el id del tipo de equipo buscado
-     * @return Devuelve un tipo de equipo
-     * @throws ExcepcionIncidenciasCAD 
+     * @param tipoEquipoID Identificador del tipo de equipo a leer
+     * @return Tipo de equipo a leer
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public TipoEquipo leerTipoEquipo(Integer tipoEquipoID) throws ExcepcionIncidenciasCAD {
         String dql = "select * from tipo_equipo where tipo_equipo_id = ?";
@@ -783,10 +784,11 @@ public class IncidenciasCAD {
     
     
     /**
-     * Lee todos los equipos de la base de datos
+     * Lee una lista de tipos de equipo de la base de datos a partir de una 
+     * sentencia DQL
      * @author Ramon Tezanos San Emeterio
-     * @param dql
-     * @return Lista con todos los equipos de la base de datos
+     * @param dql Sentencia DQL que determina la lista de tipos de equipo a leer
+     * @return Lista de tipos de equipo a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<TipoEquipo> leerTiposEquipo(String dql) throws ExcepcionIncidenciasCAD {
@@ -820,9 +822,9 @@ public class IncidenciasCAD {
     }
 
     /**
-     * Lee todos los equipos de la base de datos
+     * Lee todos los tipos de equipo de la base de datos
      * @author Ramon Tezanos San Emeterio
-     * @return Lista con todos los equipos de la base de datos
+     * @return Lista de todos los tipos de equipo
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<TipoEquipo> leerTiposEquipo() throws ExcepcionIncidenciasCAD {
@@ -862,7 +864,7 @@ public class IncidenciasCAD {
      * Inserta un equipo en la base de datos
      * @author Óscar Barahona Ortega
      * @param equipo Datos del equipo a insertar
-     * @return Cantidad de registros insertados
+     * @return Cantidad de equipos insertados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarEquipo(Equipo equipo) throws ExcepcionIncidenciasCAD {
@@ -908,7 +910,7 @@ public class IncidenciasCAD {
      * Elimina un equipo de la base de datos
      * @author Óscar Barahona Ortega
      * @param equipoId Identificador del equipo a eliminar
-     * @return Cantidad de registros eliminados
+     * @return Cantidad de equipos eliminados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int eliminarEquipo(Integer equipoId) throws ExcepcionIncidenciasCAD {
@@ -946,7 +948,7 @@ public class IncidenciasCAD {
      * @author Óscar Barahona Ortega
      * @param equipoId Identificador del equipo a modificar
      * @param equipo Nuevos datos del equipo a modificar
-     * @return Cantidad de registros modificados
+     * @return Cantidad de equipos modificados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarEquipo(Integer equipoId, Equipo equipo) throws ExcepcionIncidenciasCAD {
@@ -961,7 +963,7 @@ public class IncidenciasCAD {
             sentenciaPreparada.setString(1, equipo.getNumeroEtiquetaConsejeria());
             sentenciaPreparada.setObject(2, equipo.getTipoEquipo().getTipoEquipoId(), Types.INTEGER);
             sentenciaPreparada.setObject(3, equipoId, Types.INTEGER);
-            System.out.println(sentenciaPreparada);
+            System.out.println(sentenciaPreparada.toString());
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             cerrarConexion();
@@ -996,7 +998,7 @@ public class IncidenciasCAD {
      * Lee un equipo de la base de datos
      * @author Ignacio Fontecha Hernández
      * @param equipoId Identificador del equipo a leer
-     * @return Equipo a leer de la base de datos
+     * @return Equipo a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Equipo leerEquipo(Integer equipoId) throws ExcepcionIncidenciasCAD {
@@ -1038,9 +1040,11 @@ public class IncidenciasCAD {
     }
 
     /**
-     * Lee todos los equipos de la base de datos
+     * Lee una lista de equipos de la base de datos a partir de una 
+     * sentencia DQL
      * @author Ignacio Fontecha Hernández
-     * @return Lista con todos los equipos de la base de datos
+     * @param dql Sentencia DQL que determina la lista de equipos a leer
+     * @return Lista de equipos a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Equipo> leerEquipos(String dql) throws ExcepcionIncidenciasCAD {
@@ -1081,7 +1085,7 @@ public class IncidenciasCAD {
     /**
      * Lee todos los equipos de la base de datos
      * @author Ignacio Fontecha Hernández
-     * @return Lista con todos los equipos de la base de datos
+     * @return Lista de todos los equipos
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Equipo> leerEquipos() throws ExcepcionIncidenciasCAD {
@@ -1121,8 +1125,8 @@ public class IncidenciasCAD {
     /**
      * Inserta un estado en la base de datos
      * @author Marcos González Fernández
-     * @param estado Datos de estado a insertar
-     * @return Cantidad de registros insertados
+     * @param estado Datos del estado a insertar
+     * @return Cantidad de estados insertados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarEstado(Estado estado) throws ExcepcionIncidenciasCAD {
@@ -1164,7 +1168,7 @@ public class IncidenciasCAD {
      * Elimina un estado de la base de datos
      * @author Marcos González Fernández
      * @param estadoId Identificador del estado a eliminar
-     * @return Cantidad de registros eliminados
+     * @return Cantidad de estados eliminados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int eliminarEstado(Integer estadoId) throws ExcepcionIncidenciasCAD {
@@ -1202,7 +1206,7 @@ public class IncidenciasCAD {
      * @author Marcos González Fernández
      * @param estadoId Identificador del estado a modificar
      * @param estado Nuevos datos del estado a modificar
-     * @return Cantidad de registros modificados
+     * @return Cantidad de estados modificados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarEstado(Integer estadoId, Estado estado) throws ExcepcionIncidenciasCAD {
@@ -1281,9 +1285,11 @@ public class IncidenciasCAD {
     }   
     
     /**
-     * Lee todos los estados de la base de datos
+     * Lee una lista de estados de la base de datos a partir de una 
+     * sentencia DQL
      * @author Marcos González Fernández
-     * @return Lista de todos los estados
+     * @param dql Sentencia DQL que determina la lista de estados a leer
+     * @return Lista de estados a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Estado> leerEstados(String dql) throws ExcepcionIncidenciasCAD {
@@ -1360,7 +1366,7 @@ public class IncidenciasCAD {
      * Inserta una incidencia en la base de datos
      * @author Víctor Bolado Obregón
      * @param incidencia Datos de la incidencia a insertar
-     * @return Cantidad de registros insertados
+     * @return Cantidad de incidencias insertadas
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarIncidencia(Incidencia incidencia) throws ExcepcionIncidenciasCAD {
@@ -1425,10 +1431,10 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Borra una incidencia en la base de datos
+     * Elimina una incidencia en la base de datos
      * @author Víctor Bolado Obregón
-     * @param incidenciaId Identificador de la incidencia a borrar
-     * @return Cantidad de registros borrados
+     * @param incidenciaId Identificador de la incidencia a eliminar
+     * @return Cantidad de incidencias eliminadas
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int eliminarIncidencia(Integer incidenciaId) throws ExcepcionIncidenciasCAD {
@@ -1466,7 +1472,7 @@ public class IncidenciasCAD {
      * @author IVíctor Bolado Obregón
      * @param incidenciaId Identificador de la incidencia a modificar
      * @param incidencia Nuevos datos de la incidencia a modificar
-     * @return Cantidad de registros modificados
+     * @return Cantidad de incidencias modificadas
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarIncidencia(Integer incidenciaId, Incidencia incidencia) throws ExcepcionIncidenciasCAD {
@@ -1511,7 +1517,6 @@ public class IncidenciasCAD {
             sentenciaPreparada.setObject(8, incidencia.getDependencia().getDependenciaId(), Types.INTEGER);
             sentenciaPreparada.setObject(9, incidencia.getEstado().getEstadoId(), Types.INTEGER);
             sentenciaPreparada.setObject(10, incidenciaId, Types.INTEGER);
-            System.out.println(sentenciaPreparada.toString());
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             cerrarConexion();
@@ -1542,8 +1547,8 @@ public class IncidenciasCAD {
     /**
      * Lee una incidencia de la base de datos
      * @author Víctor Bolado Obregón
-     * @param incidenciaId Identificardor de la incidencia
-     * @return Una lista de incidencias
+     * @param incidenciaId Identificardor de la incidencia a leer
+     * @return Incidencia a leer
      * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
      */
     public Incidencia leerIncidencia(Integer incidenciaId) throws ExcepcionIncidenciasCAD {
@@ -1602,7 +1607,6 @@ public class IncidenciasCAD {
                 incidencia.setEstado(estado);
                 //HISTORIAL
                 incidencia.setHistoriales(leerHistoriales(incidenciaId,null,null,IncidenciasCAD.HISTORIAL_FECHA,IncidenciasCAD.ASCENDENTE));
-                System.out.println(leerHistoriales(incidenciaId,null,null,IncidenciasCAD.HISTORIAL_FECHA,IncidenciasCAD.ASCENDENTE));
             }
             resultado.close();
             sentenciaPreparada.close();
@@ -1620,10 +1624,12 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Lee las incidencias filtradas de la base de datos
+     * Lee una lista de incidencias de la base de datos a partir de una 
+     * sentencia DQL
      * @author Víctor Bolado Obregón
-     * @return Una lista de incidencias
-     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+     * @param dql Sentencia DQL que determina la lista de incidencias a leer
+     * @return Lista de incidencias a leer
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Incidencia> leerIncidencias(String dql) throws ExcepcionIncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
@@ -1692,10 +1698,10 @@ public class IncidenciasCAD {
     }
 
     /**
-     * Lee las incidencias de la base de datos
+     * Lee todas las incidencias de la base de datos
      * @author Víctor Bolado Obregón
-     * @return Una lista de incidencias
-     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+     * @return Lista de todas las incidencias
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Incidencia> leerIncidencias() throws ExcepcionIncidenciasCAD {
         String dql = "select * from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
@@ -1742,7 +1748,6 @@ public class IncidenciasCAD {
         if (fechaEstadoActual != null) {
             dql = dql + " and date_format(i.FECHA_ESTADO_ACTUAL, \"%Y-%m-%d\") like '%" + sdf.format(fechaEstadoActual) + "%'";
         }
-        System.out.println(dql);
         if (usuarioId != null) dql = dql + " and u.usuario_id =" + usuarioId;
         if (tipoEquipoId != null) dql = dql + " and te.tipo_equipo_id =" + tipoEquipoId;
         if (equipoNumeroEtiquetaConsejeria != null) dql = dql + " and e.numero_etiqueta_consejeria like '%" + equipoNumeroEtiquetaConsejeria + "%'";
@@ -1821,208 +1826,12 @@ public class IncidenciasCAD {
         return leerIncidencias(dql);
     }
 
-//    /**
-//     * Lee las incidencias filtradas de la base de datos
-//     * @author Víctor Bolado Obregón
-//     * @return Una lista de incidencias
-//     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
-//     */
-//    public ArrayList<IncidenciaPlus> leerIncidenciasPlus(String dql) throws ExcepcionIncidenciasCAD {
-//        PreparedStatement sentenciaPreparada = null;
-//        ArrayList<IncidenciaPlus> listaIncidencias = new ArrayList();
-//        IncidenciaPlus incidenciaPlus = null;
-//        Equipo equipo = new Equipo();
-//        TipoEquipo tipoEquipo = new TipoEquipo();
-//        Usuario usuario = new Usuario();
-//        Dependencia dependencia = new Dependencia();
-//        Estado estado = new Estado();
-//        try {
-//            abrirConexion();
-//            sentenciaPreparada = conexion.prepareStatement(dql);
-//            ResultSet resultado = sentenciaPreparada.executeQuery();
-//            while (resultado.next()) {
-//                //INCIDENCIA
-//                incidenciaPlus = new IncidenciaPlus();
-//                incidenciaPlus.setIncidenciaId(resultado.getInt("i.incidencia_id"));
-//                incidenciaPlus.setPosicionEquipoDependencia(resultado.getString("i.posicion_equipo_dependencia"));
-//                incidenciaPlus.setDescripcion(resultado.getString("i.descripcion"));
-//                incidenciaPlus.setComentarioAdministrador(resultado.getString("i.comentario_administrador"));
-//                incidenciaPlus.setFechaEstadoActual(resultado.getDate("i.fecha_estado_actual"));
-//                //USUARIO
-//                usuario.setUsuarioId(resultado.getInt("u.usuario_id"));
-//                usuario.setCuenta(resultado.getString("u.cuenta"));
-//                usuario.setNombre(resultado.getString("u.nombre"));
-//                usuario.setApellido(resultado.getString("u.apellido"));
-//                usuario.setDepartamento(resultado.getString("u.departamento"));
-//                incidenciaPlus.setUsuario(usuario);
-//                //TIPO EQUIPO
-//                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
-//                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
-//                tipoEquipo.setNombre(resultado.getString("te.nombre"));
-//                //EQUIPO
-//                equipo.setEquipoId(resultado.getInt("e.equipo_id"));
-//                equipo.setNumeroEtiquetaConsejeria(resultado.getString("e.numero_etiqueta_consejeria"));
-//                equipo.setTipoEquipo(tipoEquipo);
-//                incidenciaPlus.setEquipo(equipo);
-//                //DEPENDENCIA
-//                dependencia.setDependenciaId(resultado.getInt("d.dependencia_id"));
-//                dependencia.setCodigo(resultado.getString("d.codigo"));
-//                dependencia.setNombre(resultado.getString("d.nombre"));
-//                incidenciaPlus.setDependencia(dependencia);
-//                //ESTADO
-//                estado.setEstadoId(resultado.getInt("es.estado_id"));
-//                estado.setCodigo(resultado.getString("es.codigo"));
-//                estado.setNombre(resultado.getString("es.nombre"));
-//                incidenciaPlus.setEstado(estado);
-//                //HISTORIAL
-////                sentenciaPreparadaHistorial = conexion.prepareStatement(dqlHistorial);
-////                sentenciaPreparadaHistorial.setObject(1, incidenciaPlus.getIncidenciaId(), Types.INTEGER);
-////                PreparedStatement sentenciaPreparadaHistorial = null;
-////                String dqlHistorial = "select * from historial where incidencia_id = ?";
-////                Historial historial = new Historial();
-//                incidenciaPlus.setHistoriales(leerHistoriales());
-//                listaIncidencias.add(incidenciaPlus);
-//            }
-//            resultado.close();
-//            sentenciaPreparada.close();
-//            cerrarConexion();
-//            return listaIncidencias;         
-//        } catch (SQLException ex) {
-//            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
-//                    ex.getErrorCode(),
-//                    ex.getMessage(),
-//                    "Error general del sistema. Consulte con el administrador",
-//                    dql);
-//            cerrarConexionExcepcion(conexion, sentenciaPreparada);
-//            throw e;
-//        }
-//    }
-//    
-//    /**
-//     * Lee las incidencias de la base de datos
-//     * @author Víctor Bolado Obregón
-//     * @return Una lista de incidencias
-//     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
-//     */
-//    public ArrayList<IncidenciaPlus> leerIncidenciasPlus() throws ExcepcionIncidenciasCAD {
-//        String dql = "select * from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
-//            "where i.USUARIO_ID=u.USUARIO_ID " +
-//            "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
-//            "and e.TIPO_EQUIPO_ID=te.TIPO_EQUIPO_ID " +
-//            "and i.EQUIPO_ID=e.EQUIPO_ID " +
-//            "and i.ESTADO_ID=es.ESTADO_ID";
-//        return leerIncidenciasPlus(dql);
-//    }
-//    
-//    /**
-//     * Lee las incidencias filtradas de la base de datos
-//     * @author Víctor Bolado Obregón
-//     * @return Una lista de incidencias
-//     * @param posicionEquipoDependencia posicion del equipo en la dependencia
-//     * @param descripcion descripción de la incidencia
-//     * @param comentarioAdministrador comentario del administrador para la incidencia
-//     * @param fechaEstadoActual fecha del estado de la incidencia
-//     * @param usuarioID identificador del usuario
-//     * @param equipoID identificador del equipo
-//     * @param dependenciaID identificador de la dependencia
-//     * @param estadoID identificador del estado
-//     * @param criterioOrden numero para indicar el orden en que se va a mostrar
-//     * @param orden numero que indica si el orden es ascendente o descendente
-//     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
-//     */
-//    public ArrayList<IncidenciaPlus> leerIncidenciasPlus(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaEstadoActual, Integer usuarioId, Integer tipoEquipoId, String equipoNumeroEtiquetaConsejeria, Integer dependenciaId, Integer estadoId, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
-//        String dql = "select i.*,u.*,te.*,e.*,d.*,es.* from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
-//            "where i.USUARIO_ID=u.USUARIO_ID " +
-//            "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
-//            "and e.TIPO_EQUIPO_ID=te.TIPO_EQUIPO_ID " +
-//            "and i.EQUIPO_ID=e.EQUIPO_ID " +
-//            "and i.ESTADO_ID=es.ESTADO_ID";
-//        
-//        if (incidenciaId != null) dql = dql + " and incidencia_id =" + incidenciaId;
-//        if (posicionEquipoDependencia != null) dql = dql + " and posicion_equipo_dependencia like '%" + posicionEquipoDependencia + "%'";
-//        if (descripcion != null) dql = dql + " and descripcion like '%" + descripcion + "%'";
-//        if (comentarioAdministrador != null) dql = dql + " and comentario_administrador like '%" + comentarioAdministrador + "%'";
-//        if (fechaEstadoActual != null)
-//        {
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//            dql = dql + " and date_format(i.FECHA_ESTADO_ACTUAL, \"%Y-%m-%d\") like '%" + sdf.format(fechaEstadoActual) + "%'";
-//        }
-//        if (usuarioId != null) dql = dql + " and u.usuario_id =" + usuarioId;
-//        if (tipoEquipoId != null) dql = dql + " and te.tipo_equipo_id =" + tipoEquipoId;
-//        if (equipoNumeroEtiquetaConsejeria != null) dql = dql + " and e.numero_etiqueta_consejeria like '%" + equipoNumeroEtiquetaConsejeria + "%'";
-//        if (dependenciaId !=null) dql = dql + " and d.dependencia_id =" + dependenciaId;
-//        if (estadoId != null) dql = dql + " and es.estado_id =" + estadoId;
-//        
-//        if (criterioOrden == INCIDENCIA_POSICION_EQUIPO_DEPENDENCIA) 
-//        {
-//            dql = dql + " order by posicion_equipo_dependencia";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == INCIDENCIA_DESCRIPCION) 
-//        {
-//            dql = dql + " order by descripcion";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == INCIDENCIA_COMENTARIO_ADMINISTRADOR) 
-//        {
-//            dql = dql + " order by comentario_administrador";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == INCIDENCIA_FECHA_ESTADO_ACTUAL) 
-//        {
-//            dql = dql + " order by fecha_estado_actual";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == USUARIO_CUENTA) 
-//        {
-//            dql = dql + " order by u.cuenta";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == TIPO_EQUIPO_CODIGO) 
-//        {
-//            dql = dql + " order by te.codigo";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == EQUIPO_NUMERO_ETIQUETA_CONSEJERIA) 
-//        {
-//            dql = dql + " order by e.numero_etiqueta_consejeria";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == DEPENDENCIA_CODIGO) 
-//        {
-//            dql = dql + " order by d.codigo";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        
-//        if (criterioOrden == ESTADO_CODIGO) 
-//        {
-//            dql = dql + " order by es.codigo";
-//            if (orden == ASCENDENTE) dql = dql + " asc";
-//            if (orden == DESCENDENTE) dql = dql + " desc";
-//        }
-//        return leerIncidenciasPlus(dql);
-//    }
 
     /**
-     * Inserta un dato historico en la base de datos
+     * Inserta un dato histórico en la base de datos
      * @author Diego Fernández Díaz
      * @param historial Datos del dato historico a insertar
-     * @return Cantidad de registros insertados
+     * @return Cantidad de datos históricos insertados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Integer insertarHistorial(Historial historial) throws ExcepcionIncidenciasCAD {
@@ -2070,10 +1879,10 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Elimina un dato historico de la base de datos
+     * Elimina un dato histórico de la base de datos
      * @author Diego Fernández Díaz
-     * @param historialId Identificador del dato historico a eliminar
-     * @return Cantidad de registros eliminados
+     * @param historialId Identificador del dato histórico a eliminar
+     * @return Cantidad de datos históricos eliminados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int eliminarHistorial(Integer historialId) throws ExcepcionIncidenciasCAD {
@@ -2099,11 +1908,11 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Modifica un dato historico de la base de datos
+     * Modifica un dato histórico de la base de datos
      * @author Diego Fernandez Diaz
-     * @param historialId Identificador del dato historico a modificar
-     * @param historial Nuevos datos del dato historico a modificar
-     * @return Cantidad de registros modificados
+     * @param historialId Identificador del dato histórico a modificar
+     * @param historial Nuevos datos del dato histórico a modificar
+     * @return Cantidad de datos históricos modificados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public int modificarHistorial(Integer historialId, Historial historial) throws ExcepcionIncidenciasCAD {
@@ -2154,10 +1963,10 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Lee un dato historico de la base de datos
+     * Lee un dato histórico de la base de datos
      * @author Diego Fernandez Diaz
-     * @param historialId Identificador del dato historico a leer
-     * @return Lista un dato historico a leer de la base de datos
+     * @param historialId Identificador del dato histórico a leer
+     * @return Dato histórico a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Historial leerHistorial(Integer historialId) throws ExcepcionIncidenciasCAD {
@@ -2238,9 +2047,11 @@ public class IncidenciasCAD {
     }
 
     /**
-     * Lee todos los datos historicos de la base de datos
+     * Lee una lista de datos históricos de la base de datos a partir de una 
+     * sentencia DQL
      * @author Diego Fernandez Diaz
-     * @return Lista con todos los datos historicos de la base de datos
+     * @param dql Sentencia DQL que determina la lista de datos históricos a leer
+     * @return Lista de datos históricos a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Historial> leerHistoriales(String dql) throws ExcepcionIncidenciasCAD {
@@ -2311,9 +2122,9 @@ public class IncidenciasCAD {
     }
 
     /**
-     * Lee todos los datos historicos de la base de datos
+     * Lee todos los datos históricos de la base de datos
      * @author Diego Fernandez Diaz
-     * @return Lista con todos los datos historicos de la base de datos
+     * @return Lista de todos los datos históricos
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Historial> leerHistoriales() throws ExcepcionIncidenciasCAD {
@@ -2562,12 +2373,4 @@ public class IncidenciasCAD {
         return gc.get(Calendar.YEAR)+ "-"+(gc.get(Calendar.MONTH)+1)+"-"+gc.get(Calendar.DAY_OF_MONTH);
     }
     
-    private void validarEquipoComoFK (Equipo equipo) {
-//            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
-//                    -1,
-//                    "El método no se admite ",
-//                    "Error general del sistema. Consulte con el administrador",
-//                    dql);
-//            throw e;
-    }
 }
