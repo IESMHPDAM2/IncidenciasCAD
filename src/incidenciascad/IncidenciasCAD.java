@@ -123,7 +123,7 @@ public class IncidenciasCAD {
      * @return Cantidad de dependencias insertadas
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public Integer insertarDependencia(Dependencia dependencia) throws ExcepcionIncidenciasCAD {
+    public int insertarDependencia(Dependencia dependencia) throws ExcepcionIncidenciasCAD {
         if (dependencia == null) dependencia = new Dependencia();
         String dml = "insert into dependencia(codigo,nombre) values (?,?)";
         PreparedStatement sentenciaPreparada = null;
@@ -329,13 +329,31 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Lee todas las dependencias de la base de datos
+     * Lee una lista de dependencias de la base de datos a partir de una serie 
+     * de filtros y ordenando dicha lista por un criterio de ordenación - Se
+     * incluirán en la lista únicamente las dependencias que cumplan las 
+     * condiciones establecidas por todos y cada uno de los filtros
      * @author Óscar Barahona Ortega
-     * @param codigo
-     * @param nombre
-     * @param criterioOrden
-     * @param orden
-     * @return Lista con todas las dependencias de la base de datos
+     * @param codigo Texto contenido en el código de la dependencia. Se 
+     * seleccionarán aquellas dependencias cuyo código contenga el texto 
+     * contenido en este parámetro
+     * @param nombre Texto contenido en el nombre de la dependencia. Se 
+     * seleccionarán aquellas dependencias cuyo nombre contenga el texto 
+     * contenido en este parámetro
+     * @param criterioOrden Criterio de ordenación a aplicar en la lista. Los
+     * valores posibles son: 
+     * IncidenciasCAD.DEPENDENCIA_CODIGO para ordenar la lista por el código de 
+     * dependencia
+     * IncidenciasCAD.DEPENDENCIA_NOMBRE para para ordenar la lista por el 
+     * nombre de dependencia 
+     * @param orden Indicador de si el orden a aplicar es ascendente o 
+     * descendente. Si no se ha indicado un criterio de ordenación válido este 
+     * parámetro es ignorado. Los valores posibles son:
+     * IncidenciasCAD.ASCENDENTE para ordenar ascendentemente por el criterio de 
+     * ordenación indicado
+     * IncidenciasCAD.DESCENDENTE para ordenar descendentemente por el criterio 
+     * de ordenación indicado
+     * @return Lista ordenada de dependencias a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Dependencia> leerDependencias(String codigo, String nombre, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
@@ -364,7 +382,7 @@ public class IncidenciasCAD {
      * @return Cantidad de usuarios insertados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public Integer insertarUsuario(Usuario usuario) throws ExcepcionIncidenciasCAD {
+    public int insertarUsuario(Usuario usuario) throws ExcepcionIncidenciasCAD {
         if (usuario == null) usuario = new Usuario();
         String dml = "insert into usuario(cuenta,nombre,apellido,departamento) values (?,?,?,?)";
         PreparedStatement sentenciaPreparada = null;
@@ -626,7 +644,7 @@ public class IncidenciasCAD {
      * @return Cantidad de tipos de equipo insertados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public Integer insertarTipoEquipo(TipoEquipo tipoEquipo) throws ExcepcionIncidenciasCAD {
+    public int insertarTipoEquipo(TipoEquipo tipoEquipo) throws ExcepcionIncidenciasCAD {
         if (tipoEquipo == null) tipoEquipo = new TipoEquipo();
         String dml = "insert into tipo_equipo(codigo,nombre) values (?,?)";
         PreparedStatement sentenciaPreparada = null;
@@ -867,7 +885,7 @@ public class IncidenciasCAD {
      * @return Cantidad de equipos insertados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public Integer insertarEquipo(Equipo equipo) throws ExcepcionIncidenciasCAD {
+    public int insertarEquipo(Equipo equipo) throws ExcepcionIncidenciasCAD {
         if (equipo == null) equipo = new Equipo();
         if (equipo.getTipoEquipo() == null) equipo.setTipoEquipo(new TipoEquipo());
         String dml = "insert into equipo(numero_etiqueta_consejeria,tipo_equipo_id) values (?,?)";
@@ -1094,13 +1112,33 @@ public class IncidenciasCAD {
                 + "where te.tipo_equipo_id = e.tipo_equipo_id";
         return leerEquipos(dql);
     }
+    
     /**
-     * Lee todos los equipos de la base de datos
+     * Lee una lista de equipos de la base de datos a partir de una serie 
+     * de filtros y ordenando dicha lista por un criterio de ordenación - Se
+     * incluirán en la lista únicamente los equipos que cumplan las 
+     * condiciones establecidas por todos y cada uno de los filtros
      * @author Ignacio Fontecha Hernández
-     * @param numeroEtiquetaConsejeria
-     * @param tipoEquipoId
-     * @param orden
-     * @return Lista con todos los equipos de la base de datos
+     * @param numeroEtiquetaConsejeria Texto contenido en el número de etiqueta
+     * de la Consejería del equipo. Se seleccionarán aquellos equipos cuyo 
+     * número de etiqueta contenga el texto contenido en este parámetro
+     * @param tipoEquipoId Identificador de tipo de equipo del equipo. Se 
+     * seleccionarán aquellos equipos cuyo identificador de tipo de equipo sea 
+     * el indicado en este parámetro
+     * @param criterioOrden Criterio de ordenación a aplicar en la lista. Los
+     * valores posibles son: 
+     * IncidenciasCAD.EQUIPO_NUMERO_ETIQUETA_CONSEJERIA para ordenar la lista 
+     * por el número de etiqueta de la Consejería del equipo
+     * IncidenciasCAD.TIPO_EQUIPO_CODIGO para para ordenar la lista por el 
+     * código del tipo de equipo del equipo 
+     * @param orden Indicador de si el orden a aplicar es ascendente o 
+     * descendente. Si no se ha indicado un criterio de ordenación válido este 
+     * parámetro es ignorado. Los valores posibles son:
+     * IncidenciasCAD.ASCENDENTE para ordenar ascendentemente por el criterio de 
+     * ordenación indicado
+     * IncidenciasCAD.DESCENDENTE para ordenar descendentemente por el criterio 
+     * de ordenación indicado
+     * @return Lista ordenada de equipos a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Equipo> leerEquipos(String numeroEtiquetaConsejeria, Integer tipoEquipoId, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
@@ -1129,7 +1167,7 @@ public class IncidenciasCAD {
      * @return Cantidad de estados insertados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public Integer insertarEstado(Estado estado) throws ExcepcionIncidenciasCAD {
+    public int insertarEstado(Estado estado) throws ExcepcionIncidenciasCAD {
         if (estado == null) estado = new Estado();
         String dml = "insert into estado(codigo,nombre) values (?,?)";
         PreparedStatement sentenciaPreparada = null;
@@ -1369,7 +1407,7 @@ public class IncidenciasCAD {
      * @return Cantidad de incidencias insertadas
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public Integer insertarIncidencia(Incidencia incidencia) throws ExcepcionIncidenciasCAD {
+    public int insertarIncidencia(Incidencia incidencia) throws ExcepcionIncidenciasCAD {
         if (incidencia == null) incidencia = new Incidencia();
         if (incidencia.getDependencia() == null) incidencia.setDependencia(new Dependencia());
         if (incidencia.getEquipo() == null) incidencia.setEquipo(new Equipo());
@@ -1545,7 +1583,10 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Lee una incidencia de la base de datos
+     * Lee una incidencia de la base de datos. NOTA: en los datos de cada 
+     * incidencia no se incluirán los cambios de estado de la misma. Para 
+     * obtener dicha información consultar el método public Incidencia 
+     * leerIncidencia(Integer incidenciaId)
      * @author Víctor Bolado Obregón
      * @param incidenciaId Identificardor de la incidencia a leer
      * @return Incidencia a leer
@@ -1625,7 +1666,9 @@ public class IncidenciasCAD {
     
     /**
      * Lee una lista de incidencias de la base de datos a partir de una 
-     * sentencia DQL
+     * sentencia DQL. NOTA: en los datos de cada incidencia no se incluirán los
+     * cambios de estado de la misma. Para obtener dicha información consultar 
+     * el método public Incidencia leerIncidencia(Integer incidenciaId)
      * @author Víctor Bolado Obregón
      * @param dql Sentencia DQL que determina la lista de incidencias a leer
      * @return Lista de incidencias a leer
@@ -1698,7 +1741,10 @@ public class IncidenciasCAD {
     }
 
     /**
-     * Lee todas las incidencias de la base de datos
+     * Lee todas las incidencias de la base de datos. NOTA: en
+     * los datos de cada incidencia no se incluirán los cambios de estado de
+     * la misma. Para obtener dicha información consultar el método public 
+     * Incidencia leerIncidencia(Integer incidenciaId)
      * @author Víctor Bolado Obregón
      * @return Lista de todas las incidencias
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
@@ -1714,20 +1760,49 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Lee las incidencias filtradas de la base de datos
+     * Lee una lista de incidencias de la base de datos a partir de una serie 
+     * de filtros y ordenando dicha lista por un criterio de ordenación - Se
+     * incluirán en la lista únicamente las incidencias que cumplan las 
+     * condiciones establecidas por todos y cada uno de los filtros. NOTA: en
+     * los datos de cada incidencia no se incluirán los cambios de estado de
+     * la misma. Para obtener dicha información consultar el método public 
+     * Incidencia leerIncidencia(Integer incidenciaId)
      * @author Víctor Bolado Obregón
-     * @return Una lista de incidencias
-     * @param posicionEquipoDependencia posicion del equipo en la dependencia
-     * @param descripcion descripción de la incidencia
-     * @param comentarioAdministrador comentario del administrador para la incidencia
-     * @param fechaEstadoActual fecha del estado de la incidencia
-     * @param usuarioID identificador del usuario
-     * @param equipoID identificador del equipo
-     * @param dependenciaID identificador de la dependencia
-     * @param estadoID identificador del estado
-     * @param criterioOrden numero para indicar el orden en que se va a mostrar
-     * @param orden numero que indica si el orden es ascendente o descendente
-     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+     * @param incidenciaId Identificador de incidencia. Se seleccionará aquella
+     * incidencia cuyo identificador sea el indicado en este parámetro
+     * @param posicionEquipoDependencia Texto contenido en la posición del 
+     * equipo afectado por la incidencia en la dependencia. Se seleccionarán 
+     * aquellas incidencias cuya posición del equipo en la dependencia contenga
+     * el texto contenido en este parámetro
+     * @param descripcion Texto contenido en la descripción de la incidencia. Se
+     * seleccionarán aquellas incidencias cuya descripción contenga el texto 
+     * contenido en este parámetro
+     * @param comentarioAdministrador Texto contenido en el comentario del
+     * administrador de la incidencia. Se seleccionarán aquellas incidencias
+     * cuyo comentario del administrador contenga el texto contenido en este 
+     * parámetro
+     * @param fechaRegistro
+     * @param fechaEstadoActual
+     * @param usuarioId
+     * @param tipoEquipoId 
+     * @param dependenciaId 
+     * @param equipoNumeroEtiquetaConsejeria
+     * @param estadoId
+     * @param criterioOrden Criterio de ordenación a aplicar en la lista. Los
+     * valores posibles son: 
+     * IncidenciasCAD.EQUIPO_NUMERO_ETIQUETA_CONSEJERIA para ordenar la lista 
+     * por el número de etiqueta de la Consejería del equipo
+     * IncidenciasCAD.TIPO_EQUIPO_CODIGO para para ordenar la lista por el 
+     * código del tipo de equipo del equipo 
+     * @param orden Indicador de si el orden a aplicar es ascendente o 
+     * descendente. Si no se ha indicado un criterio de ordenación válido este 
+     * parámetro es ignorado. Los valores posibles son:
+     * IncidenciasCAD.ASCENDENTE para ordenar ascendentemente por el criterio de 
+     * ordenación indicado
+     * IncidenciasCAD.DESCENDENTE para ordenar descendentemente por el criterio 
+     * de ordenación indicado
+     * @return Lista ordenada de equipos a leer
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Incidencia> leerIncidencias(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaRegistro, Date fechaEstadoActual, Integer usuarioId, Integer tipoEquipoId, String equipoNumeroEtiquetaConsejeria, Integer dependenciaId, Integer estadoId, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
         String dql = "select i.*,u.*,te.*,e.*,d.*,es.* from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
@@ -1834,7 +1909,7 @@ public class IncidenciasCAD {
      * @return Cantidad de datos históricos insertados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public Integer insertarHistorial(Historial historial) throws ExcepcionIncidenciasCAD {
+    public int insertarHistorial(Historial historial) throws ExcepcionIncidenciasCAD {
         if (historial == null) historial = new Historial();
         if (historial.getEstado() == null) historial.setEstado(new Estado());
         if (historial.getIncidencia() == null) historial.setIncidencia(new Incidencia());
