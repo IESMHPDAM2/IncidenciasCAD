@@ -1,6 +1,6 @@
 /*
 Created: 27/10/2017
-Modified: 15/11/2017
+Modified: 27/11/2017
 Model: MySQL 5.7
 Database: MySQL 5.7
 */
@@ -16,6 +16,7 @@ CREATE TABLE `INCIDENCIA`
   `POSICION_EQUIPO_DEPENDENCIA` Varchar(500),
   `DESCRIPCION` Varchar(500) NOT NULL,
   `COMENTARIO_ADMINISTRADOR` Varchar(500),
+  `FECHA_REGISTRO` Date NOT NULL,
   `FECHA_ESTADO_ACTUAL` Datetime NOT NULL,
   `USUARIO_ID` Int NOT NULL,
   `EQUIPO_ID` Int NOT NULL,
@@ -36,6 +37,25 @@ CREATE INDEX `IX_Relationship12` ON `INCIDENCIA` (`DEPENDENCIA_ID`)
 
 CREATE INDEX `IX_Relationship15` ON `INCIDENCIA` (`ESTADO_ID`)
 ;
+
+-- Create triggers for table INCIDENCIA
+
+delimiter //
+CREATE  TRIGGER `GENERAR_HISTORIAL`
+  AFTER
+  UPDATE
+  ON `INCIDENCIA`
+  FOR EACH ROW
+  BEGIN
+    if OLD.ESTADO_ID != NEW.ESTADO_ID THEN
+        insert into HISTORIAL(FECHA,INCIDENCIA_ID,ESTADO_ID)
+
+            values(OLD.FECHA_ESTADO_ACTUAL,OLD.INCIDENCIA_ID,OLD.ESTADO_ID);
+
+    END IF;    
+END
+//
+delimiter 
 
 -- Table USUARIO
 
@@ -171,7 +191,6 @@ CREATE INDEX `IX_Relationship13` ON `CONFIGURACION` (`ESTADO_INICIAL_INCIDENCIA`
 
 CREATE INDEX `IX_Relationship14` ON `CONFIGURACION` (`ESTADO_FINAL_INCIDENCIA`)
 ;
-
 
 -- Create foreign keys (relationships) section ------------------------------------------------- 
 
