@@ -2354,6 +2354,7 @@ public class IncidenciasCAD {
         int registrosAfectados = 0;
 
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             ResultSet resultado = sentenciaPreparada.executeQuery();
             while (resultado.next()) {                
@@ -2387,7 +2388,6 @@ public class IncidenciasCAD {
                 sentenciaPreparada.setString(20, configuracion.getLdapAtributoPerfil());
                 registrosAfectados = sentenciaPreparada.executeUpdate();
                 sentenciaPreparada.close();
-                conexion.close();
             } else if (numeroConfiguraciones == 1) {
                 String dml = "update configuracion set empresa_consejeria_nombre = ?, empresa_consejeria_telefono = ?, empresa_consejeria_email = ?, ies_nombre = ?, ies_cif = ?, ies_codigo_centro = ?, "
                         + "ies_persona_contacto_nombre = ?, ies_persona_contacto_apellido1 = ?, ies_persona_contacto_apellido2 = ?, ies_email = ?, estado_inicial_incidencia = ?, estado_final_incidencia = ?,"
@@ -2415,7 +2415,6 @@ public class IncidenciasCAD {
                 sentenciaPreparada.setString(20, configuracion.getLdapAtributoPerfil());
                 registrosAfectados = sentenciaPreparada.executeUpdate();
                 sentenciaPreparada.close();
-                conexion.close();
             } else {
                 String dml = "delete from configuracion where 1=1";
                 sentenciaPreparada = conexion.prepareStatement(dml);
@@ -2446,6 +2445,7 @@ public class IncidenciasCAD {
                 sentenciaPreparada.setString(20, configuracion.getLdapAtributoPerfil());
                 registrosAfectados = sentenciaPreparada.executeUpdate();
             }    
+            cerrarConexion();
             return registrosAfectados;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
@@ -2479,6 +2479,7 @@ public class IncidenciasCAD {
         Configuracion configuracion = null;
         Estado estado = null;
         try {
+            abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             ResultSet resultado = sentenciaPreparada.executeQuery(dql);
             while (resultado.next()) {
@@ -2509,7 +2510,7 @@ public class IncidenciasCAD {
             }
             resultado.close();
             sentenciaPreparada.close();
-            conexion.close();
+            cerrarConexion();
             return listaConfiguracion;            
         } catch (SQLException ex) {
             ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(

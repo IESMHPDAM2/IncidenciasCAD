@@ -5,6 +5,7 @@
  */
 package prueba;
 
+import incidenciascad.Configuracion;
 import incidenciascad.Dependencia;
 import incidenciascad.Equipo;
 import incidenciascad.Estado;
@@ -117,28 +118,28 @@ public class Prueba {
 //            System.out.println(ex);
 //        }
         
-        System.out.println("Equipo");
-        Equipo e = new Equipo(null,"444x4vvv",null);
-//        Equipo e = new Equipo(null,"23451",new TipoEquipo(2,null,null));
-        ArrayList<Equipo> l = null;
-        int r;
-        try {
-            IncidenciasCAD i = new IncidenciasCAD();
-//            r = i.insertarEquipo(e);
+//        System.out.println("Equipo");
+//        Equipo e = new Equipo(null,"444x4vvv",null);
+////        Equipo e = new Equipo(null,"23451",new TipoEquipo(2,null,null));
+//        ArrayList<Equipo> l = null;
+//        int r;
+//        try {
+//            IncidenciasCAD i = new IncidenciasCAD();
+////            r = i.insertarEquipo(e);
+////            System.out.println(r + "registros");
+////            r = i.eliminarEquipo(34);
+////            System.out.println(r + "registros");
+//            r = i.modificarEquipo(1,e);
 //            System.out.println(r + "registros");
-//            r = i.eliminarEquipo(34);
-//            System.out.println(r + "registros");
-            r = i.modificarEquipo(1,e);
-            System.out.println(r + "registros");
-            e = i.leerEquipo(null);
-            System.out.println(e);
-            l = i.leerEquipos();
-            System.out.println(l);
-            l = i.leerEquipos("18",2,IncidenciasCAD.TIPO_EQUIPO_CODIGO,IncidenciasCAD.ASCENDENTE);
-            System.out.println(l);
-        } catch (ExcepcionIncidenciasCAD ex) {
-            System.out.println(ex);
-        }
+//            e = i.leerEquipo(null);
+//            System.out.println(e);
+//            l = i.leerEquipos();
+//            System.out.println(l);
+//            l = i.leerEquipos("18",2,IncidenciasCAD.TIPO_EQUIPO_CODIGO,IncidenciasCAD.ASCENDENTE);
+//            System.out.println(l);
+//        } catch (ExcepcionIncidenciasCAD ex) {
+//            System.out.println(ex);
+//        }
         
 //        System.out.println("Incidencia");
 //        Incidencia in = new Incidencia(null,"1","2","3",
@@ -195,6 +196,40 @@ public class Prueba {
 //            System.out.println(ex);
 //        }
         
+        System.out.println("Configuración");
+        Configuracion c = new Configuracion(
+                "a",
+                "a",
+                "a",
+                "a",
+                "a",
+                "a",
+                "a",
+                "a",
+                "a",
+                "a",
+                new Estado(1,null,null),
+                new Estado(4,null,null),
+                "a",
+                "a",
+                "a",
+                "a",
+                "a",
+                "a",
+                "a",
+                "a"
+                );
+            ArrayList<Configuracion> l = null;
+        int r;
+        try {
+            IncidenciasCAD i = new IncidenciasCAD();
+            r = i.establecerConfiguracion(c);
+            System.out.println(r + "registros");
+            l = i.leerConfiguracion();
+            System.out.println(l);
+        } catch (ExcepcionIncidenciasCAD ex) {
+            System.out.println(ex);
+        }
     }
     
 }
