@@ -45,7 +45,7 @@ public class IncidenciasCAD {
 
     
     /**
-     * Constructor vacío
+     * Constructor vacío. Carga el jdbc en memoria
      * @author Ignacio Fontecha Hernández
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
@@ -65,9 +65,8 @@ public class IncidenciasCAD {
     /**
      * Abre la conexión con la base de datos 
      * @author Ignacio Fontecha Hernández
-     * @param conexion Conexión con la base de datos
-     * @param setenciaPreparada Setencia preparada utilizada para el acceso a la base de datos
-     */
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+    */
     private void abrirConexion() throws ExcepcionIncidenciasCAD {
         try {
             conexion = DriverManager.getConnection(cadenaConexion);
@@ -84,8 +83,7 @@ public class IncidenciasCAD {
     /**
      * Cierra la conexión con la base de datos 
      * @author Ignacio Fontecha Hernández
-     * @param conexion Conexión con la base de datos
-     * @param setenciaPreparada Setencia preparada utilizada para el acceso a la base de datos
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     private void cerrarConexion() throws ExcepcionIncidenciasCAD {
         try {
@@ -284,7 +282,7 @@ public class IncidenciasCAD {
      * @author Óscar Barahona Ortega
      * @param dql Sentencia DQL que determina la lista de dependencias a leer
      * @return Lista de dependencias a leer
-     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Dependencia> leerDependencias(String dql) throws ExcepcionIncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
@@ -595,15 +593,37 @@ public class IncidenciasCAD {
         return leerUsuarios(dql);
     }    
     /**
-     * Lee todos los usuarios de la base de datos
+     * Lee una lista de dependencias de la base de datos a partir de una serie 
+     * de filtros y ordenando dicha lista por un criterio de ordenación - Se
+     * incluirán en la lista únicamente las dependencias que cumplan las 
+     * condiciones establecidas por todos y cada uno de los filtros
      * @author Óscar Barahona Ortega
-     * @param cuenta
-     * @param nombre
-     * @param apellido
-     * @param departamento
-     * @param criterioOrden
-     * @param orden
-     * @return Lista con todos los usuarios de la base de datos
+     * @param cuenta Texto contenido en la cuenta del usuario. Se seleccionarán
+     * aquellos usuarios cuya cuenta contenga el texto contenido en este
+     * parámetro
+     * @param nombre Texto contenido en el nombre del usuario. Se seleccionarán
+     * aquellos usuarios cuyo nombre contenga el texto contenido en este
+     * parámetro
+     * @param apellido Texto contenido en el apellido del usuario. Se
+     * seleccionarán aquellos usuarios cuyo apellido contenga el texto contenido
+     * en este parámetro
+     * @param departamento Texto contenido en el departamento del usuario. Se
+     * seleccionarán aquellos usuarios cuyo departamento contenga el texto
+     * contenido en este parámetro
+     * @param criterioOrden Criterio de ordenación a aplicar en la lista. Los
+     * valores posibles son: 
+     * IncidenciasCAD.DEPENDENCIA_CODIGO para ordenar la lista por el código de 
+     * dependencia
+     * IncidenciasCAD.DEPENDENCIA_NOMBRE para ordenar la lista por el 
+     * nombre de dependencia 
+     * @param orden Indicador de si el orden a aplicar es ascendente o 
+     * descendente. Si no se ha indicado un criterio de ordenación válido este 
+     * parámetro es ignorado. Los valores posibles son:
+     * IncidenciasCAD.ASCENDENTE para ordenar ascendentemente por el criterio de 
+     * ordenación indicado
+     * IncidenciasCAD.DESCENDENTE para ordenar descendentemente por el criterio 
+     * de ordenación indicado
+     * @return Lista ordenada de usuarios a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Usuario> leerUsuarios(String cuenta, String nombre, String apellido, String departamento, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
@@ -857,7 +877,7 @@ public class IncidenciasCAD {
      * @param criterioOrden Recibe el criterio por el cual se quiere ordenar la selección obtenida
      * @param orden Recibe la forma en la que se quiere ordenar, ascendentemenete o descendentemente
      * @return Devuelve la lista con todos los equipos de la base de datos una vez filtrado
-     * @throws ExcepcionIncidenciasCAD 
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
      public ArrayList<TipoEquipo> leerTiposEquipo(String codigo, String nombre, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
         String dql = "select * "
@@ -1379,7 +1399,7 @@ public class IncidenciasCAD {
      * @param criterioOrden Recibe el criterio por el cual se quiere ordenar la selección obtenida
      * @param orden Recibe la forma en la que se quiere ordenar, ascendentemenete o descendentemente
      * @return Devuelve la lista con todos los estados de la base de datos una vez filtrado
-     * @throws ExcepcionIncidenciasCAD 
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Estado> leerEstados(String codigo, String nombre, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
         String dql = "select * "
@@ -1590,7 +1610,7 @@ public class IncidenciasCAD {
      * @author Víctor Bolado Obregón
      * @param incidenciaId Identificardor de la incidencia a leer
      * @return Incidencia a leer
-     * @throws ExcepcionIncidenciasCAD se lanza en el caso de que se produzca cualquier excepción
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public Incidencia leerIncidencia(Integer incidenciaId) throws ExcepcionIncidenciasCAD {
         String dql = "select * from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
@@ -2320,13 +2340,14 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Establece una configuración en la base de datos
+     * Establece una configuración para el sistema y la almacena de la base de
+     * datos
      * @author Óscar Barahona Ortega
-     * @param configuracion Datos de la configuración a insertar/modificar
-     * @return Cantidad de registros insertados
+     * @param configuracion Datos de la configuración a establecer
+     * @return Cantidad de registros de configuración insertados
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public Integer establecerConfiguracion(Configuracion configuracion) throws ExcepcionIncidenciasCAD {
+    public int establecerConfiguracion(Configuracion configuracion) throws ExcepcionIncidenciasCAD {
         String dql = "select count(*) total from configuracion";
         PreparedStatement sentenciaPreparada = null;
         int numeroConfiguraciones = 0;
@@ -2446,9 +2467,9 @@ public class IncidenciasCAD {
     }
 
     /**
-     * Lee todas las configuraciones 
+     * Lee todos los registros de configuración de la base de datos 
      * @author Marcos Gonzalez Fernandez
-     * @return Lista con todas las configuraciones
+     * @return Lista de todos los registros de configuración
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Configuracion> leerConfiguracion() throws ExcepcionIncidenciasCAD {
@@ -2501,6 +2522,12 @@ public class IncidenciasCAD {
         }
     } 
     
+    /**
+     * Convierte un objeto Date en un objeto String con formato "año-mes-día"
+     * @param fecha Fecha a formatear
+     * @return Fecha formateada
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
     private String formatearFecha(Date fecha)
     {
         GregorianCalendar gc = new GregorianCalendar();
