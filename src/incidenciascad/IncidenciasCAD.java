@@ -344,7 +344,7 @@ public class IncidenciasCAD {
      * valores posibles son: 
      * IncidenciasCAD.DEPENDENCIA_CODIGO para ordenar la lista por el código de 
      * dependencia
-     * IncidenciasCAD.DEPENDENCIA_NOMBRE para para ordenar la lista por el 
+     * IncidenciasCAD.DEPENDENCIA_NOMBRE para ordenar la lista por el 
      * nombre de dependencia 
      * @param orden Indicador de si el orden a aplicar es ascendente o 
      * descendente. Si no se ha indicado un criterio de ordenación válido este 
@@ -1129,7 +1129,7 @@ public class IncidenciasCAD {
      * valores posibles son: 
      * IncidenciasCAD.EQUIPO_NUMERO_ETIQUETA_CONSEJERIA para ordenar la lista 
      * por el número de etiqueta de la Consejería del equipo
-     * IncidenciasCAD.TIPO_EQUIPO_CODIGO para para ordenar la lista por el 
+     * IncidenciasCAD.TIPO_EQUIPO_CODIGO para ordenar la lista por el 
      * código del tipo de equipo del equipo 
      * @param orden Indicador de si el orden a aplicar es ascendente o 
      * descendente. Si no se ha indicado un criterio de ordenación válido este 
@@ -1781,19 +1781,57 @@ public class IncidenciasCAD {
      * administrador de la incidencia. Se seleccionarán aquellas incidencias
      * cuyo comentario del administrador contenga el texto contenido en este 
      * parámetro
-     * @param fechaRegistro
-     * @param fechaEstadoActual
-     * @param usuarioId
-     * @param tipoEquipoId 
-     * @param dependenciaId 
-     * @param equipoNumeroEtiquetaConsejeria
-     * @param estadoId
+     * @param fechaRegistro Fecha en la que se generó la incidencia en el
+     * sistema. Se seleccionarán aquellas incidencias cuya fecha de registro en
+     * el sistema sea la indicada en este parámetro
+     * @param fechaEstadoActual Fecha en la que la incidencia cambió de estado
+     * por última vez. Se seleccionarán aquellas incidencias cuya última fecha
+     * en la que la incidencia cambió de estado sea la indicada en este
+     * parámetro
+     * @param usuarioId Identificador de usuario qure registró la incidencia. Se
+     * seleccionarán aquellas incidencias que hayan sido registradas en el 
+     * sistema por el usuario cuyo identificador sea el indicado en este
+     * parámetro
+     * @param tipoEquipoId  Identificador de tipo de equipo del equipo afectado
+     * por la incidencia. Se seleccionarán aquellas incidencias registradas 
+     * sobre equipos cuyo identificador de tipo de equipo sea el indicado en
+     * este parámetro
+     * @param equipoNumeroEtiquetaConsejeria Texto contenido en el número de 
+     * etiqueta de la Consejería del equipo afectado por la incidencia. Se
+     * seleccionarán aquellas incidencias cuya descripción contenga el texto 
+     * contenido en este parámetro
+     * @param dependenciaId Identificador de dependencia en la que se encuentra
+     * el equipo afectado por la incidencia. Se seleccionarán aquellas
+     * incidencias registradas sobre equipos ubicados en la dependencia cuyo
+     * identificador sea el indicado en este parámetro
+     * @param estadoId Identificador de estado de la incidencia. Se 
+     * seleccionarán aquellas incidencias cuyo estado actual tenga como
+     * identificador  el indicado en este parámetro
      * @param criterioOrden Criterio de ordenación a aplicar en la lista. Los
      * valores posibles son: 
+     * IncidenciasCAD.INCIDENCIA_POSICION_EQUIPO_DEPENDENCIA para ordenar
+     * la lista por la posición del equipo afectado por la incidencia en la
+     * dependencia
+     * IncidenciasCAD.INCIDENCIA_DESCRIPCION para ordenar la lista por la 
+     * descripción de la incidencia 
+     * IncidenciasCAD.INCIDENCIA_COMENTARIO_ADMINISTRADOR para ordenar la
+     * lista por el comentario del administrador a la incidencia
+     * IncidenciasCAD.INCIDENCIA_FECHA_REGISTRO para ordenar la lista por
+     * la fecha de registro de la incidencia en el sistema
+     * IncidenciasCAD.INCIDENCIA_FECHA_ESTADO_ACTUAL para ordenar la lista por
+     * la fecha del último cambio de estado de la incidencia
+     * IncidenciasCAD.USUARIO_CUENTA para ordenar la lista por la cuenta del
+     * usuario que registró la incidencia en el sistema
+     * IncidenciasCAD.TIPO_EQUIPO_CODIGO para ordenar la lista por el 
+     * código del tipo de equipo del equipo afectado por la incidencia
      * IncidenciasCAD.EQUIPO_NUMERO_ETIQUETA_CONSEJERIA para ordenar la lista 
-     * por el número de etiqueta de la Consejería del equipo
-     * IncidenciasCAD.TIPO_EQUIPO_CODIGO para para ordenar la lista por el 
-     * código del tipo de equipo del equipo 
+     * por el número de etiqueta de la Consejería del equipo afectado por la
+     * incidencia
+     * IncidenciasCAD.DEPENDENCIA_CODIGO para ordenar la lista por el 
+     * código de la dependencia en la que se encuentra el equipo afectado por la
+     * incidencia 
+     * IncidenciasCAD.ESTADO_CODIGO para ordenar la lista por el 
+     * código del estado en el que se encuentra la incidencia 
      * @param orden Indicador de si el orden a aplicar es ascendente o 
      * descendente. Si no se ha indicado un criterio de ordenación válido este 
      * parámetro es ignorado. Los valores posibles son:
@@ -1801,7 +1839,7 @@ public class IncidenciasCAD {
      * ordenación indicado
      * IncidenciasCAD.DESCENDENTE para ordenar descendentemente por el criterio 
      * de ordenación indicado
-     * @return Lista ordenada de equipos a leer
+     * @return Lista ordenada de incidencias a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Incidencia> leerIncidencias(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaRegistro, Date fechaEstadoActual, Integer usuarioId, Integer tipoEquipoId, String equipoNumeroEtiquetaConsejeria, Integer dependenciaId, Integer estadoId, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
@@ -2217,14 +2255,36 @@ public class IncidenciasCAD {
     }
     
     /**
-     * Lee todos los datos historicos de la base de datos
+     * Lee una lista de datos históricos de la base de datos a partir de una
+     * serie de filtros y ordenando dicha lista por un criterio de ordenación -
+     * Se incluirán en la lista únicamente las incidencias que cumplan las 
+     * condiciones establecidas por todos y cada uno de los filtros.
      * @author Diego Fernández Díaz
-     * @param fecha
-     * @param incidenciaId
-     * @param orden
-     * @param criterioOrden
-     * @param estadoId 
-     * @return Lista con todos los equipos de la base de datos
+     * @param incidenciaId Identificador de incidencia. Se seleccionarán 
+     * aquellos datos históricos que correspondan con la incidencia cuyo
+     * identificador sea el indicado en este parámetro
+     * @param estadoId Identificador de estado de la incidencia. Se 
+     * seleccionarán aquellos datos históricos cuyo identificador de estado 
+     * sea el indicado en este parámetro
+     * @param fecha Fecha en la que se produzco el cambio de estado de la 
+     * incidencia. Se seleccionarán aquellos datos históricos cuya fecha de
+     * cambuio de estado sea la indicada en este parámetro
+     * @param criterioOrden Criterio de ordenación a aplicar en la lista. Los
+     * valores posibles son: 
+     * IncidenciasCAD.INCIDENCIA_ID para ordenar la lista por el número de
+     * incidencia a la que se refiere el dato histórico
+     * IncidenciasCAD.ESTADO_CODIGO para ordenar la lista por el código de
+     * estado al que se refiere el dato histórico 
+     * IncidenciasCAD.HISTORIAL_FECHA para ordenar la lista por fecha del 
+     * cambio de estado al que se refiere el dato histórico 
+     * @param orden Indicador de si el orden a aplicar es ascendente o 
+     * descendente. Si no se ha indicado un criterio de ordenación válido este 
+     * parámetro es ignorado. Los valores posibles son:
+     * IncidenciasCAD.ASCENDENTE para ordenar ascendentemente por el criterio de 
+     * ordenación indicado
+     * IncidenciasCAD.DESCENDENTE para ordenar descendentemente por el criterio 
+     * de ordenación indicado
+     * @return Lista ordenada de datos históricos a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Historial> leerHistoriales(Integer incidenciaId, Integer estadoId, Date fecha, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
