@@ -110,3 +110,14 @@ INSERT INTO historial(fecha, incidencia_id, estado_id) VALUES (CURDATE()-5, 6, 2
 INSERT INTO historial(fecha, incidencia_id, estado_id) VALUES (CURDATE()-4, 6, 3);
 
 INSERT INTO historial(fecha, incidencia_id, estado_id) VALUES (CURDATE()-4, 4, 1);
+
+INSERT INTO configuracion
+        (empresa_consejeria_nombre, empresa_consejeria_telefono, empresa_consejeria_email,
+        ies_nombre, ies_cif, ies_codigo_centro, ies_persona_contacto_nombre, ies_persona_contacto_apellido1, ies_persona_contacto_apellido2, ies_email,
+        estado_inicial_incidencia, estado_final_incidencia, 
+        ldap_url, ldap_dominio, ldap_dn, ldap_atributo_cuenta, ldap_atributo_nombre, ldap_atributo_apellido, ldap_atributo_departamento, ldap_atributo_perfil) 
+    VALUES 
+        ('Infortec', '942676765', 'asistencia@infortec.es',
+	 'IES Miguel Herrero Pereda', 'Q123456789A', 'X232323', 'Pepe', 'Ruiz', 'Lara', 'pepe.ruizlara@educantabria.es',
+         1, 4,
+         'ldap://10.0.1.48', 'iesmhp.local', 'dc=iesmhp,dc=local', 'name', 'givenName', 'sn', 'department', 'title');
