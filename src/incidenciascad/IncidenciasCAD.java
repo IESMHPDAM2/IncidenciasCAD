@@ -2473,7 +2473,10 @@ public class IncidenciasCAD {
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
     public ArrayList<Configuracion> leerConfiguracion() throws ExcepcionIncidenciasCAD {
-        String dql = "select * from estado e, configuracion co where e.estado_id = co.estado_inicial_incidencia";                
+        String dql = "select * "
+                + "from estado ei, estado ef, configuracion co "
+                + "where ei.estado_id = co.estado_inicial_incidencia "
+                + "  and ef.estado_id = co.estado_final_incidencia";                
         PreparedStatement sentenciaPreparada = null;
         ArrayList<Configuracion> listaConfiguracion = new ArrayList();
         Configuracion configuracion = null;
@@ -2503,9 +2506,16 @@ public class IncidenciasCAD {
                 configuracion.setLdapAtributoDepartamento(resultado.getString("ldap_atributo_departamento"));
                 configuracion.setLdapAtributoPerfil(resultado.getString("ldap_atributo_perfil"));
                 estado = new Estado();
-                estado.setEstadoId(resultado.getInt("e.estado_id"));
-                estado.setCodigo(resultado.getString("e.codigo"));
-                estado.setNombre(resultado.getString("e.nombre"));
+                estado.setEstadoId(resultado.getInt("ei.estado_id"));
+                estado.setCodigo(resultado.getString("ei.codigo"));
+                estado.setNombre(resultado.getString("ei.nombre"));
+                configuracion.setEstadoInicial(estado);
+                estado = new Estado();
+                estado.setEstadoId(resultado.getInt("ef.estado_id"));
+                estado.setCodigo(resultado.getString("ef.codigo"));
+                estado.setNombre(resultado.getString("ef.nombre"));
+                configuracion.setEstadoFinal(estado);
+                
                 listaConfiguracion.add(configuracion);
             }
             resultado.close();
