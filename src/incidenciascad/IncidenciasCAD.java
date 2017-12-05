@@ -1698,11 +1698,11 @@ public class IncidenciasCAD {
         PreparedStatement sentenciaPreparada = null;
         ArrayList<Incidencia> listaIncidencias = new ArrayList();
         Incidencia incidencia = null;
-        Equipo equipo = new Equipo();
-        TipoEquipo tipoEquipo = new TipoEquipo();
-        Usuario usuario = new Usuario();
-        Dependencia dependencia = new Dependencia();
-        Estado estado = new Estado();
+        Equipo equipo = null;
+        TipoEquipo tipoEquipo = null;
+        Usuario usuario = null;
+        Dependencia dependencia = null;
+        Estado estado = null;
         try {
             abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
@@ -1717,6 +1717,7 @@ public class IncidenciasCAD {
                 incidencia.setFechaRegistro(resultado.getDate("i.fecha_registro"));
                 incidencia.setFechaEstadoActual(resultado.getDate("i.fecha_estado_actual"));
                 //USUARIO
+                usuario = new Usuario();
                 usuario.setUsuarioId(resultado.getInt("u.usuario_id"));
                 usuario.setCuenta(resultado.getString("u.cuenta"));
                 usuario.setNombre(resultado.getString("u.nombre"));
@@ -1724,20 +1725,24 @@ public class IncidenciasCAD {
                 usuario.setDepartamento(resultado.getString("u.departamento"));
                 incidencia.setUsuario(usuario);
                 //TIPO EQUIPO
+                tipoEquipo = new TipoEquipo();
                 tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
                 tipoEquipo.setCodigo(resultado.getString("te.codigo"));
                 tipoEquipo.setNombre(resultado.getString("te.nombre"));
                 //EQUIPO
+                equipo = new Equipo();
                 equipo.setEquipoId(resultado.getInt("e.equipo_id"));
                 equipo.setNumeroEtiquetaConsejeria(resultado.getString("e.numero_etiqueta_consejeria"));
                 equipo.setTipoEquipo(tipoEquipo);
                 incidencia.setEquipo(equipo);
                 //DEPENDENCIA
+                dependencia = new Dependencia();
                 dependencia.setDependenciaId(resultado.getInt("d.dependencia_id"));
                 dependencia.setCodigo(resultado.getString("d.codigo"));
                 dependencia.setNombre(resultado.getString("d.nombre"));
                 incidencia.setDependencia(dependencia);
                 //ESTADO
+                estado = new Estado();
                 estado.setEstadoId(resultado.getInt("es.estado_id"));
                 estado.setCodigo(resultado.getString("es.codigo"));
                 estado.setNombre(resultado.getString("es.nombre"));
