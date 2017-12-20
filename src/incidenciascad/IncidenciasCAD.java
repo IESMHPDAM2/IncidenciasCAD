@@ -1031,9 +1031,8 @@ public class IncidenciasCAD {
         }
     }
 
-
     /**
-     * Lee un equipo de la base de datos
+     * Lee un equipo de la base de datos a partir del identificador del equipo
      * @author Ignacio Fontecha Hernández
      * @param equipoId Identificador del equipo a leer
      * @return Equipo a leer
@@ -1051,6 +1050,52 @@ public class IncidenciasCAD {
             abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dql);
             sentenciaPreparada.setObject(1, equipoId, Types.INTEGER);
+            ResultSet resultado = sentenciaPreparada.executeQuery();
+            while (resultado.next()) {
+                equipo = new Equipo();
+                equipo.setEquipoId(resultado.getInt("equipo_id"));
+                equipo.setNumeroEtiquetaConsejeria(resultado.getString("numero_etiqueta_consejeria"));
+                tipoEquipo = new TipoEquipo();
+                tipoEquipo.setTipoEquipoId(resultado.getInt("te.tipo_equipo_id"));
+                tipoEquipo.setCodigo(resultado.getString("te.codigo"));
+                tipoEquipo.setNombre(resultado.getString("te.nombre"));
+                equipo.setTipoEquipo(tipoEquipo);
+            }
+            resultado.close();
+            sentenciaPreparada.close();
+            cerrarConexion();
+            return equipo;            
+        } catch (SQLException ex) {
+            ExcepcionIncidenciasCAD e = new ExcepcionIncidenciasCAD(
+                    ex.getErrorCode(),
+                    ex.getMessage(),
+                    "Error general del sistema. Consulte con el administrador",
+                    sentenciaPreparada.toString());
+            cerrarConexionExcepcion(conexion, sentenciaPreparada);
+            throw e;
+        }
+    }
+
+    /**
+     * Lee un equipo de la base de datos a partir del número de etiqueta de la 
+     * consejeria del equipo
+     * @author Ignacio Fontecha Hernández
+     * @param numeroEtiquetaConsejeria Número de etiqueta de la consejeria del equipo a leer
+     * @return Equipo a leer
+     * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
+     */
+    public Equipo leerEquipo(String numeroEtiquetaConsejeria) throws ExcepcionIncidenciasCAD {
+        String dql = "select * "
+                + "from tipo_equipo te, equipo e "
+                + "where te.tipo_equipo_id = e.tipo_equipo_id "
+                + "  and numero_etiqueta_consejeria = ?";
+        PreparedStatement sentenciaPreparada = null;
+        Equipo equipo = null;
+        TipoEquipo tipoEquipo = null;
+        try {
+            abrirConexion();
+            sentenciaPreparada = conexion.prepareStatement(dql);
+            sentenciaPreparada.setString(1, numeroEtiquetaConsejeria);
             ResultSet resultado = sentenciaPreparada.executeQuery();
             while (resultado.next()) {
                 equipo = new Equipo();
