@@ -1697,9 +1697,9 @@ public class IncidenciasCAD {
                 incidencia.setPosicionEquipoDependencia(resultado.getString("i.posicion_equipo_dependencia"));
                 incidencia.setDescripcion(resultado.getString("i.descripcion"));
                 incidencia.setComentarioAdministrador(resultado.getString("i.comentario_administrador"));
-                incidencia.setFechaRegistro(resultado.getDate("i.fecha_registro"));
-                incidencia.setFechaCierre(resultado.getDate("i.fecha_cierre"));
-                incidencia.setFechaEstadoActual(resultado.getDate("i.fecha_estado_actual"));
+                incidencia.setFechaRegistro(resultado.getTimestamp("i.fecha_registro"));
+                incidencia.setFechaCierre(resultado.getTimestamp("i.fecha_cierre"));
+                incidencia.setFechaEstadoActual(resultado.getTimestamp("i.fecha_estado_actual"));
                 //USUARIO
                 usuario.setUsuarioId(resultado.getInt("u.usuario_id"));
                 usuario.setCuenta(resultado.getString("u.cuenta"));
@@ -1774,9 +1774,9 @@ public class IncidenciasCAD {
                 incidencia.setPosicionEquipoDependencia(resultado.getString("i.posicion_equipo_dependencia"));
                 incidencia.setDescripcion(resultado.getString("i.descripcion"));
                 incidencia.setComentarioAdministrador(resultado.getString("i.comentario_administrador"));
-                incidencia.setFechaRegistro(resultado.getDate("i.fecha_registro"));
-                incidencia.setFechaCierre(resultado.getDate("i.fecha_cierre"));
-                incidencia.setFechaEstadoActual(resultado.getDate("i.fecha_estado_actual"));
+                incidencia.setFechaRegistro(resultado.getTimestamp("i.fecha_registro"));
+                incidencia.setFechaCierre(resultado.getTimestamp("i.fecha_cierre"));
+                incidencia.setFechaEstadoActual(resultado.getTimestamp("i.fecha_estado_actual"));
                 //USUARIO
                 usuario = new Usuario();
                 usuario.setUsuarioId(resultado.getInt("u.usuario_id"));
@@ -2232,8 +2232,8 @@ public class IncidenciasCAD {
                 incidencia.setPosicionEquipoDependencia(resultado.getString("inc.posicion_equipo_dependencia"));
                 incidencia.setDescripcion(resultado.getString("inc.descripcion"));
                 incidencia.setComentarioAdministrador(resultado.getString("inc.comentario_administrador"));
-                incidencia.setFechaRegistro(resultado.getDate("inc.fecha_registro"));
-                incidencia.setFechaEstadoActual(resultado.getDate("inc.fecha_estado_actual"));
+                incidencia.setFechaRegistro(resultado.getTimestamp("inc.fecha_registro"));
+                incidencia.setFechaEstadoActual(resultado.getTimestamp("inc.fecha_estado_actual"));
                 incidencia.setUsuario(usuario);
                 incidencia.setEquipo(equipo);
                 incidencia.setDependencia(dependencia);
@@ -2244,7 +2244,7 @@ public class IncidenciasCAD {
                 estadoHistorial.setNombre(resultado.getString("es.nombre"));
                 historial = new Historial();
                 historial.setHistorialId(resultado.getInt("hi.historial_id"));
-                historial.setFecha(resultado.getDate("hi.fecha"));
+                historial.setFecha(resultado.getTimestamp("hi.fecha"));
                 historial.setIncidencia(incidencia);
                 historial.setEstado(estadoHistorial);
             }
@@ -2306,8 +2306,8 @@ public class IncidenciasCAD {
                 incidencia.setPosicionEquipoDependencia(resultado.getString("inc.posicion_equipo_dependencia"));
                 incidencia.setDescripcion(resultado.getString("inc.descripcion"));
                 incidencia.setComentarioAdministrador(resultado.getString("inc.comentario_administrador"));
-                incidencia.setFechaRegistro(resultado.getDate("inc.fecha_registro"));
-                incidencia.setFechaEstadoActual(resultado.getDate("inc.fecha_estado_actual"));
+                incidencia.setFechaRegistro(resultado.getTimestamp("inc.fecha_registro"));
+                incidencia.setFechaEstadoActual(resultado.getTimestamp("inc.fecha_estado_actual"));
                 incidencia.setUsuario(usuario);
                 incidencia.setEquipo(equipo);
                 incidencia.setDependencia(dependencia);
@@ -2318,7 +2318,7 @@ public class IncidenciasCAD {
                 estadoHistorial.setNombre(resultado.getString("es.nombre"));
                 Historial historial = new Historial();
                 historial.setHistorialId(resultado.getInt("hi.historial_id"));
-                historial.setFecha(resultado.getDate("hi.fecha"));
+                historial.setFecha(resultado.getTimestamp("hi.fecha"));
                 historial.setIncidencia(incidencia);
                 historial.setEstado(estadoHistorial);
                 listaHistorial.add(historial);
