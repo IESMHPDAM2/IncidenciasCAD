@@ -41,6 +41,7 @@ public class IncidenciasCAD {
     public static Integer INCIDENCIA_COMENTARIO_ADMINISTRADOR = 63;
     public static Integer INCIDENCIA_FECHA_ESTADO_ACTUAL = 64;
     public static Integer INCIDENCIA_FECHA_REGISTRO = 65;
+    public static Integer INCIDENCIA_FECHA_CIERRE = 66;
     public static Integer HISTORIAL_FECHA = 70;
 
     
@@ -1479,8 +1480,8 @@ public class IncidenciasCAD {
         if (incidencia.getEstado() == null) incidencia.setEstado(new Estado());
         if (incidencia.getUsuario() == null) incidencia.setUsuario(new Usuario());
         String dml = "insert into incidencia(posicion_equipo_dependencia, descripcion, "
-                + "comentario_administrador, fecha_registro, fecha_estado_actual, usuario_id, equipo_id, dependencia_id, estado_id) "
-                + "values (?,?,?,?,?,?,?,?,?)";
+                + "comentario_administrador, fecha_registro, fecha_cierre, fecha_estado_actual, usuario_id, equipo_id, dependencia_id, estado_id) "
+                + "values (?,?,?,?,?,?,?,?,?,?)";
         PreparedStatement sentenciaPreparada = null;
         try {
             abrirConexion();
@@ -1490,22 +1491,28 @@ public class IncidenciasCAD {
             sentenciaPreparada.setString(3, incidencia.getComentarioAdministrador());
             //Se crea una java.sql.date para formatear la fecha de la incidencia.
             if (incidencia.getFechaRegistro() == null) {
-                sentenciaPreparada.setNull(4, Types.DATE);
+                sentenciaPreparada.setNull(4, Types.TIMESTAMP);
             } else {
                 java.sql.Date fechaRegistro = new java.sql.Date(incidencia.getFechaRegistro().getTime());
-                sentenciaPreparada.setObject(4, fechaRegistro, Types.DATE);
+                sentenciaPreparada.setObject(4, fechaRegistro, Types.TIMESTAMP);
+            }
+            if (incidencia.getFechaCierre() == null) {
+                sentenciaPreparada.setNull(5, Types.TIMESTAMP);
+            } else {
+                java.sql.Date fechaCierre = new java.sql.Date(incidencia.getFechaCierre().getTime());
+                sentenciaPreparada.setObject(5, fechaCierre, Types.TIMESTAMP);
             }
             //Se crea una java.sql.date para formatear la fecha de la incidencia.
             if (incidencia.getFechaEstadoActual() == null) {
-                sentenciaPreparada.setNull(5, Types.DATE);
+                sentenciaPreparada.setNull(6, Types.TIMESTAMP);
             } else {
                 java.sql.Date fechaEstadoActual = new java.sql.Date(incidencia.getFechaEstadoActual().getTime());
-                sentenciaPreparada.setObject(5, fechaEstadoActual, Types.DATE);
+                sentenciaPreparada.setObject(6, fechaEstadoActual, Types.TIMESTAMP);
             }
-            sentenciaPreparada.setObject(6, incidencia.getUsuario().getUsuarioId(), Types.INTEGER);
-            sentenciaPreparada.setObject(7, incidencia.getEquipo().getEquipoId(), Types.INTEGER);
-            sentenciaPreparada.setObject(8, incidencia.getDependencia().getDependenciaId(), Types.INTEGER);
-            sentenciaPreparada.setObject(9, incidencia.getEstado().getEstadoId(), Types.INTEGER);
+            sentenciaPreparada.setObject(7, incidencia.getUsuario().getUsuarioId(), Types.INTEGER);
+            sentenciaPreparada.setObject(8, incidencia.getEquipo().getEquipoId(), Types.INTEGER);
+            sentenciaPreparada.setObject(9, incidencia.getDependencia().getDependenciaId(), Types.INTEGER);
+            sentenciaPreparada.setObject(10, incidencia.getEstado().getEstadoId(), Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             cerrarConexion();
@@ -1588,6 +1595,7 @@ public class IncidenciasCAD {
                 + "descripcion=?, "
                 + "comentario_administrador=?, "
                 + "fecha_registro=?, "
+                + "fecha_cierre=?, "
                 + "fecha_estado_actual=?, "
                 + "usuario_id=?, "
                 + "equipo_id=?, "
@@ -1603,23 +1611,29 @@ public class IncidenciasCAD {
             sentenciaPreparada.setString(3, incidencia.getComentarioAdministrador());
             //Se crea una java.sql.date para formatear la fecha de la incidencia.
             if (incidencia.getFechaRegistro() == null) {
-                sentenciaPreparada.setNull(4, Types.DATE);
+                sentenciaPreparada.setNull(4, Types.TIMESTAMP);
             } else {
                 java.sql.Date fechaRegistro = new java.sql.Date(incidencia.getFechaRegistro().getTime());
-                sentenciaPreparada.setObject(4, fechaRegistro, Types.DATE);
+                sentenciaPreparada.setObject(4, fechaRegistro, Types.TIMESTAMP);
+            }
+            if (incidencia.getFechaCierre() == null) {
+                sentenciaPreparada.setNull(5, Types.TIMESTAMP);
+            } else {
+                java.sql.Date fechaCierre = new java.sql.Date(incidencia.getFechaCierre().getTime());
+                sentenciaPreparada.setObject(5, fechaCierre, Types.TIMESTAMP);
             }
             //Se crea una java.sql.date para formatear la fecha de la incidencia.
             if (incidencia.getFechaEstadoActual() == null) {
-                sentenciaPreparada.setNull(5, Types.DATE);
+                sentenciaPreparada.setNull(6, Types.TIMESTAMP);
             } else {
                 java.sql.Date fecha = new java.sql.Date(incidencia.getFechaEstadoActual().getTime());
-                sentenciaPreparada.setObject(5, fecha, Types.DATE);
+                sentenciaPreparada.setObject(6, fecha, Types.TIMESTAMP);
             }
-            sentenciaPreparada.setObject(6, incidencia.getUsuario().getUsuarioId(), Types.INTEGER);
-            sentenciaPreparada.setObject(7, incidencia.getEquipo().getEquipoId(), Types.INTEGER);
-            sentenciaPreparada.setObject(8, incidencia.getDependencia().getDependenciaId(), Types.INTEGER);
-            sentenciaPreparada.setObject(9, incidencia.getEstado().getEstadoId(), Types.INTEGER);
-            sentenciaPreparada.setObject(10, incidenciaId, Types.INTEGER);
+            sentenciaPreparada.setObject(7, incidencia.getUsuario().getUsuarioId(), Types.INTEGER);
+            sentenciaPreparada.setObject(8, incidencia.getEquipo().getEquipoId(), Types.INTEGER);
+            sentenciaPreparada.setObject(9, incidencia.getDependencia().getDependenciaId(), Types.INTEGER);
+            sentenciaPreparada.setObject(10, incidencia.getEstado().getEstadoId(), Types.INTEGER);
+            sentenciaPreparada.setObject(11, incidenciaId, Types.INTEGER);
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             cerrarConexion();
@@ -1684,6 +1698,7 @@ public class IncidenciasCAD {
                 incidencia.setDescripcion(resultado.getString("i.descripcion"));
                 incidencia.setComentarioAdministrador(resultado.getString("i.comentario_administrador"));
                 incidencia.setFechaRegistro(resultado.getDate("i.fecha_registro"));
+                incidencia.setFechaCierre(resultado.getDate("i.fecha_cierre"));
                 incidencia.setFechaEstadoActual(resultado.getDate("i.fecha_estado_actual"));
                 //USUARIO
                 usuario.setUsuarioId(resultado.getInt("u.usuario_id"));
@@ -1760,6 +1775,7 @@ public class IncidenciasCAD {
                 incidencia.setDescripcion(resultado.getString("i.descripcion"));
                 incidencia.setComentarioAdministrador(resultado.getString("i.comentario_administrador"));
                 incidencia.setFechaRegistro(resultado.getDate("i.fecha_registro"));
+                incidencia.setFechaCierre(resultado.getDate("i.fecha_cierre"));
                 incidencia.setFechaEstadoActual(resultado.getDate("i.fecha_estado_actual"));
                 //USUARIO
                 usuario = new Usuario();
@@ -1912,7 +1928,7 @@ public class IncidenciasCAD {
      * @return Lista ordenada de incidencias a leer
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<Incidencia> leerIncidencias(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaRegistro, Date fechaEstadoActual, Integer usuarioId, Integer tipoEquipoId, String equipoNumeroEtiquetaConsejeria, Integer dependenciaId, Integer estadoId, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+    public ArrayList<Incidencia> leerIncidencias(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaRegistro, Date fechaCierre, Date fechaEstadoActual, Integer usuarioId, Integer tipoEquipoId, String equipoNumeroEtiquetaConsejeria, Integer dependenciaId, Integer estadoId, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
         String dql = "select i.*,u.*,te.*,e.*,d.*,es.* from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
             "where i.USUARIO_ID=u.USUARIO_ID " +
             "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
@@ -1928,6 +1944,9 @@ public class IncidenciasCAD {
         if (fechaRegistro != null) {
             dql = dql + " and date_format(i.FECHA_REGISTRO, \"%Y-%m-%d\") like '%" + sdf.format(fechaRegistro) + "%'";
         }
+        if (fechaCierre != null) {
+            dql = dql + " and date_format(i.FECHA_CIERRE, \"%Y-%m-%d\") like '%" + sdf.format(fechaCierre) + "%'";
+        }
         if (fechaEstadoActual != null) {
             dql = dql + " and date_format(i.FECHA_ESTADO_ACTUAL, \"%Y-%m-%d\") like '%" + sdf.format(fechaEstadoActual) + "%'";
         }
@@ -1936,6 +1955,13 @@ public class IncidenciasCAD {
         if (equipoNumeroEtiquetaConsejeria != null) dql = dql + " and e.numero_etiqueta_consejeria like '%" + equipoNumeroEtiquetaConsejeria + "%'";
         if (dependenciaId !=null) dql = dql + " and d.dependencia_id =" + dependenciaId;
         if (estadoId != null) dql = dql + " and es.estado_id =" + estadoId;
+        
+        if (criterioOrden == INCIDENCIA_ID) 
+        {
+            dql = dql + " order by incidencia_id";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
         
         if (criterioOrden == INCIDENCIA_POSICION_EQUIPO_DEPENDENCIA) 
         {
@@ -1961,6 +1987,13 @@ public class IncidenciasCAD {
         if (criterioOrden == INCIDENCIA_FECHA_REGISTRO) 
         {
             dql = dql + " order by fecha_registro";
+            if (orden == ASCENDENTE) dql = dql + " asc";
+            if (orden == DESCENDENTE) dql = dql + " desc";
+        }
+        
+        if (criterioOrden == INCIDENCIA_FECHA_CIERRE) 
+        {
+            dql = dql + " order by fecha_cierre";
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
@@ -2006,6 +2039,7 @@ public class IncidenciasCAD {
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
+        System.out.println(dql);
         return leerIncidencias(dql);
     }
 
@@ -2028,10 +2062,10 @@ public class IncidenciasCAD {
             abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             if (historial.getFecha() == null) {
-                sentenciaPreparada.setNull(1, Types.DATE);
+                sentenciaPreparada.setNull(1, Types.TIMESTAMP);
             } else {
                 java.sql.Date fecha = new java.sql.Date(historial.getFecha().getTime());
-                sentenciaPreparada.setObject(1, fecha, Types.DATE);
+                sentenciaPreparada.setObject(1, fecha, Types.TIMESTAMP);
             }
             sentenciaPreparada.setObject(2, historial.getIncidencia().getIncidenciaId(), Types.INTEGER);
             sentenciaPreparada.setObject(3, historial.getEstado().getEstadoId(), Types.INTEGER);
@@ -2108,10 +2142,10 @@ public class IncidenciasCAD {
             abrirConexion();
             sentenciaPreparada = conexion.prepareStatement(dml);
             if (historial.getFecha() == null) {
-                sentenciaPreparada.setNull(4, Types.DATE);
+                sentenciaPreparada.setNull(4, Types.TIMESTAMP);
             } else {
                 java.sql.Date fecha = new java.sql.Date(historial.getFecha().getTime());
-                sentenciaPreparada.setObject(1, fecha, Types.DATE);
+                sentenciaPreparada.setObject(1, fecha, Types.TIMESTAMP);
             }
             sentenciaPreparada.setObject(2, historial.getIncidencia().getIncidenciaId(), Types.INTEGER);
             sentenciaPreparada.setObject(3, historial.getEstado().getEstadoId(), Types.INTEGER);

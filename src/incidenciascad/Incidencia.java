@@ -18,6 +18,7 @@ public class Incidencia {
     private String descripcion;
     private String comentarioAdministrador;
     private Date fechaRegistro;
+    private Date fechaCierre;
     private Date fechaEstadoActual;
     private Usuario usuario;
     private Equipo equipo;
@@ -28,12 +29,13 @@ public class Incidencia {
     public Incidencia() {
     }
 
-    public Incidencia(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaRegistro, Date fechaEstadoActual, Usuario usuario, Equipo equipo, Dependencia dependencia, Estado estado, ArrayList<Historial> historiales) {
+    public Incidencia(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaRegistro, Date fechaCierre, Date fechaEstadoActual, Usuario usuario, Equipo equipo, Dependencia dependencia, Estado estado, ArrayList<Historial> historiales) {
         this.incidenciaId = incidenciaId;
         this.posicionEquipoDependencia = posicionEquipoDependencia;
         this.descripcion = descripcion;
         this.comentarioAdministrador = comentarioAdministrador;
         this.fechaRegistro = fechaRegistro;
+        this.fechaCierre = fechaCierre;
         this.fechaEstadoActual = fechaEstadoActual;
         this.usuario = usuario;
         this.equipo = equipo;
@@ -80,6 +82,14 @@ public class Incidencia {
 
     public void setFechaRegistro(Date fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+
+    public Date getFechaCierre() {
+        return fechaCierre;
+    }
+
+    public void setFechaCierre(Date fechaCierre) {
+        this.fechaCierre = fechaCierre;
     }
 
     public Date getFechaEstadoActual() {
@@ -132,7 +142,8 @@ public class Incidencia {
 
     @Override
     public String toString() {
-        return "Incidencia{" + "incidenciaId=" + incidenciaId + ", posicionEquipoDependencia=" + posicionEquipoDependencia + ", descripcion=" + descripcion + ", comentarioAdministrador=" + comentarioAdministrador + ", fechaRegistro=" + fechaRegistro + ", fechaEstadoActual=" + fechaEstadoActual + ", usuario=" + usuario + ", equipo=" + equipo + ", dependencia=" + dependencia + ", estado=" + estado + ", historiales=" + historiales + '}';
+        return "Incidencia{" + "incidenciaId=" + incidenciaId + ", posicionEquipoDependencia=" + posicionEquipoDependencia + ", descripcion=" + descripcion + ", comentarioAdministrador=" + comentarioAdministrador + ", fechaRegistro=" + fechaRegistro + ", fechaCierre=" + fechaCierre + ", fechaEstadoActual=" + fechaEstadoActual + ", usuario=" + usuario + ", equipo=" + equipo + ", dependencia=" + dependencia + ", estado=" + estado + ", historiales=" + historiales + '}';
     }
+
 
 }

@@ -142,8 +142,10 @@ public class Prueba {
 //        }
         
         System.out.println("Incidencia");
+        System.out.println(new Date());
         Incidencia in = new Incidencia(null,"1","2","3",
                 new Date(),
+                null,
                 new Date(),
                 new Usuario(1,null,null,null,null),
                 new Equipo(1,null,null), 
@@ -161,11 +163,16 @@ public class Prueba {
 //            r = i.modificarIncidencia(52,in);
 //            System.out.println(r + "registros");
 //            in = i.leerIncidencia(1);
-            System.out.println(in);
-            l = i.leerIncidencias();
-            System.out.println(l);
-//            l = i.leerIncidencias(null,"","o","",null,java.sql.Date.valueOf("2017-11-26"),null,null,null,null,null,null,null);
-            l = i.leerIncidencias(null,"","o","",java.sql.Date.valueOf("2017-12-28"),null,null,null,null,null,1,IncidenciasCAD.ESTADO_CODIGO,IncidenciasCAD.ASCENDENTE);
+//            System.out.println(in);
+//            l = i.leerIncidencias();
+//            System.out.println(l);
+//            l = i.leerIncidencias(123,"","o","",null,null,java.sql.Date.valueOf("2018-01-18"),null,null,null,null,null,null,null);
+            l = i.leerIncidencias(null,null,null,null,null,null,new Date(),null,null,null,null,null,null,null);
+//            l = i.leerIncidencias(null,"","o","",java.sql.Date.valueOf("2017-12-28"),null,null,null,null,null,1,IncidenciasCAD.ESTADO_CODIGO,IncidenciasCAD.ASCENDENTE);
+//            l = i.leerIncidencias(null,null,null,null,null,null,null,null,null,null,null,null,IncidenciasCAD.INCIDENCIA_ID,IncidenciasCAD.ASCENDENTE);
+//            for (Incidencia inc : l) {
+//                System.out.println(inc.getIncidenciaId());
+//            }
             System.out.println(l);
         } catch (ExcepcionIncidenciasCAD ex) {
             System.out.println(ex);
