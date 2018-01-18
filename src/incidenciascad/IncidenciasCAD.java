@@ -42,6 +42,8 @@ public class IncidenciasCAD {
     public static Integer INCIDENCIA_FECHA_ESTADO_ACTUAL = 64;
     public static Integer INCIDENCIA_FECHA_REGISTRO = 65;
     public static Integer INCIDENCIA_FECHA_CIERRE = 66;
+    public static Integer INCIDENCIA_LEER_CERRADAS = 67;
+    public static Integer INCIDENCIA_NO_LEER_CERRADAS = 68;
     public static Integer HISTORIAL_FECHA = 70;
 
     
@@ -1870,6 +1872,9 @@ public class IncidenciasCAD {
      * @param fechaRegistro Fecha en la que se generó la incidencia en el
      * sistema. Se seleccionarán aquellas incidencias cuya fecha de registro en
      * el sistema sea la indicada en este parámetro
+     * @param fechaCierre Fecha en la que se cerró la incidencia en el
+     * sistema. Se seleccionarán aquellas incidencias cuya fecha de cierre en
+     * el sistema sea la indicada en este parámetro
      * @param fechaEstadoActual Fecha en la que la incidencia cambió de estado
      * por última vez. Se seleccionarán aquellas incidencias cuya última fecha
      * en la que la incidencia cambió de estado sea la indicada en este
@@ -1925,10 +1930,15 @@ public class IncidenciasCAD {
      * ordenación indicado
      * IncidenciasCAD.DESCENDENTE para ordenar descendentemente por el criterio 
      * de ordenación indicado
-     * @return Lista ordenada de incidencias a leer
+     * @param leerCerradas Indicador de si se han de leer las incidencias cerradas
+     * o no. Los valores posibles son:
+     * IncidenciasCAD.INCIDENCIAS_NO_LEER_CERRADAS para no leer las incidencias 
+     * cerradas 
+     * IncidenciasCAD.INCIDENCIAS_LEER_CERRADAS para sí leer las incidencias 
+     * cerradas. Es el valor por defecto
      * @throws ExcepcionIncidenciasCAD Se lanza en el caso de que se produzca cualquier excepción
      */
-    public ArrayList<Incidencia> leerIncidencias(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaRegistro, Date fechaCierre, Date fechaEstadoActual, Integer usuarioId, Integer tipoEquipoId, String equipoNumeroEtiquetaConsejeria, Integer dependenciaId, Integer estadoId, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
+    public ArrayList<Incidencia> leerIncidencias(Integer incidenciaId, String posicionEquipoDependencia, String descripcion, String comentarioAdministrador, Date fechaRegistro, Date fechaCierre, Date fechaEstadoActual, Integer usuarioId, Integer tipoEquipoId, String equipoNumeroEtiquetaConsejeria, Integer dependenciaId, Integer estadoId, Integer criterioOrden, Integer orden, Integer leerCerradas) throws ExcepcionIncidenciasCAD {
         String dql = "select i.*,u.*,te.*,e.*,d.*,es.* from incidencia i, usuario u, dependencia d, equipo e, tipo_equipo te, estado es " +
             "where i.USUARIO_ID=u.USUARIO_ID " +
             "and i.DEPENDENCIA_ID=d.DEPENDENCIA_ID " +
@@ -1955,6 +1965,7 @@ public class IncidenciasCAD {
         if (equipoNumeroEtiquetaConsejeria != null) dql = dql + " and e.numero_etiqueta_consejeria like '%" + equipoNumeroEtiquetaConsejeria + "%'";
         if (dependenciaId !=null) dql = dql + " and d.dependencia_id =" + dependenciaId;
         if (estadoId != null) dql = dql + " and es.estado_id =" + estadoId;
+        if (leerCerradas == INCIDENCIA_NO_LEER_CERRADAS) dql = dql + " and fecha_cierre is null";
         
         if (criterioOrden == INCIDENCIA_ID) 
         {

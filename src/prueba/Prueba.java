@@ -167,7 +167,7 @@ public class Prueba {
 //            l = i.leerIncidencias();
 //            System.out.println(l);
 //            l = i.leerIncidencias(123,"","o","",null,null,java.sql.Date.valueOf("2018-01-18"),null,null,null,null,null,null,null);
-            l = i.leerIncidencias(null,null,null,null,null,null,new Date(),null,null,null,null,null,null,null);
+            l = i.leerIncidencias(null,null,null,null,null,null,new Date(),null,null,null,null,null,null,null,null);
 //            l = i.leerIncidencias(null,"","o","",java.sql.Date.valueOf("2017-12-28"),null,null,null,null,null,1,IncidenciasCAD.ESTADO_CODIGO,IncidenciasCAD.ASCENDENTE);
 //            l = i.leerIncidencias(null,null,null,null,null,null,null,null,null,null,null,null,IncidenciasCAD.INCIDENCIA_ID,IncidenciasCAD.ASCENDENTE);
 //            for (Incidencia inc : l) {
