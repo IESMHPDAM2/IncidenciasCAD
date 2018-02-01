@@ -1,0 +1,17 @@
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (1,'Otros','Otros');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (2,'CPD','CPD');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (3,'Escaner','Escaner');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (4,'Impresora','Impresora');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (5,'Monitor','Monitor');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (6,'PantallaD.','Pantalla Digital');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (7,'PC o Torre','PC o Torre');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (8,'Portatil','Portatil');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (9,'Proyector','Proyector');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (10,'P. Acceso','Punto de acceso');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (11,'Raton','Raton');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (12,'Router','Router');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (13,'SAI','SAI');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (14,'Servidor','Servidor');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (15,'Switch','Switch');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (16,'Teclado','Teclado');
+INSERT into Incidencias.tipo_equipo(TIPO_EQUIPO_ID,CODIGO,NOMBRE) VALUES (17,'V.Splitter','Video Splitter');
