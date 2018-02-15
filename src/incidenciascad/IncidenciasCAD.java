@@ -1004,7 +1004,6 @@ public class IncidenciasCAD {
             sentenciaPreparada.setString(1, equipo.getNumeroEtiquetaConsejeria());
             sentenciaPreparada.setObject(2, equipo.getTipoEquipo().getTipoEquipoId(), Types.INTEGER);
             sentenciaPreparada.setObject(3, equipoId, Types.INTEGER);
-            System.out.println(sentenciaPreparada.toString());
             int registrosAfectados = sentenciaPreparada.executeUpdate();
             sentenciaPreparada.close();
             cerrarConexion();
@@ -2050,7 +2049,6 @@ public class IncidenciasCAD {
             if (orden == ASCENDENTE) dql = dql + " asc";
             if (orden == DESCENDENTE) dql = dql + " desc";
         }
-        System.out.println(dql);
         return leerIncidencias(dql);
     }
 
