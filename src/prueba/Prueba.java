@@ -54,10 +54,10 @@ public class Prueba {
         
 //        System.out.println("Estado");
 //        Estado e = new Estado(0,"12345678","Penj cfdf d");
-//        ArrayList<Estado> l = null;
+        ArrayList<Estado> l = null;
 //        int r;
-//        try {
-//            IncidenciasCAD i = new IncidenciasCAD();
+        try {
+            IncidenciasCAD i = new IncidenciasCAD();
 ////            r = i.insertarEstado(e);
 ////            System.out.println(r + "registros");
 //            r = i.eliminarEstado(7);
@@ -68,11 +68,11 @@ public class Prueba {
 //            System.out.println(e);
 //            l = i.leerEstados();
 //            System.out.println(l);
-//            l = i.leerEstados("","i",IncidenciasCAD.ESTADO_NOMBRE,IncidenciasCAD.DESCENDENTE);
+            l = i.leerEstados("","i",IncidenciasCAD.ESTADO_NOMBRE,IncidenciasCAD.DESCENDENTE);
 //            System.out.println(l);
-//        } catch (ExcepcionIncidenciasCAD ex) {
-//            System.out.println(ex);
-//        }
+        } catch (ExcepcionIncidenciasCAD ex) {
+            System.out.println(ex);
+        }
         
 //        System.out.println("Usuario");
 //        Usuario u = new Usuario(0,"lAruiz","","aApes","coAmas");
@@ -152,7 +152,7 @@ public class Prueba {
                 new Dependencia(1,null,null), 
                 new Estado(1,null,null),
                 null);
-        ArrayList<Incidencia> l = null;
+//        ArrayList<Incidencia> l = null;
         int r;
         try {
             IncidenciasCAD i = new IncidenciasCAD();
@@ -160,14 +160,14 @@ public class Prueba {
 //            System.out.println(r + "registros");
 //            r = i.eliminarIncidencia(589);
 //            System.out.println(r + "registros");
-//            r = i.modificarIncidencia(52,in);
+            r = i.modificarIncidencia(52,in);
 //            System.out.println(r + "registros");
 //            in = i.leerIncidencia(1);
 //            System.out.println(in);
 //            l = i.leerIncidencias();
 //            System.out.println(l);
 //            l = i.leerIncidencias(123,"","o","",null,null,java.sql.Date.valueOf("2018-01-18"),null,null,null,null,null,null,null);
-            l = i.leerIncidencias(null,null,null,null,null,null,new Date(),null,null,null,null,null,null,null,null);
+//            l = i.leerIncidencias(null,null,null,null,null,null,new Date(),null,null,null,null,null,null,null,null);
 //            l = i.leerIncidencias(null,"","o","",java.sql.Date.valueOf("2017-12-28"),null,null,null,null,null,1,IncidenciasCAD.ESTADO_CODIGO,IncidenciasCAD.ASCENDENTE);
 //            l = i.leerIncidencias(null,null,null,null,null,null,null,null,null,null,null,null,IncidenciasCAD.INCIDENCIA_ID,IncidenciasCAD.ASCENDENTE);
 //            for (Incidencia inc : l) {

@@ -20,7 +20,7 @@ import java.util.GregorianCalendar;
  */
 public class IncidenciasCAD {
     private Connection conexion;
-    private String cadenaConexion = "jdbc:mysql://10.0.1.96/incidencias?user=incidencias&password=incidencias";
+    private String cadenaConexion = "jdbc:mysql://10.0.1.63/incidencias?user=incidencias&password=1nc1d3nc1@s";
     
     public static Integer ASCENDENTE = 1;
     public static Integer DESCENDENTE = 2;
@@ -1450,7 +1450,7 @@ public class IncidenciasCAD {
      */
     public ArrayList<Estado> leerEstados(String codigo, String nombre, Integer criterioOrden, Integer orden) throws ExcepcionIncidenciasCAD {
         String dql = "select * "
-                + "from Estado e where 1 = 1 ";   
+                + "from estado e where 1 = 1 ";   
         if (codigo !=null || nombre !=null)
         if (codigo !=null) dql = dql + " and codigo like '%" + codigo + "%'";
         if (nombre !=null) dql = dql + " and nombre like '%" + nombre + "%'";
